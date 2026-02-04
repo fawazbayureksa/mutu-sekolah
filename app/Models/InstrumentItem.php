@@ -4,25 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class School extends Model
+class InstrumentItem extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'school_name',
-        'npsn',
-        'province',
-        'city',
-        'respondent_name',
-        'respondent_position',
-        'filled_at',
+        'instrument_id',
+        'section',
+        'indicator_code',
+        'indicator_text',
+        'answer_type',
     ];
 
-    protected $casts = [
-        'filled_at' => 'date',
-    ];
+    public function instrument(): BelongsTo
+    {
+        return $this->belongsTo(Instrument::class);
+    }
 
     public function responses(): HasMany
     {

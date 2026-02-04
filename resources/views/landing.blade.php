@@ -10,8 +10,8 @@
                 <div data-aos="fade-up" data-aos-duration="1000">
                     <h1 class="display-4 fw-bold mb-4">Penjaminan Mutu SMK Bidang KPTK</h1>
                     <p class="lead mb-5 text-white-50">Upaya sistematis BPPMPV dalam memastikan mutu pendidikan vokasi bidang Kelautan, Perikanan, dan TIK</p>
-                    <a href="#" class="btn btn-primary btn-lg px-5 py-3">
-                        <i class="bi bi-play-circle me-2"></i>Mulai Pengisian Instrumen
+                    <a href="{{ route('instrument.form') }}" class="btn btn-primary btn-lg px-5 py-3">
+                        <i class="bi bi-play-circle me-2"></i>Isi Instrumen
                     </a>
                 </div>
             </div>
