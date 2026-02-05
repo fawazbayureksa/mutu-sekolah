@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class QuestionRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return auth()->check() && auth()->user()->isAdmin();
+    }
+
+    public function rules(): array
+    {
+        $questionId = $this->route('question');
+
+        return [
+            'question_code' => 'required|string|max:20|unique:assessment_questions,question_code,' . $questionId,
+            'indicator_id' => 'required|exists:assessment_indicators,id',
+            'question_text' => 'required|string|max:1000',
+            'answer_type' => 'required|in:boolean,scale,number,text,multiple_choice,percentage',
+            'weight' => 'nullable|numeric|min:0|max:100',
+            'order' => 'nullable|integer|min:1',
+            'help_text' => 'nullable|string|max:500',
+            'is_required' => 'nullable|boolean',
+            'max_score' => 'required_if:answer_type,scale,number|numeric|min:0',
+            'min_score' => 'required_if:answer_type,scale,number|numeric|min:0',
+            'scale_template_id' => 'nullable|exists:scale_templates,id',
+            'answer_options' => 'nullable|array',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'question_code.required' => 'Question code is required',
+            'question_code.unique' => 'Question code already exists',
+            'indicator_id.required' => 'Indicator is required',
+            'question_text.required' => 'Question text is required',
+            'answer_type.required' => 'Answer type is required',
+            'answer_type.in' => 'Invalid answer type',
+        ];
+    }
+}

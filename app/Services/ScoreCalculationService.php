@@ -11,7 +11,7 @@ class ScoreCalculationService
     public function calculateAssessmentScore(Assessment $assessment): array
     {
         $instrument = $assessment->instrument;
-        
+
         if (!$instrument) {
             return [
                 'total_score' => 0,
@@ -27,7 +27,7 @@ class ScoreCalculationService
 
         foreach ($assessment->answers as $answer) {
             $question = $answer->question;
-            
+
             if (!$question) {
                 continue;
             }
@@ -82,7 +82,7 @@ class ScoreCalculationService
     public function calculateAnswerScore(AssessmentAnswer $answer): ?float
     {
         $question = $answer->question;
-        
+
         if (!$question) {
             return null;
         }
@@ -108,18 +108,18 @@ class ScoreCalculationService
     public function calculateAspectScores(Assessment $assessment): array
     {
         $aspectScores = [];
-        
+
         foreach ($assessment->instrument->aspects as $aspect) {
             $aspectTotalScore = 0;
             $aspectMaxScore = 0;
 
             foreach ($aspect->questions as $question) {
                 $answer = $assessment->answers()->where('question_id', $question->id)->first();
-                
+
                 if ($answer) {
                     $aspectTotalScore += $answer->score ?? 0;
                 }
-                
+
                 $aspectMaxScore += $question->max_score * $question->weight;
             }
 
@@ -137,5 +137,47 @@ class ScoreCalculationService
         }
 
         return $aspectScores;
+    }
+
+    public function calculateAndStoreScores(Assessment $assessment): void
+    {
+        $scores = $this->calculateAssessmentScore($assessment);
+
+        $assessment->update([
+            'total_score' => $scores['total_score'],
+            'max_score' => $scores['max_possible_score'],
+            'percentage' => $scores['percentage'],
+            'grade' => $scores['grade'],
+        ]);
+    }
+
+    public function calculateScoreByAspect(Assessment $assessment): array
+    {
+        $scoreByAspect = [];
+
+        // Group answers by aspect
+        $assessment->load(['answers.question.indicator.aspect']);
+
+        foreach ($assessment->answers as $answer) {
+            $aspect = $answer->question->indicator->aspect ?? null;
+
+            if (!$aspect) {
+                continue;
+            }
+
+            $aspectName = $aspect->aspect_name;
+
+            if (!isset($scoreByAspect[$aspectName])) {
+                $scoreByAspect[$aspectName] = [
+                    'score' => 0,
+                    'max_score' => 0,
+                ];
+            }
+
+            $scoreByAspect[$aspectName]['score'] += $answer->score ?? 0;
+            $scoreByAspect[$aspectName]['max_score'] += $answer->question->max_score * $answer->question->weight;
+        }
+
+        return $scoreByAspect;
     }
 }
