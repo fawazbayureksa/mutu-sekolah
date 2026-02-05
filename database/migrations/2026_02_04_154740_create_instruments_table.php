@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('instruments', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
+            $table->string('status', 20)->nullable();
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
