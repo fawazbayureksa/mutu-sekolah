@@ -106,6 +106,36 @@
             font-weight: 500;
             margin-right: 0.5rem;
         }
+
+        /* Hierarchical display styles */
+        .indicator-group {
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .indicator-header {
+            color: #495057;
+            font-size: 1rem;
+            font-weight: 600;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .indicator-header .badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.35em 0.75em;
+        }
+
+        .indicator-item .text-muted {
+            font-size: 0.85rem;
+        }
+
+        .indicator-item .text-muted i {
+            color: #0d6efd;
+        }
     </style>
 @endsection
 
@@ -213,71 +243,134 @@
                     </div>
 
                     <!-- Section 3: Instrument Sections -->
-                    @php
-                        $groupedItems = $instrument->items->groupBy('section');
-                    @endphp
-
-                    @foreach ($groupedItems as $section => $items)
-                        <div class="form-card mt-3">
-                            <div class="section-title">
-                                <i class="bi bi-journal-text"></i> <strong>{{ $section }}</strong>
-                            </div>
-
-                            @foreach ($items as $item)
-                                <div class="indicator-item mb-3">
-                                    <div class="mb-3">
-                                        <span class="indicator-code">{{ $item->indicator_code }}</span>
-                                        <p class="mb-0 indicator-text">{{ $item->indicator_text }}</p>
-                                    </div>
-
-                                    <div class="answer-input">
-                                        @if ($item->answer_type === 'boolean')
-                                            <div class="btn-group" role="group" aria-label="Yes/No">
-                                                <input type="radio" class="btn-check" name="answers[{{ $item->id }}]"
-                                                    id="yes_{{ $item->id }}" value="Yes"
-                                                    @if (old("answers.{$item->id}") === 'Yes') checked @endif required>
-                                                <label class="btn btn-outline-primary"
-                                                    for="yes_{{ $item->id }}">Ya</label>
-
-                                                <input type="radio" class="btn-check" name="answers[{{ $item->id }}]"
-                                                    id="no_{{ $item->id }}" value="No"
-                                                    @if (old("answers.{$item->id}") === 'No') checked @endif>
-                                                <label class="btn btn-outline-primary"
-                                                    for="no_{{ $item->id }}">Tidak</label>
-                                            </div>
-                                        @elseif($item->answer_type === 'scale' || $item->answer_type === 'number')
-                                            <input type="number" name="answers[{{ $item->id }}]"
-                                                class="form-control" required value="{{ old("answers.{$item->id}") }}"
-                                                placeholder="Masukkan nilai">
-                                        @elseif($item->answer_type === 'option')
-                                            <select name="answers[{{ $item->id }}]" class="form-select" required>
-                                                <option value="">Pilih opsi</option>
-                                                <option value="Sangat Baik"
-                                                    @if (old("answers.{$item->id}") === 'Sangat Baik') selected @endif>Sangat Baik</option>
-                                                <option value="Baik" @if (old("answers.{$item->id}") === 'Baik') selected @endif>
-                                                    Baik</option>
-                                                <option value="Cukup" @if (old("answers.{$item->id}") === 'Cukup') selected @endif>
-                                                    Cukup</option>
-                                                <option value="Kurang" @if (old("answers.{$item->id}") === 'Kurang') selected @endif>
-                                                    Kurang</option>
-                                                <option value="Sangat Kurang"
-                                                    @if (old("answers.{$item->id}") === 'Sangat Kurang') selected @endif>Sangat Kurang
-                                                </option>
-                                            </select>
-                                        @else
-                                            <input type="text" name="answers[{{ $item->id }}]"
-                                                class="form-control" required value="{{ old("answers.{$item->id}") }}"
-                                                placeholder="Jawaban Anda">
-                                        @endif
-                                    </div>
-
-                                    @error("answers.{$item->id}")
-                                        <div class="text-danger small mt-2">{{ $message }}</div>
-                                    @enderror
+                    @if ($useHierarchy && $aspects->count() > 0)
+                        {{-- Hierarchical display: Aspect → Indicator → Question --}}
+                        @foreach ($aspects as $aspect)
+                            <div class="form-card mt-3">
+                                <div class="section-title">
+                                    <i class="bi bi-journal-text"></i>
+                                    <strong>{{ $aspect->code }} - {{ $aspect->name }}</strong>
                                 </div>
-                            @endforeach
-                        </div>
-                    @endforeach
+
+                                @foreach ($aspect->indicators as $indicator)
+                                    <div class="indicator-group mb-4">
+                                        <h5 class="indicator-header mb-3">
+                                            <span class="badge bg-secondary me-2">{{ $indicator->code }}</span>
+                                            {{ $indicator->description }}
+                                        </h5>
+
+                                        @foreach ($indicator->questions as $question)
+                                            <div class="indicator-item mb-3">
+                                                <div class="mb-2">
+                                                    <span class="indicator-code">{{ $question->question_code }}</span>
+                                                    <span class="ms-2 required-badge">
+                                                        @if ($question->is_required)
+                                                            <span class="text-danger">*</span>
+                                                        @endif
+                                                    </span>
+                                                </div>
+                                                <p class="mb-1 indicator-text">{{ $question->question_text }}</p>
+
+                                                @if ($question->help_text)
+                                                    <small class="text-muted d-block mb-2">
+                                                        <i class="bi bi-info-circle me-1"></i>{{ $question->help_text }}
+                                                    </small>
+                                                @endif
+
+                                                {{-- Get the instrument item ID for this question --}}
+                                                @php
+                                                    $item = $instrument->items->firstWhere(
+                                                        'assessment_question_id',
+                                                        $question->id,
+                                                    );
+                                                @endphp
+
+                                                @if ($item)
+                                                    @include('instrument.partials.answer-input', [
+                                                        'question' => $question,
+                                                        'inputName' => "answers[{$item->id}]",
+                                                    ])
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                    @else
+                        {{-- Legacy display: flat items by section --}}
+                        @php
+                            $groupedItems = $instrument->items->groupBy('section');
+                        @endphp
+
+                        @foreach ($groupedItems as $section => $items)
+                            <div class="form-card mt-3">
+                                <div class="section-title">
+                                    <i class="bi bi-journal-text"></i> <strong>{{ $section }}</strong>
+                                </div>
+
+                                @foreach ($items as $item)
+                                    <div class="indicator-item mb-3">
+                                        <div class="mb-3">
+                                            <span class="indicator-code">{{ $item->indicator_code }}</span>
+                                            <p class="mb-0 indicator-text">{{ $item->indicator_text }}</p>
+                                        </div>
+
+                                        <div class="answer-input">
+                                            @if ($item->answer_type === 'boolean')
+                                                <div class="btn-group" role="group" aria-label="Yes/No">
+                                                    <input type="radio" class="btn-check"
+                                                        name="answers[{{ $item->id }}]" id="yes_{{ $item->id }}"
+                                                        value="Yes" @if (old("answers.{$item->id}") === 'Yes') checked @endif
+                                                        required>
+                                                    <label class="btn btn-outline-primary"
+                                                        for="yes_{{ $item->id }}">Ya</label>
+
+                                                    <input type="radio" class="btn-check"
+                                                        name="answers[{{ $item->id }}]" id="no_{{ $item->id }}"
+                                                        value="No" @if (old("answers.{$item->id}") === 'No') checked @endif>
+                                                    <label class="btn btn-outline-primary"
+                                                        for="no_{{ $item->id }}">Tidak</label>
+                                                </div>
+                                            @elseif($item->answer_type === 'scale' || $item->answer_type === 'number')
+                                                <input type="number" name="answers[{{ $item->id }}]"
+                                                    class="form-control" required
+                                                    value="{{ old("answers.{$item->id}") }}"
+                                                    placeholder="Masukkan nilai">
+                                            @elseif($item->answer_type === 'option')
+                                                <select name="answers[{{ $item->id }}]" class="form-select" required>
+                                                    <option value="">Pilih opsi</option>
+                                                    <option value="Sangat Baik"
+                                                        @if (old("answers.{$item->id}") === 'Sangat Baik') selected @endif>Sangat Baik
+                                                    </option>
+                                                    <option value="Baik"
+                                                        @if (old("answers.{$item->id}") === 'Baik') selected @endif>
+                                                        Baik</option>
+                                                    <option value="Cukup"
+                                                        @if (old("answers.{$item->id}") === 'Cukup') selected @endif>
+                                                        Cukup</option>
+                                                    <option value="Kurang"
+                                                        @if (old("answers.{$item->id}") === 'Kurang') selected @endif>
+                                                        Kurang</option>
+                                                    <option value="Sangat Kurang"
+                                                        @if (old("answers.{$item->id}") === 'Sangat Kurang') selected @endif>Sangat Kurang
+                                                    </option>
+                                                </select>
+                                            @else
+                                                <input type="text" name="answers[{{ $item->id }}]"
+                                                    class="form-control" required
+                                                    value="{{ old("answers.{$item->id}") }}" placeholder="Jawaban Anda">
+                                            @endif
+                                        </div>
+
+                                        @error("answers.{$item->id}")
+                                            <div class="text-danger small mt-2">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                    @endif
 
                     <!-- Submit Button -->
                     <div class="d-grid gap-3 col-lg-6 mx-auto mt-5 mb-5">

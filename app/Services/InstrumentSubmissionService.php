@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\School;
 use App\Models\Submission;
+use App\Models\InstrumentItem;
+use App\Models\AssessmentQuestion;
 use App\Repositories\Contracts\InstrumentRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -22,13 +24,22 @@ class InstrumentSubmissionService
         return $this->repository->getInstrumentWithItems($code);
     }
 
+    public function getInstrumentWithHierarchy(string $code): ?\App\Models\Instrument
+    {
+        return $this->repository->getInstrumentWithHierarchy($code);
+    }
+
     public function submit(array $payload): Submission
     {
         $validated = $this->validate($payload);
 
         return DB::transaction(function () use ($validated) {
-            // Get instrument
-            $instrument = $this->repository->getInstrumentWithItems('KPTK-2024');
+            // Get instrument - try advanced first, fallback to legacy
+            $instrument = $this->repository->getInstrumentWithHierarchy('KPTK-ADV-2024');
+
+            if (!$instrument) {
+                $instrument = $this->repository->getInstrumentWithItems('KPTK-2024');
+            }
 
             if (!$instrument) {
                 throw new \Exception('Instrument not found');
@@ -56,29 +67,111 @@ class InstrumentSubmissionService
                 'status' => 'submitted',
             ]);
 
-            // Store responses
-            $this->storeResponses($submission->id, $school->id, $validated['answers']);
+            // Store responses with scores
+            $this->storeResponses($submission->id, $school->id, $validated['answers'], $instrument);
 
             return $submission;
         });
     }
 
-    protected function storeResponses(int $submissionId, int $schoolId, array $answers): void
+    protected function storeResponses(int $submissionId, int $schoolId, array $answers, $instrument): void
     {
         $responses = [];
+        $totalScore = 0;
+        $maxPossibleScore = 0;
 
         foreach ($answers as $itemId => $answer) {
+            // Calculate score based on question type and scale template
+            $score = $this->calculateScore($itemId, $answer);
+            $maxScore = $this->getMaxScore($itemId);
+
+            $totalScore += $score;
+            $maxPossibleScore += $maxScore;
+
             $responses[] = [
                 'submission_id' => $submissionId,
                 'school_id' => $schoolId,
                 'instrument_item_id' => $itemId,
                 'answer' => $answer,
+                'score' => $score,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
         }
 
         DB::table('responses')->insert($responses);
+
+        // Update submission with total scores
+        Submission::where('id', $submissionId)->update([
+            'total_score' => $totalScore,
+            'max_possible_score' => $maxPossibleScore,
+            'completion_percentage' => $maxPossibleScore > 0 ? ($totalScore / $maxPossibleScore) * 100 : 0,
+        ]);
+    }
+
+    protected function calculateScore($itemId, $answer): float
+    {
+        $item = InstrumentItem::with('question.scaleTemplate')->find($itemId);
+
+        if (!$item) {
+            return 0;
+        }
+
+        // If using master question with scale template
+        if ($item->uses_master_question && $item->question && $item->question->scaleTemplate) {
+            $scaleTemplate = $item->question->scaleTemplate;
+            $scoreValue = $scaleTemplate->getScoreForValue($answer);
+
+            if ($scoreValue !== null) {
+                return $scoreValue;
+            }
+        }
+
+        // If question has direct answer_options
+        if ($item->uses_master_question && $item->question && $item->question->answer_options) {
+            $options = is_array($item->question->answer_options)
+                ? $item->question->answer_options
+                : json_decode($item->question->answer_options, true) ?? [];
+
+            foreach ($options as $option) {
+                if (isset($option['value']) && (string)$option['value'] === (string)$answer) {
+                    return (float)($option['score'] ?? 0);
+                }
+            }
+        }
+
+        // For boolean answers without template
+        if ($item->answer_type === 'boolean') {
+            return in_array(strtolower($answer), ['yes', 'ya', '1', 'true', 'ada']) ? 100 : 0;
+        }
+
+        // For numeric answers
+        if (is_numeric($answer)) {
+            return (float)$answer;
+        }
+
+        return 0;
+    }
+
+    protected function getMaxScore($itemId): float
+    {
+        $item = InstrumentItem::with('question.scaleTemplate')->find($itemId);
+
+        if (!$item) {
+            return 100;
+        }
+
+        if ($item->uses_master_question && $item->question) {
+            if ($item->question->scaleTemplate) {
+                return (float)$item->question->scaleTemplate->max_score;
+            }
+            if ($item->question->max_score !== null) {
+                return (float)$item->question->max_score;
+            }
+        }
+
+        // Default max score
+        return 100;
     }
 
     protected function validate(array $payload): array

@@ -67,7 +67,8 @@ class ScaleTemplate extends Model
 
     public function getOptions(): array
     {
-        return json_decode($this->scale_options, true) ?? [];
+        // scale_options is already cast to array by Laravel
+        return $this->scale_options ?? [];
     }
 
     public function getScoreForValue(string $value): ?float

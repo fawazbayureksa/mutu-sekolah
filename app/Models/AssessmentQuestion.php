@@ -38,7 +38,7 @@ class AssessmentQuestion extends Model
 
     public function indicator(): BelongsTo
     {
-        return $this->belongsTo(AssessmentIndicator::class);
+        return $this->belongsTo(AssessmentIndicator::class, 'indicator_id');
     }
 
     public function answers(): HasMany
@@ -79,7 +79,7 @@ class AssessmentQuestion extends Model
                 return json_decode($template->scale_options, true) ?? [];
             }
         }
-        
+
         return json_decode($this->answer_options, true) ?? [];
     }
 

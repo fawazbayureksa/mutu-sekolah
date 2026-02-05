@@ -16,13 +16,23 @@ class PublicInstrumentController extends Controller
 
     public function index()
     {
-        $instrument = $this->service->getInstrument('KPTK-2024');
+        // Try advanced instrument first, fallback to legacy
+        $instrument = $this->service->getInstrumentWithHierarchy('KPTK-ADV-2024');
+        $useHierarchy = true;
 
-        if (! $instrument) {
+        if (!$instrument) {
+            $instrument = $this->service->getInstrument('KPTK-2024');
+            $useHierarchy = false;
+        }
+
+        if (!$instrument) {
             abort(404, 'Instrumen tidak ditemukan');
         }
 
-        return view('instrument.form', compact('instrument'));
+        // Get aspects for hierarchical view
+        $aspects = $useHierarchy ? $instrument->aspects : collect();
+
+        return view('instrument.form', compact('instrument', 'aspects', 'useHierarchy'));
     }
 
     public function store(Request $request)

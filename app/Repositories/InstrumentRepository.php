@@ -16,6 +16,36 @@ class InstrumentRepository implements InstrumentRepositoryInterface
             ->first();
     }
 
+    public function getInstrumentWithHierarchy(string $code): ?Instrument
+    {
+        return Instrument::with([
+            'items' => function ($query) {
+                $query->orderBy('order');
+            },
+            'items.question' => function ($query) {
+                $query->with('scaleTemplate');
+            },
+            'aspects' => function ($query) {
+                $query->orderBy('pivot_order')
+                    ->with([
+                        'indicators' => function ($q) {
+                            $q->orderBy('order')
+                                ->with([
+                                    'questions' => function ($q2) {
+                                        $q2->orderBy('order')
+                                            ->where('is_active', true)
+                                            ->with('scaleTemplate');
+                                    }
+                                ]);
+                        }
+                    ]);
+            },
+        ])
+            ->where('code', $code)
+            ->where('is_active', true)
+            ->first();
+    }
+
     public function storeSchool(array $data): School
     {
         return School::create($data);
