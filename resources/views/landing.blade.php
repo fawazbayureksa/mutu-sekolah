@@ -38,6 +38,22 @@
     </div>
 </section>
 
+<section id="alur" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="fw-bold mb-3">Alur Penjaminan Mutu</h2>
+            <div class="title-underline mx-auto"></div>
+        </div>
+        <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-lg-10">
+                <div class="flow-image-wrapper text-center">
+                    <img src="{{ asset('images/flow.jpeg') }}" alt="Alur Penjaminan Mutu SMK Bidang KPTK" class="img-fluid rounded-4 shadow-lg">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section id="ruang-lingkup" class="py-5 bg-light">
     <div class="container">
         <div class="text-center mb-5" data-aos="fade-up">
