@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\School;
+use App\Models\Submission;
 use App\Repositories\Contracts\InstrumentRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -21,26 +22,63 @@ class InstrumentSubmissionService
         return $this->repository->getInstrumentWithItems($code);
     }
 
-    public function submit(array $payload): School
+    public function submit(array $payload): Submission
     {
         $validated = $this->validate($payload);
 
         return DB::transaction(function () use ($validated) {
-            $schoolData = [
-                'school_name' => $validated['school_name'],
-                'npsn' => $validated['npsn'] ?? null,
-                'province' => $validated['province'],
-                'city' => $validated['city'],
+            // Get instrument
+            $instrument = $this->repository->getInstrumentWithItems('KPTK-2024');
+
+            if (!$instrument) {
+                throw new \Exception('Instrument not found');
+            }
+
+            // Find or create school
+            $school = School::firstOrCreate(
+                [
+                    'npsn' => $validated['npsn'] ?? null,
+                    'school_name' => $validated['school_name'],
+                ],
+                [
+                    'province' => $validated['province'],
+                    'city' => $validated['city'],
+                ]
+            );
+
+            // Create submission
+            $submission = Submission::create([
+                'school_id' => $school->id,
+                'instrument_id' => $instrument->id,
                 'respondent_name' => $validated['respondent_name'],
                 'respondent_position' => $validated['respondent_position'],
                 'filled_at' => now(),
-            ];
+                'status' => 'submitted',
+            ]);
 
-            $school = $this->repository->storeSchool($schoolData);
-            $this->repository->storeResponses($school->id, $validated['answers']);
+            // Store responses
+            $this->storeResponses($submission->id, $school->id, $validated['answers']);
 
-            return $school;
+            return $submission;
         });
+    }
+
+    protected function storeResponses(int $submissionId, int $schoolId, array $answers): void
+    {
+        $responses = [];
+
+        foreach ($answers as $itemId => $answer) {
+            $responses[] = [
+                'submission_id' => $submissionId,
+                'school_id' => $schoolId,
+                'instrument_item_id' => $itemId,
+                'answer' => $answer,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        DB::table('responses')->insert($responses);
     }
 
     protected function validate(array $payload): array

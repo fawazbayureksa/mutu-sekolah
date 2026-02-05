@@ -15,17 +15,26 @@ class School extends Model
         'npsn',
         'province',
         'city',
-        'respondent_name',
-        'respondent_position',
-        'filled_at',
-    ];
-
-    protected $casts = [
-        'filled_at' => 'date',
     ];
 
     public function responses(): HasMany
     {
         return $this->hasMany(Response::class);
+    }
+
+    /**
+     * Get all submissions for this school.
+     */
+    public function submissions(): HasMany
+    {
+        return $this->hasMany(Submission::class);
+    }
+
+    /**
+     * Get the latest submission for this school.
+     */
+    public function latestSubmission()
+    {
+        return $this->hasOne(Submission::class)->latestOfMany('filled_at');
     }
 }

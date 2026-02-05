@@ -11,6 +11,7 @@ class Response extends Model
     use HasFactory;
 
     protected $fillable = [
+        'submission_id',
         'school_id',
         'instrument_item_id',
         'answer',
@@ -24,5 +25,13 @@ class Response extends Model
     public function instrumentItem(): BelongsTo
     {
         return $this->belongsTo(InstrumentItem::class);
+    }
+
+    /**
+     * Get the submission that owns this response.
+     */
+    public function submission(): BelongsTo
+    {
+        return $this->belongsTo(Submission::class);
     }
 }

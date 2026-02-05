@@ -28,7 +28,7 @@ class PublicInstrumentController extends Controller
     public function store(Request $request)
     {
         try {
-            $school = $this->service->submit($request->all());
+            $submission = $this->service->submit($request->all());
 
             return redirect()->route('landing')->with('success', 'Data berhasil disimpan. Terima kasih atas partisipasi Anda.');
         } catch (\Illuminate\Validation\ValidationException $e) {
