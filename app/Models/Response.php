@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Response extends Model
 {
@@ -15,6 +16,12 @@ class Response extends Model
         'school_id',
         'instrument_item_id',
         'answer',
+        'score',
+        'notes',
+    ];
+
+    protected $casts = [
+        'score' => 'decimal:2',
     ];
 
     public function school(): BelongsTo
@@ -27,11 +34,42 @@ class Response extends Model
         return $this->belongsTo(InstrumentItem::class);
     }
 
-    /**
-     * Get the submission that owns this response.
-     */
     public function submission(): BelongsTo
     {
         return $this->belongsTo(Submission::class);
+    }
+
+    public function calculateScore(): ?float
+    {
+        $item = $this->instrumentItem;
+        
+        if (!$item) {
+            return null;
+        }
+
+        if ($item->uses_master_question && $item->question) {
+            $question = $item->question;
+            
+            switch ($question->answer_type) {
+                case 'boolean':
+                    return filter_var($this->answer, FILTER_VALIDATE_BOOLEAN) ? $question->max_score : $question->min_score;
+                
+                case 'scale':
+                case 'number':
+                case 'percentage':
+                    return (float) $this->answer;
+                
+                case 'multiple_choice':
+                    $options = $question->getAnswerOptionsArray();
+                    foreach ($options as $option) {
+                        if ($option['value'] === $this->answer) {
+                            return (float) $option['score'];
+                        }
+                    }
+                    break;
+            }
+        }
+
+        return $this->score;
     }
 }

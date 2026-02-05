@@ -7,25 +7,29 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class AssessmentIndicator extends Model
+class InstrumentAspect extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'instrument_id',
         'aspect_id',
-        'code',
-        'description',
         'order',
+        'weight',
     ];
+
+    protected $casts = [
+        'weight' => 'decimal:2',
+    ];
+
+    public function instrument(): BelongsTo
+    {
+        return $this->belongsTo(Instrument::class);
+    }
 
     public function aspect(): BelongsTo
     {
         return $this->belongsTo(AssessmentAspect::class);
-    }
-
-    public function questions(): HasMany
-    {
-        return $this->hasMany(AssessmentQuestion::class)->orderBy('order');
     }
 
     public function scopeOrdered($query)

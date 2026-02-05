@@ -28,51 +28,61 @@ class Submission extends Model
         'verified_at' => 'datetime',
     ];
 
-    /**
-     * Get the school that owns the submission.
-     */
     public function school(): BelongsTo
     {
         return $this->belongsTo(School::class);
     }
 
-    /**
-     * Get the instrument that owns the submission.
-     */
     public function instrument(): BelongsTo
     {
         return $this->belongsTo(Instrument::class);
     }
 
-    /**
-     * Get all responses for this submission.
-     */
     public function responses(): HasMany
     {
         return $this->hasMany(Response::class);
     }
 
-    /**
-     * Get the user who verified this submission.
-     */
     public function verifier(): BelongsTo
     {
         return $this->belongsTo(User::class, 'verified_by');
     }
 
-    /**
-     * Check if submission is verified.
-     */
+    public function scopeByStatus($query, $status)
+    {
+        return $query->where('status', $status);
+    }
+
     public function isVerified(): bool
     {
         return in_array($this->status, ['verified', 'validated']);
     }
 
-    /**
-     * Check if submission is validated.
-     */
     public function isValidated(): bool
     {
         return $this->status === 'validated';
+    }
+
+    public function isDraft(): bool
+    {
+        return $this->status === 'draft';
+    }
+
+    public function isSubmitted(): bool
+    {
+        return $this->status === 'submitted';
+    }
+
+    public function calculateTotalScore(): float
+    {
+        return $this->responses()->sum('score');
+    }
+
+    public function getCompletionPercentage(): float
+    {
+        $total = $this->instrument->items()->count();
+        $answered = $this->responses()->count();
+        
+        return $total > 0 ? ($answered / $total) * 100 : 0;
     }
 }

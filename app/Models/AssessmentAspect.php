@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class AssessmentAspect extends Model
 {
@@ -19,11 +19,23 @@ class AssessmentAspect extends Model
 
     public function indicators(): HasMany
     {
-        return $this->hasMany(AssessmentIndicator::class);
+        return $this->hasMany(AssessmentIndicator::class)->orderBy('order');
     }
 
-    public function questions(): HasManyThrough
+    public function questions(): HasMany
     {
-        return $this->hasManyThrough(AssessmentQuestion::class, AssessmentIndicator::class);
+        return $this->hasManyThrough(AssessmentQuestion::class, AssessmentIndicator::class)->orderBy('order');
+    }
+
+    public function instruments(): BelongsToMany
+    {
+        return $this->belongsToMany(Instrument::class, 'instrument_aspects')
+            ->withPivot(['order', 'weight'])
+            ->orderBy('pivot_order');
+    }
+
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('order');
     }
 }

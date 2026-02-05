@@ -22,19 +22,33 @@ class School extends Model
         return $this->hasMany(Response::class);
     }
 
-    /**
-     * Get all submissions for this school.
-     */
     public function submissions(): HasMany
     {
         return $this->hasMany(Submission::class);
     }
 
-    /**
-     * Get the latest submission for this school.
-     */
+    public function assessments(): HasMany
+    {
+        return $this->hasMany(Assessment::class);
+    }
+
     public function latestSubmission()
     {
         return $this->hasOne(Submission::class)->latestOfMany('filled_at');
+    }
+
+    public function scopeByProvince($query, $province)
+    {
+        return $query->where('province', $province);
+    }
+
+    public function scopeByCity($query, $city)
+    {
+        return $query->where('city', $city);
+    }
+
+    public function scopeByNpsn($query, $npsn)
+    {
+        return $query->where('npsn', $npsn);
     }
 }
