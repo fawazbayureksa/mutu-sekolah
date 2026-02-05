@@ -60,13 +60,13 @@ Route::middleware('auth')->group(function () {
             Route::get('/{question}/edit', [QuestionController::class, 'edit'])->name('edit');
             Route::put('/{question}', [QuestionController::class, 'update'])->name('update');
             Route::delete('/{question}', [QuestionController::class, 'destroy'])->name('destroy');
-            Route::post('/{question}/activate', [QuestionController::class, 'activate'])->name('activate');
-            Route::post('/{question}/deactivate', [QuestionController::class, 'deactivate'])->name('deactivate');
+            Route::patch('/{question}/activate', [QuestionController::class, 'activate'])->name('activate');
+            Route::patch('/{question}/deactivate', [QuestionController::class, 'deactivate'])->name('deactivate');
             Route::post('/{question}/duplicate', [QuestionController::class, 'duplicate'])->name('duplicate');
             Route::get('/import', [QuestionController::class, 'showImport'])->name('import');
             Route::post('/import', [QuestionController::class, 'import'])->name('import.store');
             Route::get('/export', [QuestionController::class, 'export'])->name('export');
-            Route::post('/bulk', [QuestionController::class, 'bulkAction'])->name('bulk');
+            Route::post('/bulk', [QuestionController::class, 'bulkAction'])->name('bulkAction');
         });
 
         // Instrument Management
