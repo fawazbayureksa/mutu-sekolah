@@ -7,9 +7,6 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3 mb-0">Assessments</h1>
             <div>
-                <a href="{{ route('admin.assessments.export') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-download"></i> Export
-                </a>
                 <a href="{{ route('admin.assessments.create') }}" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> New Assessment
                 </a>

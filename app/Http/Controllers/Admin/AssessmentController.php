@@ -77,15 +77,15 @@ class AssessmentController extends Controller
 
         $assessments = $query->latest('assessment_date')->paginate(15);
         $schools = School::all();
-        $instruments = Instrument::where('status', 'published')->get();
+        $instruments = Instrument::where('is_published', true)->get();
 
         return view('admin.assessments.index', compact('assessments', 'schools', 'instruments'));
     }
 
     public function create(): View
     {
-        $schools = School::where('is_active', true)->get();
-        $instruments = Instrument::where('status', 'published')->get();
+        $schools = School::get();
+        $instruments = Instrument::where('is_published', true)->get();
         $assessors = User::where('role', 'assessor')->where('is_active', true)->get();
 
         return view('admin.assessments.create', compact('schools', 'instruments', 'assessors'));
@@ -163,7 +163,7 @@ class AssessmentController extends Controller
 
         $assessment->load(['school', 'instrument', 'assessor', 'answers.question']);
         $schools = School::where('is_active', true)->get();
-        $instruments = Instrument::where('status', 'published')->get();
+        $instruments = Instrument::where('is_published', true)->get();
         $assessors = User::where('role', 'assessor')->where('is_active', true)->get();
 
         return view('admin.assessments.edit', compact('assessment', 'schools', 'instruments', 'assessors'));
@@ -430,13 +430,17 @@ class AssessmentController extends Controller
         }
     }
 
-    public function export(Request $request)
+    public function export(Request $request, Assessment $assessment)
     {
         try {
-            // TODO: Implement export using Laravel Excel
-            return back()->with('info', 'Export functionality will be implemented.');
+            $fileName = 'assessment-' . $assessment->assessment_code . '-' . now()->format('Y-m-d') . '.xlsx';
+
+            return \Maatwebsite\Excel\Facades\Excel::download(
+                new \App\Exports\AssessmentExport($assessment),
+                $fileName
+            );
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to export assessments: ' . $e->getMessage());
+            return back()->with('error', 'Failed to export assessment: ' . $e->getMessage());
         }
     }
 
