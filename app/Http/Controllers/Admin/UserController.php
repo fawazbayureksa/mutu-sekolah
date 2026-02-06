@@ -40,7 +40,7 @@ class UserController extends Controller
         return view('admin.users.create');
     }
 
-    public function store(UserRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $user = User::create([
             'name' => $request->name,
@@ -77,7 +77,7 @@ class UserController extends Controller
         return view('admin.users.edit', compact('user'));
     }
 
-    public function update(UserRequest $request, User $user): RedirectResponse
+    public function update(Request $request, User $user): RedirectResponse
     {
         $oldValues = $user->toArray();
 

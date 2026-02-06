@@ -13,7 +13,7 @@ class InstrumentRequest extends FormRequest
 
     public function rules(): array
     {
-        $instrumentId = $this->route('instrument');
+        $instrumentId = $this->route('instrument') ? $this->route('instrument')->id : null;
 
         return [
             'code' => 'required|string|max:50|unique:instruments,code,' . $instrumentId,

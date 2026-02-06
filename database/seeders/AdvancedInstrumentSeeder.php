@@ -56,33 +56,67 @@ class AdvancedInstrumentSeeder extends Seeder
             // =========================
             $aspectA = AssessmentAspect::updateOrCreate(
                 ['code' => 'A'],
-                ['name' => 'Standar Peserta Didik', 'order' => 1]
+                ['name' => 'Standar Peserta Didik (Kompetensi & Kesiapan Kerja)', 'order' => 1]
             );
 
-            // Indicator A.1
+            // Indicator A.1: Data Kompetensi (UKK & Sertifikasi)
             $indicatorA1 = AssessmentIndicator::updateOrCreate(
                 ['aspect_id' => $aspectA->id, 'code' => 'A.1'],
-                ['description' => 'Kondisi peserta didik', 'order' => 1]
+                ['description' => 'Data Kompetensi (UKK & Sertifikasi)', 'order' => 1]
             );
 
-            // Questions for A.1
+            // Question A.1.1: Table input
+            $tableConfigA1 = [
+                'type' => 'table',
+                'columns' => [
+                    ['key' => 'year', 'label' => 'Tahun', 'type' => 'number', 'width' => '15%'],
+                    ['key' => 'total_participants', 'label' => 'Jumlah Peserta', 'type' => 'number', 'width' => '20%'],
+                    ['key' => 'total_passed', 'label' => 'Jumlah Lulus', 'type' => 'number', 'width' => '20%'],
+                    ['key' => 'pass_rate', 'label' => 'Tingkat Kelulusan (%)', 'type' => 'percentage', 'read_only' => true, 'calculate' => '(row.total_passed / row.total_participants) * 100'],
+                    ['key' => 'organizer', 'label' => 'Lembaga Sertifikasi/Penyelenggara', 'type' => 'text', 'width' => '25%'],
+                ],
+                'rows' => [
+                    ['label' => 'Uji Kompetensi Keahlian (UKK) Mandiri'],
+                    ['label' => 'Uji Kompetensi Keahlian (UKK) LSP'],
+                    ['label' => 'Sertifikasi Profesi (Contoh: BNSP, TOEIC, dll)']
+                ]
+            ];
+
             $questionsA1 = [
                 [
                     'code' => 'A.1.1',
+                    'text' => 'Data Kelulusan Uji Kompetensi dan Sertifikasi',
+                    'help' => 'Isi data kelulusan UKK dan sertifikasi profesi untuk tahun terakhir',
+                    'type' => 'structure',
+                    'scale_id' => null,
+                    'options' => json_encode($tableConfigA1)
+                ]
+            ];
+
+            // Indicator A.2: Kondisi peserta didik (Existing)
+            $indicatorA2 = AssessmentIndicator::updateOrCreate(
+                ['aspect_id' => $aspectA->id, 'code' => 'A.2'],
+                ['description' => 'Kondisi peserta didik', 'order' => 2]
+            );
+
+            // Questions for A.2 (Existing questions moved here)
+            $questionsA2 = [
+                [
+                    'code' => 'A.2.1',
                     'text' => 'Jumlah peserta didik aktif pada program keahlian KPTK',
                     'help' => 'Pilih kategori yang sesuai dengan jumlah peserta didik aktif di sekolah Anda',
                     'type' => 'scale',
                     'scale_id' => $qualityScale->id,
                 ],
                 [
-                    'code' => 'A.1.2',
+                    'code' => 'A.2.2',
                     'text' => 'Persentase lulusan yang terserap dunia kerja sesuai bidang keahlian',
                     'help' => 'Berdasarkan data tracer study 1 tahun terakhir',
                     'type' => 'scale',
                     'scale_id' => $qualityScale->id,
                 ],
                 [
-                    'code' => 'A.1.3',
+                    'code' => 'A.2.3',
                     'text' => 'Kesesuaian kompetensi lulusan dengan kebutuhan industri',
                     'help' => 'Dinilai berdasarkan feedback dari industri mitra',
                     'type' => 'scale',
@@ -93,6 +127,35 @@ class AdvancedInstrumentSeeder extends Seeder
             foreach ($questionsA1 as $q) {
                 $question = AssessmentQuestion::updateOrCreate(
                     ['indicator_id' => $indicatorA1->id, 'question_code' => $q['code']],
+                    [
+                        'question_text' => $q['text'],
+                        'answer_type' => $q['type'],
+                        'help_text' => $q['help'],
+                        'scale_template_id' => $q['scale_id'],
+                        'answer_options' => $q['options'] ?? null,
+                        'weight' => 1.00,
+                        'is_required' => true,
+                        'is_active' => true,
+                        'order' => ++$order,
+                    ]
+                );
+
+                InstrumentItem::updateOrCreate(
+                    ['instrument_id' => $instrument->id, 'assessment_question_id' => $question->id],
+                    [
+                        'section' => 'A. Standar Peserta Didik',
+                        'indicator_code' => $q['code'],
+                        'indicator_text' => $q['text'],
+                        'answer_type' => $q['type'],
+                        'uses_master_question' => true,
+                        'order' => $order,
+                    ]
+                );
+            }
+
+            foreach ($questionsA2 as $q) {
+                $question = AssessmentQuestion::updateOrCreate(
+                    ['indicator_id' => $indicatorA2->id, 'question_code' => $q['code']],
                     [
                         'question_text' => $q['text'],
                         'answer_type' => $q['type'],
@@ -117,6 +180,8 @@ class AdvancedInstrumentSeeder extends Seeder
                     ]
                 );
             }
+
+
 
             // =========================
             // ASPECT B: Standar Sarana Prasarana
@@ -354,7 +419,7 @@ class AdvancedInstrumentSeeder extends Seeder
 
             // Link instrument to aspects via pivot table
             DB::table('instrument_aspects')->where('instrument_id', $instrument->id)->delete();
-            
+
             $instrument->aspects()->attach([
                 $aspectA->id => ['order' => 1, 'weight' => 1.00],
                 $aspectB->id => ['order' => 2, 'weight' => 1.00],

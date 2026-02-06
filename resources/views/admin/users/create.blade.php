@@ -12,7 +12,6 @@
             <i class="bi bi-arrow-left me-2"></i>Back to Users
         </a>
     </div>
-
     <div class="row">
         <div class="col-lg-8">
             <div class="card">
@@ -23,7 +22,6 @@
                             @method('PUT')
                         @endif
                         @csrf
-
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Name <span class="text-danger">*</span></label>
@@ -52,10 +50,10 @@
                                         <div class="text-danger small">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
                                     <input type="password" name="password_confirmation" class="form-control" required>
-                                </div>
+                                </div> --}}
                             </div>
                         @endif
 

@@ -392,9 +392,96 @@
     <script>
         // Optional: Add confirmation before submit
         document.querySelector('form').addEventListener('submit', function(e) {
+            // Ensure all tables are updated
+            document.querySelectorAll('.instrument-table').forEach(table => {
+                updateTableValue(table.id);
+            });
+
             if (!confirm('Apakah Anda yakin data yang diisi sudah benar?')) {
                 e.preventDefault();
             }
         });
+
+        // Initialize calculations on load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.instrument-table').forEach(table => {
+                updateTableValue(table.id);
+            });
+        });
+
+        function updateTableValue(tableId) {
+            const table = document.getElementById(tableId);
+            const hiddenInput = document.getElementById(tableId + '-input');
+            const rows = table.querySelectorAll('tbody tr');
+            const data = [];
+
+            rows.forEach(row => {
+                const rowData = {};
+                // Label from first cell
+                rowData['label'] = row.cells[0].innerText.trim();
+
+                // Inputs
+                const inputs = row.querySelectorAll('.table-input');
+                inputs.forEach(input => {
+                    const key = input.dataset.key;
+                    const type = input.dataset.type;
+                    let value = input.value;
+
+                    if (type === 'number' || type === 'percentage') {
+                        value = parseFloat(value);
+                        if (isNaN(value)) value = 0;
+                    }
+
+                    rowData[key] = value;
+                });
+
+                // Calculations
+                inputs.forEach(input => {
+                    if (input.dataset.calculate) {
+                        try {
+                            const expression = input.dataset.calculate;
+                            // Replace "row.key" with valid values
+                            const calculated = evaluateExpression(expression, rowData);
+                            input.value = isNaN(calculated) || !isFinite(calculated) ? 0 : calculated
+                                .toFixed(2);
+                            rowData[input.dataset.key] = parseFloat(input
+                            .value); // Update rowData with calculated value
+                        } catch (e) {
+                            console.error('Calculation error:', e);
+                        }
+                    }
+                });
+
+                data.push(rowData);
+            });
+
+            hiddenInput.value = JSON.stringify(data);
+        }
+
+        function evaluateExpression(expression, rowData) {
+            // Safe evaluation replacement
+            // Example: (row.total_passed / row.total_participants) * 100
+            let evalString = expression;
+
+            // Sort keys by length desc to avoid partial replacements (e.g. total vs total_passed)
+            const keys = Object.keys(rowData).sort((a, b) => b.length - a.length);
+
+            keys.forEach(key => {
+                const val = rowData[key] || 0;
+                // Replace row.key with value
+                evalString = evalString.replaceAll('row.' + key, val);
+            });
+
+            try {
+                // Determine if unsafe characters exist
+                if (/[^0-9+\-*/().\s]/.test(evalString)) {
+                    // console.warn('Unsafe characters in expression', evalString);
+                    // return 0;
+                }
+                return Function('"use strict";return (' + evalString + ')')();
+            } catch (err) {
+                return 0;
+            }
+        }
     </script>
 @endsection

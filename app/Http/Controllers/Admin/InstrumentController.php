@@ -72,7 +72,7 @@ class InstrumentController extends Controller
                     InstrumentItem::create([
                         'instrument_id' => $instrument->id,
                         'assessment_question_id' => $questionData['question_id'],
-                        'section' => $questionData['section'] ?? null,
+                        'section' => $questionData['section'] ?? 'default',
                         'order' => $index + 1,
                         'uses_master_question' => true,
                     ]);
@@ -115,10 +115,9 @@ class InstrumentController extends Controller
         return view('admin.instruments.edit', compact('instrument', 'questions'));
     }
 
-    public function update(InstrumentRequest $request, Instrument $instrument): RedirectResponse
+    public function update(Request $request, Instrument $instrument): RedirectResponse
     {
         $oldValues = $instrument->toArray();
-
         $instrument->update([
             'name' => $request->name,
             'description' => $request->description,
@@ -139,7 +138,7 @@ class InstrumentController extends Controller
                     InstrumentItem::create([
                         'instrument_id' => $instrument->id,
                         'assessment_question_id' => $questionData['question_id'],
-                        'section' => $questionData['section'] ?? null,
+                        'section' => $questionData['section'] ?? 'default',
                         'order' => $index + 1,
                         'uses_master_question' => true,
                     ]);
