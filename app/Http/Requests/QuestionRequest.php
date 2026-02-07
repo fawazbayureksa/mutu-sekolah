@@ -11,6 +11,27 @@ class QuestionRequest extends FormRequest
         return auth()->check() && auth()->user()->isAdmin();
     }
 
+    protected function prepareForValidation()
+    {
+        // If answer_options is a JSON string (from structure/table editor), decode it
+        if ($this->has('answer_options') && is_string($this->answer_options) && $this->answer_type === 'structure') {
+            $decoded = json_decode($this->answer_options, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $this->merge([
+                    'answer_options' => $decoded,
+                ]);
+            }
+        }
+
+        // Split text-based options if coming from implicit choice text area
+        if ($this->has('answer_options') && is_string($this->answer_options) && $this->answer_type === 'choice') {
+            $options = array_filter(array_map('trim', explode("\n", $this->answer_options)));
+            $this->merge([
+                'answer_options' => array_values($options)
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         $questionId = $this->route('question');
@@ -19,7 +40,7 @@ class QuestionRequest extends FormRequest
             'question_code' => 'required|string|max:20|unique:assessment_questions,question_code,' . $questionId,
             'indicator_id' => 'required|exists:assessment_indicators,id',
             'question_text' => 'required|string|max:1000',
-            'answer_type' => 'required|in:boolean,scale,number,text,multiple_choice,percentage',
+            'answer_type' => 'required|in:boolean,scale,number,text,multiple_choice,choice,percentage,date,structure',
             'weight' => 'nullable|numeric|min:0|max:100',
             'order' => 'nullable|integer|min:1',
             'help_text' => 'nullable|string|max:500',

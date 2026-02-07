@@ -195,9 +195,43 @@
                             <div id="choiceOptions" style="display: none;">
                                 <div class="mb-3">
                                     <label class="form-label">Answer Options (One per line)</label>
-                                    <textarea class="form-control" id="answer_options" name="answer_options" rows="5"
-                                        placeholder="Option 1&#10;Option 2&#10;Option 3">{{ old('answer_options', is_array($question->answer_options ?? null) ? implode("\n", $question->answer_options) : '') }}</textarea>
+                                    <textarea class="form-control" id="answer_options_choice" name="answer_options" rows="5"
+                                        placeholder="Option 1&#10;Option 2&#10;Option 3">{{ old('answer_type') === 'choice' ? old('answer_options', is_array($question->answer_options ?? null) ? implode("\n", $question->answer_options) : '') : '' }}</textarea>
                                     <small class="form-text text-muted">Each option on a new line</small>
+                                </div>
+                            </div>
+
+                            <div id="structureOptions" style="display: none;">
+                                <div class="mb-3">
+                                    <label class="form-label">Structure Configuration (JSON)</label>
+                                    @php
+                                        $structureValue = '';
+                                        if (old('answer_type') === 'structure') {
+                                            $structureValue = old('answer_options');
+                                        } elseif (isset($question) && $question->answer_type === 'structure') {
+                                            // Use helper to handle both array and string cases safely
+                                            $opts = $question->getAnswerOptionsArray();
+                                            $structureValue = !empty($opts)
+                                                ? json_encode($opts, JSON_PRETTY_PRINT)
+                                                : $question->answer_options ?? '';
+
+                                            // If it's still a raw string (not decoded by helper/model), try to prettify it
+                                            if (
+                                                is_string($structureValue) &&
+                                                is_string($question->answer_options) &&
+                                                empty($opts)
+                                            ) {
+                                                $decoded = json_decode($question->answer_options);
+                                                if (json_last_error() === JSON_ERROR_NONE) {
+                                                    $structureValue = json_encode($decoded, JSON_PRETTY_PRINT);
+                                                }
+                                            }
+                                        }
+                                    @endphp
+                                    <textarea class="form-control font-monospace" id="answer_options_structure" name="answer_options" rows="10"
+                                        placeholder='{"type":"table","columns":[...],"rows":[...]}'>{{ $structureValue }}</textarea>
+                                    <small class="form-text text-muted">Enter valid JSON configuration for the table
+                                        structure.</small>
                                 </div>
                             </div>
 
@@ -293,14 +327,28 @@
             document.getElementById('answer_type').addEventListener('change', function() {
                 const scaleOptions = document.getElementById('scaleOptions');
                 const choiceOptions = document.getElementById('choiceOptions');
+                const structureOptions = document.getElementById('structureOptions');
 
                 scaleOptions.style.display = 'none';
                 choiceOptions.style.display = 'none';
+                if (structureOptions) structureOptions.style.display = 'none';
+
+                // Disable inputs in hidden sections to prevent submission conflicts
+                document.getElementById('answer_options_choice').disabled = true;
+                if (document.getElementById('answer_options_structure')) {
+                    document.getElementById('answer_options_structure').disabled = true;
+                }
 
                 if (this.value === 'scale') {
                     scaleOptions.style.display = 'block';
                 } else if (this.value === 'choice') {
                     choiceOptions.style.display = 'block';
+                    document.getElementById('answer_options_choice').disabled = false;
+                } else if (this.value === 'structure') {
+                    if (structureOptions) {
+                        structureOptions.style.display = 'block';
+                        document.getElementById('answer_options_structure').disabled = false;
+                    }
                 }
             });
 
