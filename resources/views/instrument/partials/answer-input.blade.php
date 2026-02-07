@@ -20,44 +20,71 @@
             $tableId = "table-{$itemId}";
         @endphp
 
-        <div class="table-responsive">
-            <input type="hidden" name="{{ $inputName }}" id="{{ $tableId }}-input" value="{{ $oldValue }}">
-            <table class="table table-bordered table-hover instrument-table" id="{{ $tableId }}"
-                data-item-id="{{ $itemId }}">
-                <thead class="table-light">
-                    <tr>
-                        <th>Uraian</th>
-                        @foreach ($columns as $col)
-                            <th style="width: {{ $col['width'] ?? 'auto' }}">{{ $col['label'] }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($rows as $rowIndex => $row)
-                        <tr data-row-index="{{ $rowIndex }}">
-                            <td>{{ $row['label'] }}</td>
-                            @foreach ($columns as $colIndex => $col)
-                                <td>
-                                    @if ($col['read_only'] ?? false)
-                                        <input type="text" class="form-control form-control-sm table-input"
-                                            data-type="{{ $col['type'] }}" data-key="{{ $col['key'] }}" disabled
-                                            readonly>
-                                    @else
-                                        <input
-                                            type="{{ $col['type'] === 'number' || $col['type'] === 'percentage' ? 'number' : 'text' }}"
-                                            class="form-control form-control-sm table-input"
-                                            data-type="{{ $col['type'] }}" data-key="{{ $col['key'] }}"
-                                            data-row="{{ $rowIndex }}"
-                                            @if ($col['type'] === 'percentage') min="0" max="100" step="0.01" @endif
-                                            @if (isset($col['calculate'])) data-calculate="{{ $col['calculate'] }}" @endif
-                                            onchange="updateTableValue('{{ $tableId }}')">
-                                    @endif
-                                </td>
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-3">
+            <div class="card-header bg-white border-bottom-0 py-3">
+                <div class="d-flex align-items-center">
+                    <div class="icon-box me-3" style="width: 40px; height: 40px; font-size: 1.2rem;">
+                        <i class="bi bi-table"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-primary">Input Data Tabel</h6>
+                        <small class="text-muted">Silahkan lengkapi data pada tabel di bawah ini</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <input type="hidden" name="{{ $inputName }}" id="{{ $tableId }}-input"
+                        value="{{ $oldValue }}">
+                    <table class="table table-hover mb-0 instrument-table" id="{{ $tableId }}"
+                        data-item-id="{{ $itemId }}">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="py-3 px-4 border-0 text-secondary text-uppercase small fw-bold">Uraian</th>
+                                @foreach ($columns as $col)
+                                    <th class="py-3 px-4 border-0 text-secondary text-uppercase small fw-bold"
+                                        style="width: {{ $col['width'] ?? 'auto' }}">{{ $col['label'] }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($rows as $rowIndex => $row)
+                                <tr data-row-index="{{ $rowIndex }}">
+                                    <td class="px-4 py-3 align-middle fw-medium text-dark border-bottom-0 border-top">
+                                        {{ $row['label'] }}</td>
+                                    @foreach ($columns as $colIndex => $col)
+                                        <td class="px-4 py-3 border-bottom-0 border-top">
+                                            @if ($col['read_only'] ?? false)
+                                                <div class="input-group">
+                                                    <input type="text"
+                                                        class="form-control form-control-sm bg-light border-0 fw-bold text-primary table-input"
+                                                        data-type="{{ $col['type'] }}" data-key="{{ $col['key'] }}"
+                                                        disabled readonly>
+                                                    @if ($col['type'] === 'percentage')
+                                                        <span
+                                                            class="input-group-text bg-light border-0 text-primary fw-bold">%</span>
+                                                    @endif
+                                                </div>
+                                            @else
+                                                <input
+                                                    type="{{ $col['type'] === 'number' || $col['type'] === 'percentage' ? 'number' : 'text' }}"
+                                                    class="form-control form-control-sm border-light bg-light-subtle focus-ring table-input"
+                                                    style="transition: all 0.2s;" data-type="{{ $col['type'] }}"
+                                                    data-key="{{ $col['key'] }}" data-row="{{ $rowIndex }}"
+                                                    @if ($col['type'] === 'percentage') min="0" max="100" step="0.01" @endif
+                                                    @if (isset($col['calculate'])) data-calculate="{{ $col['calculate'] }}" @endif
+                                                    onchange="updateTableValue('{{ $tableId }}')"
+                                                    onfocus="this.classList.add('shadow-sm', 'bg-white'); this.classList.remove('bg-light-subtle');"
+                                                    onblur="this.classList.remove('shadow-sm', 'bg-white'); this.classList.add('bg-light-subtle');">
+                                            @endif
+                                        </td>
+                                    @endforeach
+                                </tr>
                             @endforeach
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         {{-- SCALE / RADIO TYPE --}}

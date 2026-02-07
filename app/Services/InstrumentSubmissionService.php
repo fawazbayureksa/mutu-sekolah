@@ -8,6 +8,7 @@ use App\Models\InstrumentItem;
 use App\Models\AssessmentQuestion;
 use App\Repositories\Contracts\InstrumentRepositoryInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class InstrumentSubmissionService
@@ -31,9 +32,10 @@ class InstrumentSubmissionService
 
     public function submit(array $payload): Submission
     {
-        $validated = $this->validate($payload);
+        // $validated = $this->validate($payload);
 
-        return DB::transaction(function () use ($validated) {
+        return DB::transaction(function () use ($payload) {
+            $validated = $payload;
             // Get instrument - try advanced first, fallback to legacy
             $instrument = $this->repository->getInstrumentWithHierarchy('KPTK-ADV-2024');
 
@@ -57,6 +59,7 @@ class InstrumentSubmissionService
                 ]
             );
 
+
             // Create submission
             $submission = Submission::create([
                 'school_id' => $school->id,
@@ -66,47 +69,50 @@ class InstrumentSubmissionService
                 'filled_at' => now(),
                 'status' => 'submitted',
             ]);
-
             // Store responses with scores
             $this->storeResponses($submission->id, $school->id, $validated['answers'], $instrument);
-
             return $submission;
         });
     }
 
     protected function storeResponses(int $submissionId, int $schoolId, array $answers, $instrument): void
     {
-        $responses = [];
-        $totalScore = 0;
-        $maxPossibleScore = 0;
+        try {
+            $responses = [];
+            $totalScore = 0;
+            $maxPossibleScore = 0;
 
-        foreach ($answers as $itemId => $answer) {
-            // Calculate score based on question type and scale template
-            $score = $this->calculateScore($itemId, $answer);
-            $maxScore = $this->getMaxScore($itemId);
+            foreach ($answers as $itemId => $answer) {
+                // Calculate score based on question type and scale template
+                $score = $this->calculateScore($itemId, $answer);
+                $maxScore = $this->getMaxScore($itemId);
 
-            $totalScore += $score;
-            $maxPossibleScore += $maxScore;
+                $totalScore += $score;
+                $maxPossibleScore += $maxScore;
 
-            $responses[] = [
-                'submission_id' => $submissionId,
-                'school_id' => $schoolId,
-                'instrument_item_id' => $itemId,
-                'answer' => $answer,
-                'score' => $score,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+                $responses[] = [
+                    'submission_id' => $submissionId,
+                    'school_id' => $schoolId,
+                    'instrument_item_id' => $itemId,
+                    'answer' => $answer,
+                    'score' => $score,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            DB::table('responses')->insert($responses);
+
+            // Update submission with total scores
+            Submission::where('id', $submissionId)->update([
+                'total_score' => $totalScore,
+                'max_possible_score' => $maxPossibleScore,
+                'completion_percentage' => $maxPossibleScore > 0 ? ($totalScore / $maxPossibleScore) * 100 : 0,
+            ]);
+        } catch (\Exception $e) {
+            Log::info("Error storing responses: " . $e->getMessage());
+            throw new \Exception('Failed to store responses: ' . $e->getMessage());
         }
-
-        DB::table('responses')->insert($responses);
-
-        // Update submission with total scores
-        Submission::where('id', $submissionId)->update([
-            'total_score' => $totalScore,
-            'max_possible_score' => $maxPossibleScore,
-            'completion_percentage' => $maxPossibleScore > 0 ? ($totalScore / $maxPossibleScore) * 100 : 0,
-        ]);
     }
 
     protected function calculateScore($itemId, $answer): float
