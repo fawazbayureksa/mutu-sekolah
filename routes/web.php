@@ -113,5 +113,7 @@ Route::middleware('auth')->group(function () {
                 Route::post('/{answer}/validate', [AssessmentAnswerController::class, 'validate'])->name('validate');
             });
         });
+        // Submission Management
+        Route::resource('submissions', \App\Http\Controllers\Admin\SubmissionController::class)->only(['index', 'show']);
     });
 });

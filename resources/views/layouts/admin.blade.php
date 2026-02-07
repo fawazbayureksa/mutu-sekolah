@@ -225,6 +225,14 @@
                 </a>
             </li>
 
+            <li class="sidebar-menu-item">
+                <a href="{{ route('admin.submissions.index') }}"
+                    class="sidebar-menu-link {{ request()->is('admin/submissions*') ? 'active' : '' }}">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span>Submissions</span>
+                </a>
+            </li>
+
             <li class="sidebar-menu-item mt-4">
                 <a href="#"
                     onclick="event.preventDefault(); document.getElementById('sidebar-logout-form').submit();"
