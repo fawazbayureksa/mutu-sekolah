@@ -83,6 +83,18 @@ class InstrumentSubmissionService
             $maxPossibleScore = 0;
 
             foreach ($answers as $itemId => $answer) {
+                // Skip empty answers
+                if (empty($answer) && $answer !== '0' && $answer !== 0) {
+                    Log::info("Skipping empty answer for item {$itemId}");
+                    continue;
+                }
+
+                // Log each answer to debug
+                Log::info("Processing answer for item {$itemId}:", [
+                    'answer_type' => gettype($answer),
+                    'answer_value' => is_string($answer) && strlen($answer) > 100 ? substr($answer, 0, 100) . '...' : $answer
+                ]);
+
                 // Calculate score based on question type and scale template
                 $score = $this->calculateScore($itemId, $answer);
                 $maxScore = $this->getMaxScore($itemId);
@@ -94,10 +106,10 @@ class InstrumentSubmissionService
                     'submission_id' => $submissionId,
                     'school_id' => $schoolId,
                     'instrument_item_id' => $itemId,
-                    'answer' => $answer,
+                    'answer' => is_array($answer) ? json_encode($answer) : $answer,
                     'score' => $score,
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'created_at' => now()->toDateTimeString(),
+                    'updated_at' => now()->toDateTimeString(),
                 ];
             }
 

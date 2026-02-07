@@ -20,11 +20,17 @@ class SubmissionController extends Controller
 
     public function show(Submission $submission): View
     {
-        $submission->load(['school', 'instrument', 'responses.instrumentItem.question']);
+        // Eager load the hierarchy for the view
+        $submission->load([
+            'school',
+            'instrument.aspects.indicators.questions', // Load hierarchy
+            'instrument.items', // Load items map
+            'responses' // Load actual responses
+        ]);
 
-        // Group responses by aspect/indicator if possible, or just pass them
-        // For now, we'll just pass the submission with loaded relationships
+        // Map responses by instrument_item_id or question_id for easy lookup
+        $responses = $submission->responses->keyBy('instrument_item_id');
 
-        return view('admin.submissions.show', compact('submission'));
+        return view('admin.submissions.show', compact('submission', 'responses'));
     }
 }

@@ -410,52 +410,59 @@
         });
 
         function updateTableValue(tableId) {
-            const table = document.getElementById(tableId);
-            const hiddenInput = document.getElementById(tableId + '-input');
-            const rows = table.querySelectorAll('tbody tr');
-            const data = [];
+            try {
+                const table = document.getElementById(tableId);
+                const hiddenInput = document.getElementById(tableId + '-input');
 
-            rows.forEach(row => {
-                const rowData = {};
-                // Label from first cell
-                rowData['label'] = row.cells[0].innerText.trim();
+                if (!table || !hiddenInput) return;
 
-                // Inputs
-                const inputs = row.querySelectorAll('.table-input');
-                inputs.forEach(input => {
-                    const key = input.dataset.key;
-                    const type = input.dataset.type;
-                    let value = input.value;
+                const rows = table.querySelectorAll('tbody tr');
+                const data = [];
 
-                    if (type === 'number' || type === 'percentage') {
-                        value = parseFloat(value);
-                        if (isNaN(value)) value = 0;
-                    }
+                rows.forEach(row => {
+                    const rowData = {};
+                    // Label from first cell
+                    rowData['label'] = row.cells[0].innerText.trim();
 
-                    rowData[key] = value;
-                });
+                    // Inputs
+                    const inputs = row.querySelectorAll('.table-input');
+                    inputs.forEach(input => {
+                        const key = input.dataset.key;
+                        const type = input.dataset.type;
+                        let value = input.value;
 
-                // Calculations
-                inputs.forEach(input => {
-                    if (input.dataset.calculate) {
-                        try {
-                            const expression = input.dataset.calculate;
-                            // Replace "row.key" with valid values
-                            const calculated = evaluateExpression(expression, rowData);
-                            input.value = isNaN(calculated) || !isFinite(calculated) ? 0 : calculated
-                                .toFixed(2);
-                            rowData[input.dataset.key] = parseFloat(input
-                            .value); // Update rowData with calculated value
-                        } catch (e) {
-                            console.error('Calculation error:', e);
+                        if (type === 'number' || type === 'percentage') {
+                            value = parseFloat(value);
+                            if (isNaN(value)) value = 0;
                         }
-                    }
+
+                        rowData[key] = value;
+                    });
+
+                    // Calculations
+                    inputs.forEach(input => {
+                        if (input.dataset.calculate) {
+                            try {
+                                const expression = input.dataset.calculate;
+                                // Replace "row.key" with valid values
+                                const calculated = evaluateExpression(expression, rowData);
+                                input.value = isNaN(calculated) || !isFinite(calculated) ? 0 : calculated
+                                    .toFixed(2);
+                                rowData[input.dataset.key] = parseFloat(input
+                                .value); // Update rowData with calculated value
+                            } catch (e) {
+                                console.error('Calculation error:', e);
+                            }
+                        }
+                    });
+
+                    data.push(rowData);
                 });
 
-                data.push(rowData);
-            });
-
-            hiddenInput.value = JSON.stringify(data);
+                hiddenInput.value = JSON.stringify(data);
+            } catch (error) {
+                console.error('Error updating table value:', error);
+            }
         }
 
         function evaluateExpression(expression, rowData) {
