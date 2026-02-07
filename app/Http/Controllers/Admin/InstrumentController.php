@@ -140,6 +140,7 @@ class InstrumentController extends Controller
                         'assessment_question_id' => $questionData['question_id'],
                         'section' => $questionData['section'] ?? 'default',
                         'order' => $index + 1,
+                        'answer_type' => $questionData['answer_type'] ?? null,
                         'uses_master_question' => true,
                     ]);
                 }

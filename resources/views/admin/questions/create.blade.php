@@ -80,7 +80,7 @@
                                         @foreach ($aspects as $aspect)
                                             <option value="{{ $aspect->id }}"
                                                 {{ old('aspect_id', $question->indicator->aspect_id ?? '') == $aspect->id ? 'selected' : '' }}>
-                                                {{ $aspect->aspect_name }}
+                                                {{ $aspect->name }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -90,6 +90,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
+
                                     <label for="indicator_id" class="form-label">Indicator <span
                                             class="text-danger">*</span></label>
                                     <select class="form-select @error('indicator_id') is-invalid @enderror"
@@ -97,7 +98,7 @@
                                         <option value="">Select Indicator</option>
                                         @if (isset($question) && $question->indicator)
                                             <option value="{{ $question->indicator_id }}" selected>
-                                                {{ $question->indicator->indicator_name }}
+                                                {{ $question->indicator->code . ' ' . $question->indicator->description }}
                                             </option>
                                         @endif
                                     </select>
@@ -129,6 +130,9 @@
                                         <option value="date"
                                             {{ old('answer_type', $question->answer_type ?? '') == 'date' ? 'selected' : '' }}>
                                             Date</option>
+                                        <option value="structure"
+                                            {{ old('answer_type', $question->answer_type ?? '') == 'structure' ? 'selected' : '' }}>
+                                            Structure</option>
                                     </select>
                                     @error('answer_type')
                                         <div class="invalid-feedback">{{ $message }}</div>

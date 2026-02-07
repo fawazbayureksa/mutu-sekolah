@@ -82,8 +82,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <small
-                                                    class="text-muted">{{ $assessment->instrument->instrument_name }}</small>
+                                                <small class="text-muted">{{ $assessment->instrument->name }}</small>
                                             </td>
                                             <td>
                                                 {{ $assessment->assessment_year }}<br>

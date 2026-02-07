@@ -65,7 +65,7 @@
                                 <strong>Instrument:</strong>
                             </div>
                             <div class="col-md-8">
-                                {{ $assessment->instrument->instrument_name }}
+                                {{ $assessment->instrument->name }}
                                 <br><small class="text-muted">Version {{ $assessment->instrument->version }}</small>
                             </div>
                         </div>

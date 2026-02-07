@@ -195,7 +195,7 @@
                                     <a href="{{ route('admin.instruments.show', $instrument) }}"
                                         class="list-group-item list-group-item-action">
                                         <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1">{{ $instrument->instrument_name }}</h6>
+                                            <h6 class="mb-1">{{ $instrument->name }}</h6>
                                             <small>
                                                 @if ($instrument->status === 'published')
                                                     <span class="badge bg-success">Published</span>
@@ -205,7 +205,7 @@
                                             </small>
                                         </div>
                                         <p class="mb-1 small text-muted">
-                                            <code>{{ $instrument->instrument_code }}</code> - Version
+                                            <code>{{ $instrument->code }}</code> - Version
                                             {{ $instrument->version }}
                                         </p>
                                     </a>

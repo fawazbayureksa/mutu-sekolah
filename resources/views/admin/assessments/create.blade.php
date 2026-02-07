@@ -66,7 +66,7 @@
                                         @foreach ($instruments as $instrument)
                                             <option value="{{ $instrument->id }}"
                                                 {{ old('instrument_id', $assessment->instrument_id ?? '') == $instrument->id ? 'selected' : '' }}>
-                                                {{ $instrument->instrument_name }} (v{{ $instrument->version }})
+                                                {{ $instrument->name }} (v{{ $instrument->version }})
                                             </option>
                                         @endforeach
                                     </select>

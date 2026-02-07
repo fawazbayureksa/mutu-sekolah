@@ -28,7 +28,7 @@ class AssessmentExport implements FromCollection, WithHeadings, WithStyles, With
                 return [
                     'code' => $this->assessment->assessment_code,
                     'school' => $this->assessment->school->school_name ?? 'N/A',
-                    'instrument' => $this->assessment->instrument->instrument_name ?? 'N/A',
+                    'instrument' => $this->assessment->instrument->name ?? 'N/A',
                     'assessment_date' => $this->assessment->assessment_date->format('Y-m-d'),
                     'assessment_period' => ucfirst($this->assessment->assessment_period),
                     'status' => ucfirst($this->assessment->status),

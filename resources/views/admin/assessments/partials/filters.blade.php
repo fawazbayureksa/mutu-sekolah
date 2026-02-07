@@ -24,7 +24,7 @@
                     @foreach ($instruments as $instrument)
                         <option value="{{ $instrument->id }}"
                             {{ request('instrument_id') == $instrument->id ? 'selected' : '' }}>
-                            {{ $instrument->instrument_name }}
+                            {{ $instrument->name }}
                         </option>
                     @endforeach
                 </select>

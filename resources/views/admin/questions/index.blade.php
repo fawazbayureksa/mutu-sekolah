@@ -56,7 +56,7 @@
                             @foreach ($aspects as $aspect)
                                 <option value="{{ $aspect->id }}"
                                     {{ request('aspect_id') == $aspect->id ? 'selected' : '' }}>
-                                    {{ $aspect->aspect_name }}
+                                    {{ $aspect->name }}
                                 </option>
                             @endforeach
                         </select>
@@ -67,7 +67,7 @@
                             @foreach ($indicators as $indicator)
                                 <option value="{{ $indicator->id }}"
                                     {{ request('indicator_id') == $indicator->id ? 'selected' : '' }}>
-                                    {{ $indicator->indicator_name }}
+                                    {{ $indicator->code . ' ' . $indicator->description }}
                                 </option>
                             @endforeach
                         </select>
@@ -155,8 +155,8 @@
                                             </td>
                                             <td>
                                                 <small class="text-muted">
-                                                    {{ $question->indicator->aspect->aspect_name ?? 'N/A' }}<br>
-                                                    <strong>{{ $question->indicator->indicator_name ?? 'N/A' }}</strong>
+                                                    {{ $question->indicator->aspect->name ?? 'N/A' }}<br>
+                                                    <strong>{{ $question->indicator->code . ' ' . $question->indicator->description ?? 'N/A' }}</strong>
                                                 </small>
                                             </td>
                                             <td>
