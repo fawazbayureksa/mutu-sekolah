@@ -20,12 +20,12 @@ class AssessmentIndicator extends Model
 
     public function aspect(): BelongsTo
     {
-        return $this->belongsTo(AssessmentAspect::class);
+        return $this->belongsTo(AssessmentAspect::class, 'aspect_id');
     }
 
     public function questions(): HasMany
     {
-        return $this->hasMany(AssessmentQuestion::class)->orderBy('order');
+        return $this->hasMany(AssessmentQuestion::class, 'indicator_id')->orderBy('order');
     }
 
     public function scopeOrdered($query)

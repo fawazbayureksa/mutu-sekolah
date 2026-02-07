@@ -38,7 +38,7 @@ class AssessmentQuestion extends Model
 
     public function indicator(): BelongsTo
     {
-        return $this->belongsTo(AssessmentIndicator::class);
+        return $this->belongsTo(AssessmentIndicator::class, 'indicator_id');
     }
 
     public function answers(): HasMany
@@ -76,11 +76,22 @@ class AssessmentQuestion extends Model
         if ($this->scale_template_id) {
             $template = $this->scaleTemplate;
             if ($template) {
-                return json_decode($template->scale_options, true) ?? [];
+                // Handle potential array cast on ScaleTemplate or raw string
+                $options = $template->scale_options;
+                if (is_array($options)) {
+                    return $options;
+                }
+                return json_decode($options, true) ?? [];
             }
         }
-        
-        return json_decode($this->answer_options, true) ?? [];
+
+        $options = $this->answer_options;
+
+        if (is_array($options)) {
+            return $options;
+        }
+
+        return json_decode($options, true) ?? [];
     }
 
     public function hasOptions(): bool
