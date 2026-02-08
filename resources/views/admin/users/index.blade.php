@@ -1,15 +1,15 @@
 @extends('layouts.admin')
 
-@section('title', 'User Management - Admin Panel')
+@section('title', 'Manajemen Pengguna - Panel Admin')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="mb-0">User Management</h2>
-        <p class="text-muted mb-0">Manage system users and permissions</p>
+        <h2 class="mb-0">Manajemen Pengguna</h2>
+        <p class="text-muted mb-0">Kelola pengguna sistem dan izin</p>
     </div>
     <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-2"></i>Add New User
+        <i class="bi bi-plus-lg me-2"></i>Tambah Pengguna
     </a>
 </div>
 
@@ -17,20 +17,20 @@
     <div class="card-body">
         <form action="{{ route('admin.users.index') }}" method="GET" class="row g-3">
             <div class="col-md-4">
-                <input type="text" name="search" class="form-control" placeholder="Search users..." value="{{ request('search') }}">
+                <input type="text" name="search" class="form-control" placeholder="Cari pengguna..." value="{{ request('search') }}">
             </div>
             <div class="col-md-3">
                 <select name="role" class="form-select">
-                    <option value="">All Roles</option>
+                    <option value="">Semua Peran</option>
                     <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
-                    <option value="user" {{ request('role') === 'user' ? 'selected' : '' }}>User</option>
+                    <option value="user" {{ request('role') === 'user' ? 'selected' : '' }}>Pengguna</option>
                 </select>
             </div>
             <div class="col-md-3">
                 <select name="status" class="form-select">
-                    <option value="">All Status</option>
-                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
-                    <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    <option value="">Semua Status</option>
+                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Aktif</option>
+                    <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Tidak Aktif</option>
                 </select>
             </div>
             <div class="col-md-2">
@@ -44,16 +44,16 @@
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <span>Total: {{ $users->total() }} users</span>
+        <span>Total: {{ $users->total() }} pengguna</span>
         <div class="dropdown">
             <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="bi bi-gear me-1"></i>Bulk Actions
+                <i class="bi bi-gear me-1"></i>Aksi Massal
             </button>
             <ul class="dropdown-menu">
-                <li><a href="#" class="dropdown-item" onclick="submitBulkAction('activate')">Activate Selected</a></li>
-                <li><a href="#" class="dropdown-item" onclick="submitBulkAction('deactivate')">Deactivate Selected</a></li>
+                <li><a href="#" class="dropdown-item" onclick="submitBulkAction('activate')">Aktifkan Terpilih</a></li>
+                <li><a href="#" class="dropdown-item" onclick="submitBulkAction('deactivate')">Nonaktifkan Terpilih</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a href="#" class="dropdown-item text-danger" onclick="submitBulkAction('delete')">Delete Selected</a></li>
+                <li><a href="#" class="dropdown-item text-danger" onclick="submitBulkAction('delete')">Hapus Terpilih</a></li>
             </ul>
         </div>
     </div>
@@ -66,13 +66,13 @@
                         <th width="40">
                             <input type="checkbox" class="form-check-input" id="selectAll">
                         </th>
-                        <th>Name</th>
+                        <th>Nama</th>
                         <th>Email</th>
-                        <th>Phone</th>
-                        <th>Role</th>
+                        <th>Telepon</th>
+                        <th>Peran</th>
                         <th>Status</th>
-                        <th>Last Login</th>
-                        <th class="text-end">Actions</th>
+                        <th>Masuk Terakhir</th>
+                        <th class="text-end">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,17 +91,17 @@
                             </td>
                             <td>
                                 @if($user->is_active)
-                                    <span class="badge badge-active">Active</span>
+                                    <span class="badge badge-active">Aktif</span>
                                 @else
-                                    <span class="badge badge-inactive">Inactive</span>
+                                    <span class="badge badge-inactive">Tidak Aktif</span>
                                 @endif
                             </td>
                             <td>
-                                {{ $user->last_login_at ? $user->last_login_at->diffForHumans() : 'Never' }}
+                                {{ $user->last_login_at ? $user->last_login_at->diffForHumans() : 'Belum Pernah' }}
                             </td>
                             <td class="text-end">
                                 <div class="btn-group">
-                                    <a href="{{ route('admin.users.show', $user) }}" class="btn btn-sm btn-outline-secondary" title="View">
+                                    <a href="{{ route('admin.users.show', $user) }}" class="btn btn-sm btn-outline-secondary" title="Lihat">
                                         <i class="bi bi-eye"></i>
                                     </a>
                                     <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-outline-primary" title="Edit">
@@ -110,23 +110,23 @@
                                     @if($user->is_active)
                                         <form action="{{ route('admin.users.deactivate', $user) }}" method="POST" class="d-inline">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-outline-warning" title="Deactivate">
+                                            <button type="submit" class="btn btn-sm btn-outline-warning" title="Nonaktifkan">
                                                 <i class="bi bi-dash-circle"></i>
                                             </button>
                                         </form>
                                     @else
                                         <form action="{{ route('admin.users.activate', $user) }}" method="POST" class="d-inline">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-outline-success" title="Activate">
+                                            <button type="submit" class="btn btn-sm btn-outline-success" title="Aktifkan">
                                                 <i class="bi bi-check-circle"></i>
                                             </button>
                                         </form>
                                     @endif
                                     <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-inline"
-                                          onsubmit="return confirm('Are you sure you want to delete this user?')">
+                                          onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
@@ -138,7 +138,7 @@
                             <td colspan="8" class="text-center py-5">
                                 <div class="text-muted">
                                     <i class="bi bi-people fs-1 d-block mb-3"></i>
-                                    <p class="mb-0">No users found</p>
+                                    <p class="mb-0">Tidak ada pengguna ditemukan</p>
                                 </div>
                             </td>
                         </tr>
@@ -165,10 +165,10 @@ document.getElementById('selectAll')?.addEventListener('change', function() {
 function submitBulkAction(action) {
     const checked = document.querySelectorAll('.user-checkbox:checked');
     if (checked.length === 0) {
-        alert('Please select at least one user');
+        alert('Silakan pilih setidaknya satu pengguna');
         return;
     }
-    if (confirm(`Are you sure you want to ${action} selected users?`)) {
+    if (confirm(`Apakah Anda yakin ingin ${action} pengguna yang dipilih?`)) {
         document.getElementById('bulkActionInput').value = action;
         document.getElementById('bulkActionForm').submit();
     }

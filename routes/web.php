@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AssessmentAnswerController;
+use App\Http\Controllers\Admin\AssessmentController;
 use App\Http\Controllers\Admin\InstrumentController;
 use App\Http\Controllers\Admin\QuestionController;
-use App\Http\Controllers\Admin\AssessmentController;
-use App\Http\Controllers\Admin\AssessmentAnswerController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PublicInstrumentController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
-Route::get('/', fn() => view('landing'))->name('landing');
+Route::get('/', fn () => view('landing'))->name('landing');
 
 Route::get('/instrumen', [PublicInstrumentController::class, 'index'])
     ->name('instrument.form');
@@ -35,6 +35,20 @@ Route::middleware('auth')->group(function () {
 
     // Admin routes
     Route::prefix('admin')->name('admin.')->group(function () {
+        // School Management
+        Route::prefix('schools')->name('schools.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\SchoolController::class, 'index'])->name('index');
+            Route::get('/create', [\App\Http\Controllers\Admin\SchoolController::class, 'create'])->name('create');
+            Route::post('/', [\App\Http\Controllers\Admin\SchoolController::class, 'store'])->name('store');
+            Route::get('/{school}', [\App\Http\Controllers\Admin\SchoolController::class, 'show'])->name('show');
+            Route::get('/{school}/edit', [\App\Http\Controllers\Admin\SchoolController::class, 'edit'])->name('edit');
+            Route::put('/{school}', [\App\Http\Controllers\Admin\SchoolController::class, 'update'])->name('update');
+            Route::delete('/{school}', [\App\Http\Controllers\Admin\SchoolController::class, 'destroy'])->name('destroy');
+            Route::get('/{school}/assessments', [\App\Http\Controllers\Admin\SchoolController::class, 'assessments'])->name('assessments');
+            Route::get('/{school}/submissions', [\App\Http\Controllers\Admin\SchoolController::class, 'submissions'])->name('submissions');
+            Route::post('/bulk', [\App\Http\Controllers\Admin\SchoolController::class, 'bulkAction'])->name('bulk');
+        });
+
         // User Management
         Route::prefix('users')->name('users.')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('index');

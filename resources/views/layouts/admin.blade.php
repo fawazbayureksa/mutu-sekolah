@@ -28,7 +28,15 @@
                 <a href="{{ route('dashboard') }}"
                     class="sidebar-menu-link {{ request()->is('dashboard*') ? 'active' : '' }}">
                     <i class="bi bi-speedometer2"></i>
-                    <span>Dashboard</span>
+                    <span>Dasbor</span>
+                </a>
+            </li>
+
+            <li class="sidebar-menu-item">
+                <a href="{{ route('admin.schools.index') }}"
+                    class="sidebar-menu-link {{ request()->is('admin/schools*') ? 'active' : '' }}">
+                    <i class="bi bi-building"></i>
+                    <span>Data Sekolah</span>
                 </a>
             </li>
 
@@ -36,7 +44,7 @@
                 <a href="{{ route('admin.users.index') }}"
                     class="sidebar-menu-link {{ request()->is('admin/users*') ? 'active' : '' }}">
                     <i class="bi bi-people"></i>
-                    <span>User Management</span>
+                    <span>Manajemen Pengguna</span>
                 </a>
             </li>
 
@@ -44,7 +52,7 @@
                 <a href="{{ route('admin.questions.index') }}"
                     class="sidebar-menu-link {{ request()->is('admin/questions*') ? 'active' : '' }}">
                     <i class="bi bi-question-circle"></i>
-                    <span>Question Library</span>
+                    <span>Pustaka Pertanyaan</span>
                 </a>
             </li>
 
@@ -52,7 +60,7 @@
                 <a href="{{ route('admin.instruments.index') }}"
                     class="sidebar-menu-link {{ request()->is('admin/instruments*') ? 'active' : '' }}">
                     <i class="bi bi-clipboard-data"></i>
-                    <span>Instruments</span>
+                    <span>Instrumen</span>
                 </a>
             </li>
 
@@ -60,7 +68,7 @@
                 <a href="{{ route('admin.assessments.index') }}"
                     class="sidebar-menu-link {{ request()->is('admin/assessments*') ? 'active' : '' }}">
                     <i class="bi bi-clipboard-check"></i>
-                    <span>Assessments</span>
+                    <span>Penilaian</span>
                 </a>
             </li>
 
@@ -68,7 +76,7 @@
                 <a href="{{ route('admin.submissions.index') }}"
                     class="sidebar-menu-link {{ request()->is('admin/submissions*') ? 'active' : '' }}">
                     <i class="bi bi-file-earmark-text"></i>
-                    <span>Submissions</span>
+                    <span>Pengajuan</span>
                 </a>
             </li>
 
@@ -77,7 +85,7 @@
                     onclick="event.preventDefault(); document.getElementById('sidebar-logout-form').submit();"
                     class="sidebar-menu-link">
                     <i class="bi bi-box-arrow-right"></i>
-                    <span>Logout</span>
+                    <span>Keluar</span>
                 </a>
             </li>
         </ul>
@@ -91,7 +99,7 @@
 
             <div class="d-flex align-items-center gap-3">
                 <span class="text-muted">
-                    Welcome, {{ Auth::user()->name }}
+                    Selamat datang, {{ Auth::user()->name }}
                 </span>
                 <div class="dropdown">
                     <button class="btn btn-light rounded-circle" data-bs-toggle="dropdown">
@@ -100,7 +108,7 @@
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
                             <a class="dropdown-item" href="{{ route('admin.users.show', Auth::id()) }}">
-                                <i class="bi bi-person me-2"></i>My Profile
+                                <i class="bi bi-person me-2"></i>Profil Saya
                             </a>
                         </li>
                         <li>
@@ -109,7 +117,7 @@
                         <li>
                             <a class="dropdown-item" href="#"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                <i class="bi bi-box-arrow-right me-2"></i>Keluar
                             </a>
                         </li>
                     </ul>
