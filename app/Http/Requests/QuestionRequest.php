@@ -8,7 +8,7 @@ class QuestionRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->isAdmin();
+        return auth()->check();
     }
 
     protected function prepareForValidation()

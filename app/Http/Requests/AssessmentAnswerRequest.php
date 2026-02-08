@@ -8,7 +8,7 @@ class AssessmentAnswerRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->isAdmin();
+        return true;
     }
 
     public function rules(): array
