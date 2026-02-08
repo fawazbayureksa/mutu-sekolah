@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login - Penjaminan Mutu SMK KPTK</title>
+    <link rel="icon" href="{{ asset('images/tut-wuri-handayani.png') }}" type="image/x-icon">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,81 +17,106 @@
         :root {
             --primary-color: #2563eb;
             --primary-dark: #1e40af;
-            --primary-light: #3b82f6;
+            --primary-light: #60a5fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3b5be9 0%, #35318a 50%, #939dfb 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             min-height: 100vh;
             display: flex;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            justify-content: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif;
+            padding: 1rem;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         .login-container {
-            max-width: 450px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
+            width: 100%;
+            max-width: 420px;
         }
 
         .login-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             overflow: hidden;
-            animation: fadeInUp 0.6s ease-out;
+            animation: cardSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        @keyframes fadeInUp {
+        @keyframes cardSlideIn {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(40px) scale(0.95);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
-        }
-
-        .login-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            padding: 2.5rem 2rem;
-            text-align: center;
-            color: white;
-        }
-
-        .login-header .logo {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .login-header .logo i {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-        }
-
-        .login-header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .login-header p {
-            margin: 0.5rem 0 0;
-            opacity: 0.9;
-            font-size: 0.9rem;
         }
 
         .login-body {
             padding: 2.5rem 2rem;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-img {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+            /* animation: logoFloat 3s ease-in-out infinite; */
+        }
+
+        @keyframes logoFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .login-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.5px;
+        }
+
+        .login-subtitle {
+            color: #6b7280;
+            font-size: 0.95rem;
+            font-weight: 400;
         }
 
         .form-floating {
@@ -99,32 +125,37 @@
 
         .form-floating>.form-control {
             border: 2px solid #e5e7eb;
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 1rem 1rem;
-            height: 58px;
+            height: 60px;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
+            background: #f9fafb;
         }
 
         .form-floating>.form-control:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            background: white;
         }
 
         .form-floating>label {
             padding: 1rem 1rem;
             color: #6b7280;
+            font-size: 0.95rem;
         }
 
         .form-check {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
         }
 
         .form-check-input {
-            width: 1.2rem;
-            height: 1.2rem;
+            width: 1.15rem;
+            height: 1.15rem;
             border: 2px solid #d1d5db;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
 
         .form-check-input:checked {
@@ -132,8 +163,12 @@
             border-color: var(--primary-color);
         }
 
+        .form-check-input:focus {
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
         .form-check-label {
-            color: #6b7280;
+            color: #4b5563;
             font-size: 0.9rem;
             cursor: pointer;
             margin-left: 0.5rem;
@@ -141,20 +176,37 @@
 
         .btn-login {
             width: 100%;
-            padding: 0.875rem;
+            padding: 0.95rem;
             font-size: 1rem;
             font-weight: 600;
-            border-radius: 12px;
+            border-radius: 14px;
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             border: none;
             color: white;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-login:hover::before {
+            left: 100%;
         }
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.35);
         }
 
         .btn-login:active {
@@ -163,33 +215,36 @@
 
         .btn-back {
             width: 100%;
-            padding: 0.875rem;
+            padding: 0.95rem;
             font-size: 0.9rem;
             font-weight: 500;
-            border-radius: 12px;
+            border-radius: 14px;
             background: #f3f4f6;
-            border: none;
-            color: #6b7280;
+            border: 2px solid transparent;
+            color: #4b5563;
             transition: all 0.3s ease;
         }
 
         .btn-back:hover {
-            background: #e5e7eb;
-            color: #374151;
+            background: white;
+            border-color: #e5e7eb;
+            color: #1f2937;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .alert {
-            border-radius: 12px;
+            border-radius: 14px;
             border: none;
-            padding: 1rem;
+            padding: 1rem 1.25rem;
             margin-bottom: 1.5rem;
-            animation: slideDown 0.3s ease-out;
+            font-size: 0.9rem;
+            animation: alertSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        @keyframes slideDown {
+        @keyframes alertSlide {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-15px);
             }
 
             to {
@@ -201,42 +256,41 @@
         .alert-danger {
             background-color: #fef2f2;
             color: #991b1b;
+            border-left: 4px solid #dc2626;
         }
 
         .alert-success {
             background-color: #f0fdf4;
             color: #166534;
+            border-left: 4px solid #16a34a;
         }
 
         .divider {
-            text-align: center;
+            display: flex;
+            align-items: center;
             margin: 1.5rem 0;
-            position: relative;
         }
 
-        .divider::before {
+        .divider::before,
+        .divider::after {
             content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
+            flex: 1;
             height: 1px;
             background: #e5e7eb;
         }
 
         .divider span {
-            background: white;
             padding: 0 1rem;
-            position: relative;
             color: #9ca3af;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
         .footer-text {
             text-align: center;
             margin-top: 2rem;
-            color: white;
-            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.85rem;
         }
 
         .footer-text a {
@@ -245,9 +299,8 @@
             font-weight: 500;
         }
 
-        /* Loading state */
         .btn-login:disabled {
-            opacity: 0.6;
+            opacity: 0.7;
             cursor: not-allowed;
         }
 
@@ -256,23 +309,26 @@
             height: 1rem;
             border-width: 0.15rem;
         }
+
+        @media (max-width: 480px) {
+            .login-body {
+                padding: 2rem 1.5rem;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="login-container">
         <div class="login-card">
-            <!-- Header -->
-            <div class="login-header">
-                <div class="logo">
-                    <i class="bi bi-shield-check"></i>
-                </div>
-                <h1>Login Administrator</h1>
-                <p>Penjaminan Mutu SMK KPTK</p>
-            </div>
-
-            <!-- Body -->
             <div class="login-body">
+                <!-- Logo Section -->
+                <div class="logo-section">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo-img">
+                    <h1 class="login-title">Masuk Administrator</h1>
+                    <p class="login-subtitle">Penjaminan Mutu SMK KPTK</p>
+                </div>
+
                 <!-- Success Message -->
                 @if (session('success'))
                     <div class="alert alert-success d-flex align-items-center">
