@@ -18,6 +18,9 @@ class Submission extends Model
         'respondent_position',
         'filled_at',
         'status',
+        'total_score',
+        'max_possible_score',
+        'completion_percentage',
         'verified_by',
         'verified_at',
         'validation_notes',
@@ -26,6 +29,9 @@ class Submission extends Model
     protected $casts = [
         'filled_at' => 'date',
         'verified_at' => 'datetime',
+        'total_score' => 'decimal:2',
+        'max_possible_score' => 'decimal:2',
+        'completion_percentage' => 'decimal:2',
     ];
 
     public function school(): BelongsTo
@@ -82,7 +88,7 @@ class Submission extends Model
     {
         $total = $this->instrument->items()->count();
         $answered = $this->responses()->count();
-        
+
         return $total > 0 ? ($answered / $total) * 100 : 0;
     }
 }

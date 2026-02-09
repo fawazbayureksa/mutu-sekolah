@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\InstrumentSubmissionRequest;
 use App\Services\InstrumentSubmissionService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class PublicInstrumentController extends Controller
@@ -36,20 +36,20 @@ class PublicInstrumentController extends Controller
         return view('instrument.form', compact('instrument', 'aspects', 'useHierarchy'));
     }
 
-    public function store(Request $request)
+    public function store(InstrumentSubmissionRequest $request)
     {
         try {
             // Log the answers to debug structure type
             Log::info('Form submission answers:', ['answers' => $request->input('answers')]);
 
-            $submission = $this->service->submit($request->all());
+            $submission = $this->service->submit($request->validated());
 
             return redirect()->route('landing')->with('success', 'Data berhasil disimpan. Terima kasih atas partisipasi Anda.');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return back()
-                ->withErrors($e->errors())
-                ->withInput();
         } catch (\Exception $e) {
+            Log::error('Submission error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return back()
                 ->with('error', 'Terjadi kesalahan. Silakan coba lagi.')
                 ->withInput();
