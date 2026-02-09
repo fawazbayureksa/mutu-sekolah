@@ -2,7 +2,7 @@
 
 @section('title', 'Isi Instrumen - Penjaminan Mutu SMK Bidang KPTK')
 
-@section('styles')
+@push('styles')
     <style>
         body {
             background-color: #f8f9fa;
@@ -137,7 +137,7 @@
             color: #0d6efd;
         }
     </style>
-@endsection
+@endpush
 
 @section('content')
     <div class="container py-5">
@@ -158,6 +158,19 @@
                 @if (session('error'))
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                {{-- Display all validation errors --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong><i class="bi bi-exclamation-triangle me-2"></i>Terdapat kesalahan pada form:</strong>
+                        <ul class="mb-0 mt-2">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
@@ -191,21 +204,11 @@
                                 <label class="form-label">NPSN</label>
                                 <input type="text" name="npsn" class="form-control" value="{{ old('npsn') }}">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Provinsi <span class="text-danger">*</span></label>
-                                <input type="text" name="province"
-                                    class="form-control @error('province') is-invalid @enderror" required
-                                    value="{{ old('province') }}">
-                                @error('province')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Kota/Kabupaten <span class="text-danger">*</span></label>
-                                <input type="text" name="city"
-                                    class="form-control @error('city') is-invalid @enderror" required
-                                    value="{{ old('city') }}">
-                                @error('city')
+                            <div class="col-md-12">
+                                <label class="form-label">Alamat <span class="text-danger">*</span></label>
+                                <textarea name="address" rows="3" class="form-control @error('address') is-invalid @enderror" required
+                                    placeholder="Masukkan alamat lengkap sekolah (termasuk provinsi dan kota/kabupaten)">{{ old('address') }}</textarea>
+                                @error('address')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -288,8 +291,11 @@
                                                 @if ($item)
                                                     @include('instrument.partials.answer-input', [
                                                         'question' => $question,
-                                                        'inputName' => "answers[{$item->id}]",
+                                                        'item' => $item,
                                                     ])
+                                                    @error("answers.{$item->id}")
+                                                        <div class="text-danger small mt-2">{{ $message }}</div>
+                                                    @enderror
                                                 @endif
                                             </div>
                                         @endforeach
@@ -388,12 +394,13 @@
     </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
     <script>
         // Optional: Add confirmation before submit
         document.querySelector('form').addEventListener('submit', function(e) {
-            // Ensure all tables are updated
+            // Ensure all tables are updated before submit
             document.querySelectorAll('.instrument-table').forEach(table => {
+                console.log('Updating table before submit:', table.id);
                 updateTableValue(table.id);
             });
 
@@ -402,19 +409,58 @@
             }
         });
 
-        // Initialize calculations on load
+        // Initialize calculations on load - with fallback
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.instrument-table').forEach(table => {
-                updateTableValue(table.id);
+            console.log('DOM loaded, initializing tables...');
+            initializeTables();
+
+            // Fallback: also initialize after a short delay (for dynamically loaded content)
+            setTimeout(initializeTables, 500);
+
+            // Event delegation for table inputs (instead of inline onchange)
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('table-input') && !e.target.hasAttribute('readonly')) {
+                    const tableId = e.target.dataset.tableId;
+                    if (tableId) {
+                        console.log('Input changed in table:', tableId);
+                        updateTableValue(tableId);
+                    }
+                }
+            });
+
+            // Focus/blur effects
+            document.addEventListener('focusin', function(e) {
+                if (e.target.classList.contains('table-input')) {
+                    e.target.classList.add('shadow-sm', 'bg-white');
+                    e.target.classList.remove('bg-light-subtle');
+                }
+            });
+            document.addEventListener('focusout', function(e) {
+                if (e.target.classList.contains('table-input')) {
+                    e.target.classList.remove('shadow-sm', 'bg-white');
+                    e.target.classList.add('bg-light-subtle');
+                }
             });
         });
+
+        function initializeTables() {
+            const tables = document.querySelectorAll('.instrument-table');
+            console.log('Found tables:', tables.length);
+            tables.forEach(table => {
+                console.log('Initializing table:', table.id);
+                updateTableValue(table.id);
+            });
+        }
 
         function updateTableValue(tableId) {
             try {
                 const table = document.getElementById(tableId);
                 const hiddenInput = document.getElementById(tableId + '-input');
 
-                if (!table || !hiddenInput) return;
+                if (!table || !hiddenInput) {
+                    console.warn('Table or hidden input not found:', tableId);
+                    return;
+                }
 
                 const rows = table.querySelectorAll('tbody tr');
                 const data = [];
@@ -434,24 +480,34 @@
                         if (type === 'number' || type === 'percentage') {
                             value = parseFloat(value);
                             if (isNaN(value)) value = 0;
+                            // Round to 2 decimal places
+                            value = Math.round(value * 100) / 100;
                         }
 
                         rowData[key] = value;
                     });
 
-                    // Calculations
+                    // Calculations - Run after collecting all input values
                     inputs.forEach(input => {
                         if (input.dataset.calculate) {
                             try {
                                 const expression = input.dataset.calculate;
-                                // Replace "row.key" with valid values
                                 const calculated = evaluateExpression(expression, rowData);
-                                input.value = isNaN(calculated) || !isFinite(calculated) ? 0 : calculated
-                                    .toFixed(2);
-                                rowData[input.dataset.key] = parseFloat(input
-                                .value); // Update rowData with calculated value
+                                const finalValue = isNaN(calculated) || !isFinite(calculated) ? 0 :
+                                    Math.round(calculated * 100) / 100;
+
+                                // Update input display value
+                                input.value = finalValue.toFixed(2);
+
+                                // Update rowData with calculated value (already rounded)
+                                rowData[input.dataset.key] = finalValue;
+
+                                console.log(`Calculated ${input.dataset.key}:`, expression, '=',
+                                    finalValue);
                             } catch (e) {
-                                console.error('Calculation error:', e);
+                                console.error('Calculation error for', input.dataset.key, ':', e);
+                                input.value = '0';
+                                rowData[input.dataset.key] = 0;
                             }
                         }
                     });
@@ -460,6 +516,8 @@
                 });
 
                 hiddenInput.value = JSON.stringify(data);
+                console.log('Table', tableId, 'updated with data:', data.length, 'rows, value:', hiddenInput.value
+                    .substring(0, 100));
             } catch (error) {
                 console.error('Error updating table value:', error);
             }
@@ -470,25 +528,32 @@
             // Example: (row.total_passed / row.total_participants) * 100
             let evalString = expression;
 
+            console.log('Evaluating expression:', expression, 'with data:', rowData);
+
             // Sort keys by length desc to avoid partial replacements (e.g. total vs total_passed)
             const keys = Object.keys(rowData).sort((a, b) => b.length - a.length);
 
             keys.forEach(key => {
-                const val = rowData[key] || 0;
+                const val = parseFloat(rowData[key]) || 0;
                 // Replace row.key with value
                 evalString = evalString.replaceAll('row.' + key, val);
             });
 
+            console.log('After replacement:', evalString);
+
             try {
-                // Determine if unsafe characters exist
+                // Validate the expression contains only safe characters
                 if (/[^0-9+\-*/().\s]/.test(evalString)) {
-                    // console.warn('Unsafe characters in expression', evalString);
-                    // return 0;
+                    console.warn('Expression contains non-numeric characters after replacement:', evalString);
                 }
-                return Function('"use strict";return (' + evalString + ')')();
+
+                const result = Function('"use strict";return (' + evalString + ')')();
+                console.log('Calculation result:', result);
+                return result;
             } catch (err) {
+                console.error('Expression evaluation failed:', err, 'Expression:', evalString);
                 return 0;
             }
         }
     </script>
-@endsection
+@endpush

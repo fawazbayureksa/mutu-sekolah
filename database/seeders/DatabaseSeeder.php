@@ -15,8 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminUserSeeder::class,
             ScaleTemplateSeeder::class,
-            InstrumentSeeder::class,
-            PublicInstrumentSeeder::class,
+            AdvancedInstrumentSeeder::class,
         ]);
     }
 }

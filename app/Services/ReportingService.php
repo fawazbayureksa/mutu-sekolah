@@ -44,7 +44,7 @@ class ReportingService
         $instrument = Instrument::find($instrumentId);
 
         $scores = $assessments->pluck('percentage')->filter();
-        
+
         return [
             'instrument_id' => $instrumentId,
             'instrument_name' => $instrument->name ?? 'Unknown',
@@ -60,19 +60,13 @@ class ReportingService
         ];
     }
 
-    public function generateRegionalReport(string $province = null, string $city = null, string $year = null): array
+    public function generateRegionalReport(string $region = null, string $year = null): array
     {
         $query = Assessment::with(['school', 'instrument']);
 
-        if ($province) {
-            $query->whereHas('school', function ($q) use ($province) {
-                $q->where('province', $province);
-            });
-        }
-
-        if ($city) {
-            $query->whereHas('school', function ($q) use ($city) {
-                $q->where('city', $city);
+        if ($region) {
+            $query->whereHas('school', function ($q) use ($region) {
+                $q->where('address', 'like', '%' . $region . '%');
             });
         }
 
@@ -83,10 +77,7 @@ class ReportingService
         $assessments = $query->get();
 
         return [
-            'region' => [
-                'province' => $province,
-                'city' => $city,
-            ],
+            'region' => $region,
             'year' => $year,
             'total_assessments' => $assessments->count(),
             'total_schools' => $assessments->pluck('school_id')->unique()->count(),
@@ -134,7 +125,7 @@ class ReportingService
         $yearlyData = [];
         for ($year = $startYear; $year <= $endYear; $year++) {
             $yearAssessments = $assessments->where('period_year', $year);
-            
+
             $yearlyData[] = [
                 'year' => $year,
                 'total' => $yearAssessments->count(),
@@ -158,7 +149,7 @@ class ReportingService
         }
 
         $grades = $assessments->pluck('grade')->filter();
-        
+
         if ($grades->isEmpty()) {
             return '-';
         }
@@ -188,7 +179,7 @@ class ReportingService
     {
         sort($scores);
         $count = count($scores);
-        
+
         if ($count === 0) {
             return 0;
         }
@@ -205,7 +196,7 @@ class ReportingService
     protected function calculateGradeDistribution($assessments): array
     {
         $grades = $assessments->pluck('grade')->filter();
-        
+
         $distribution = [
             'A' => 0,
             'B' => 0,
@@ -378,7 +369,7 @@ class ReportingService
         }
 
         $totalAssessments = $query->count();
-        
+
         if ($totalAssessments === 0) {
             return 0;
         }

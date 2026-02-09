@@ -53,14 +53,12 @@ class ReportController extends Controller
     public function regionalReport(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'province' => 'nullable|string',
-            'city' => 'nullable|string',
+            'region' => 'nullable|string',
             'year' => 'nullable|string|size:4',
         ]);
 
         $report = $this->reportService->generateRegionalReport(
-            $validated['province'] ?? null,
-            $validated['city'] ?? null,
+            $validated['region'] ?? null,
             $validated['year'] ?? null
         );
 
