@@ -10,6 +10,21 @@
     $oldValue = old("answers.{$itemId}");
 @endphp
 
+{{-- DEBUG: Remove after fixing --}}
+@if ($itemId == 1)
+    <div class="alert alert-warning small mb-2">
+        <strong>DEBUG Item 1:</strong>
+        answer_type = "{{ $answerType ?? 'NULL' }}" |
+        options count = {{ count($options) }} |
+        @if ($answerType === 'structure')
+            rows = {{ count($options['rows'] ?? []) }} |
+            columns = {{ count($options['columns'] ?? []) }}
+            <br><strong>Options structure:</strong>
+            <pre style="font-size: 10px; max-height: 200px; overflow: auto;">{{ json_encode($options, JSON_PRETTY_PRINT) }}</pre>
+        @endif
+    </div>
+@endif
+
 <div class="answer-input-container">
     {{-- STRUCTURE / TABLE TYPE --}}
     @if ($answerType === 'structure')
@@ -18,6 +33,24 @@
             $columns = $config['columns'] ?? [];
             $rows = $config['rows'] ?? [];
             $tableId = "table-{$itemId}";
+
+            // If no rows defined, create default rows (e.g., for year-based tables)
+            if (empty($rows) && !empty($columns)) {
+                // Check if first column is a year type
+                $firstColKey = $columns[0]['key'] ?? '';
+                if (in_array($firstColKey, ['year', 'tahun'])) {
+                    // Create rows for last 3 years
+                    $currentYear = date('Y');
+                    $rows = [
+                        ['label' => (string) ($currentYear - 2)],
+                        ['label' => (string) ($currentYear - 1)],
+                        ['label' => (string) $currentYear],
+                    ];
+                } else {
+                    // Create 3 generic rows
+                    $rows = [['label' => 'Data 1'], ['label' => 'Data 2'], ['label' => 'Data 3']];
+                }
+            }
         @endphp
 
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-3">
@@ -34,8 +67,9 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
+                    {{-- Initialize with empty array if no old value - JS will populate on load --}}
                     <input type="hidden" name="{{ $inputName }}" id="{{ $tableId }}-input"
-                        value="{{ $oldValue }}">
+                        value="{{ $oldValue ?: '[]' }}">
                     <table class="table table-hover mb-0 instrument-table" id="{{ $tableId }}"
                         data-item-id="{{ $itemId }}">
                         <thead class="bg-light">
@@ -78,12 +112,10 @@
                                                     class="form-control form-control-sm border-light bg-light-subtle focus-ring table-input"
                                                     style="transition: all 0.2s;" data-type="{{ $col['type'] }}"
                                                     data-key="{{ $col['key'] }}" data-row="{{ $rowIndex }}"
+                                                    data-table-id="{{ $tableId }}"
                                                     value="{{ $rowValues[$col['key']] ?? '' }}"
                                                     @if ($col['type'] === 'percentage') min="0" max="100" step="0.01" @endif
-                                                    @if (isset($col['calculate'])) data-calculate="{{ $col['calculate'] }}" @endif
-                                                    onchange="updateTableValue('{{ $tableId }}')"
-                                                    onfocus="this.classList.add('shadow-sm', 'bg-white'); this.classList.remove('bg-light-subtle');"
-                                                    onblur="this.classList.remove('shadow-sm', 'bg-white'); this.classList.add('bg-light-subtle');">
+                                                    @if (isset($col['calculate'])) data-calculate="{{ $col['calculate'] }}" @endif>
                                             @endif
                                         </td>
                                     @endforeach
@@ -131,5 +163,10 @@
         {{-- TEXT / TEXTAREA TYPE --}}
     @elseif($answerType === 'text')
         <textarea class="form-control" name="{{ $inputName }}" rows="3" {{ $isRequired ? 'required' : '' }}>{{ $oldValue }}</textarea>
+
+        {{-- DEFAULT / FALLBACK for unknown types --}}
+    @else
+        <input type="text" class="form-control" name="{{ $inputName }}" value="{{ $oldValue }}"
+            {{ $isRequired ? 'required' : '' }} placeholder="Masukkan jawaban (type: {{ $answerType ?? 'unknown' }})">
     @endif
 </div>

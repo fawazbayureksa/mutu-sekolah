@@ -25,7 +25,7 @@ class InstrumentSubmissionRequest extends FormRequest
         return [
             // School data
             'school_name' => ['required', 'string', 'max:255'],
-            'npsn' => ['nullable', 'string', 'max:20', 'regex:/^\d{8}$/'],
+            'npsn' => ['nullable', 'string', 'max:20'],
             'address' => ['required', 'string', 'max:500'],
 
             // Respondent data
@@ -121,12 +121,32 @@ class InstrumentSubmissionRequest extends FormRequest
     protected function validateScale($validator, $itemId, $answer, $question): void
     {
         $options = $question?->getAnswerOptionsArray() ?? [];
+
+        // Skip validation if no options configured (fallback to accept any non-empty)
+        if (empty($options)) {
+            return;
+        }
+
         $validValues = array_column($options, 'value');
 
+        // Also check for 'key' or 'label' as value alternatives
+        if (empty($validValues)) {
+            $validValues = array_column($options, 'key');
+        }
+        if (empty($validValues)) {
+            $validValues = array_column($options, 'label');
+        }
+
+        // Skip validation if still no valid values found
+        if (empty($validValues)) {
+            return;
+        }
+
+        // Use loose comparison (string '1' == int 1)
         if (!in_array($answer, $validValues)) {
             $validator->errors()->add(
                 "answers.{$itemId}",
-                "Pilihan tidak valid."
+                "Pilihan tidak valid. Nilai yang diterima: " . implode(', ', $validValues)
             );
         }
     }

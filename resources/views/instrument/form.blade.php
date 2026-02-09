@@ -2,7 +2,7 @@
 
 @section('title', 'Isi Instrumen - Penjaminan Mutu SMK Bidang KPTK')
 
-@section('styles')
+@push('styles')
     <style>
         body {
             background-color: #f8f9fa;
@@ -137,7 +137,7 @@
             color: #0d6efd;
         }
     </style>
-@endsection
+@endpush
 
 @section('content')
     <div class="container py-5">
@@ -158,6 +158,19 @@
                 @if (session('error'))
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                {{-- Display all validation errors --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong><i class="bi bi-exclamation-triangle me-2"></i>Terdapat kesalahan pada form:</strong>
+                        <ul class="mb-0 mt-2">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
@@ -278,8 +291,11 @@
                                                 @if ($item)
                                                     @include('instrument.partials.answer-input', [
                                                         'question' => $question,
-                                                        'inputName' => "answers[{$item->id}]",
+                                                        'item' => $item,
                                                     ])
+                                                    @error("answers.{$item->id}")
+                                                        <div class="text-danger small mt-2">{{ $message }}</div>
+                                                    @enderror
                                                 @endif
                                             </div>
                                         @endforeach
@@ -378,12 +394,13 @@
     </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
     <script>
         // Optional: Add confirmation before submit
         document.querySelector('form').addEventListener('submit', function(e) {
-            // Ensure all tables are updated
+            // Ensure all tables are updated before submit
             document.querySelectorAll('.instrument-table').forEach(table => {
+                console.log('Updating table before submit:', table.id);
                 updateTableValue(table.id);
             });
 
@@ -392,19 +409,57 @@
             }
         });
 
-        // Initialize calculations on load
+        // Initialize calculations on load - with fallback
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.instrument-table').forEach(table => {
-                updateTableValue(table.id);
+            console.log('DOM loaded, initializing tables...');
+            initializeTables();
+
+            // Fallback: also initialize after a short delay (for dynamically loaded content)
+            setTimeout(initializeTables, 500);
+
+            // Event delegation for table inputs (instead of inline onchange)
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('table-input')) {
+                    const tableId = e.target.dataset.tableId;
+                    if (tableId) {
+                        updateTableValue(tableId);
+                    }
+                }
+            });
+
+            // Focus/blur effects
+            document.addEventListener('focusin', function(e) {
+                if (e.target.classList.contains('table-input')) {
+                    e.target.classList.add('shadow-sm', 'bg-white');
+                    e.target.classList.remove('bg-light-subtle');
+                }
+            });
+            document.addEventListener('focusout', function(e) {
+                if (e.target.classList.contains('table-input')) {
+                    e.target.classList.remove('shadow-sm', 'bg-white');
+                    e.target.classList.add('bg-light-subtle');
+                }
             });
         });
+
+        function initializeTables() {
+            const tables = document.querySelectorAll('.instrument-table');
+            console.log('Found tables:', tables.length);
+            tables.forEach(table => {
+                console.log('Initializing table:', table.id);
+                updateTableValue(table.id);
+            });
+        }
 
         function updateTableValue(tableId) {
             try {
                 const table = document.getElementById(tableId);
                 const hiddenInput = document.getElementById(tableId + '-input');
 
-                if (!table || !hiddenInput) return;
+                if (!table || !hiddenInput) {
+                    console.warn('Table or hidden input not found:', tableId);
+                    return;
+                }
 
                 const rows = table.querySelectorAll('tbody tr');
                 const data = [];
@@ -450,6 +505,8 @@
                 });
 
                 hiddenInput.value = JSON.stringify(data);
+                console.log('Table', tableId, 'updated with data:', data.length, 'rows, value:', hiddenInput.value
+                    .substring(0, 100));
             } catch (error) {
                 console.error('Error updating table value:', error);
             }
@@ -481,4 +538,4 @@
             }
         }
     </script>
-@endsection
+@endpush
