@@ -10,21 +10,6 @@
     $oldValue = old("answers.{$itemId}");
 @endphp
 
-{{-- DEBUG: Remove after fixing --}}
-@if ($itemId == 1)
-    <div class="alert alert-warning small mb-2">
-        <strong>DEBUG Item 1:</strong>
-        answer_type = "{{ $answerType ?? 'NULL' }}" |
-        options count = {{ count($options) }} |
-        @if ($answerType === 'structure')
-            rows = {{ count($options['rows'] ?? []) }} |
-            columns = {{ count($options['columns'] ?? []) }}
-            <br><strong>Options structure:</strong>
-            <pre style="font-size: 10px; max-height: 200px; overflow: auto;">{{ json_encode($options, JSON_PRETTY_PRINT) }}</pre>
-        @endif
-    </div>
-@endif
-
 <div class="answer-input-container">
     {{-- STRUCTURE / TABLE TYPE --}}
     @if ($answerType === 'structure')
@@ -100,7 +85,10 @@
                                                     <input type="text"
                                                         class="form-control form-control-sm bg-light border-0 fw-bold text-primary table-input"
                                                         data-type="{{ $col['type'] }}" data-key="{{ $col['key'] }}"
-                                                        value="{{ $rowValues[$col['key']] ?? '' }}" disabled readonly>
+                                                        data-row="{{ $rowIndex }}"
+                                                        data-table-id="{{ $tableId }}"
+                                                        value="{{ $rowValues[$col['key']] ?? '' }}" readonly
+                                                        @if (isset($col['calculate'])) data-calculate="{{ $col['calculate'] }}" @endif>
                                                     @if ($col['type'] === 'percentage')
                                                         <span
                                                             class="input-group-text bg-light border-0 text-primary fw-bold">%</span>
@@ -114,7 +102,8 @@
                                                     data-key="{{ $col['key'] }}" data-row="{{ $rowIndex }}"
                                                     data-table-id="{{ $tableId }}"
                                                     value="{{ $rowValues[$col['key']] ?? '' }}"
-                                                    @if ($col['type'] === 'percentage') min="0" max="100" step="0.01" @endif
+                                                    @if ($col['type'] === 'number' || $col['type'] === 'percentage') step="0.01" @endif
+                                                    @if ($col['type'] === 'percentage') min="0" max="100" @endif
                                                     @if (isset($col['calculate'])) data-calculate="{{ $col['calculate'] }}" @endif>
                                             @endif
                                         </td>
@@ -157,7 +146,7 @@
         {{-- NUMBER / PERCENTAGE TYPE --}}
     @elseif($answerType === 'number' || $answerType === 'percentage')
         <input type="number" class="form-control" style="max-width: 200px" name="{{ $inputName }}"
-            value="{{ $oldValue }}" {{ $isRequired ? 'required' : '' }}
+            value="{{ $oldValue }}" step="0.01" {{ $isRequired ? 'required' : '' }}
             @if ($answerType === 'percentage') min="0" max="100" @endif>
 
         {{-- TEXT / TEXTAREA TYPE --}}

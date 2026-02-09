@@ -419,9 +419,10 @@
 
             // Event delegation for table inputs (instead of inline onchange)
             document.addEventListener('input', function(e) {
-                if (e.target.classList.contains('table-input')) {
+                if (e.target.classList.contains('table-input') && !e.target.hasAttribute('readonly')) {
                     const tableId = e.target.dataset.tableId;
                     if (tableId) {
+                        console.log('Input changed in table:', tableId);
                         updateTableValue(tableId);
                     }
                 }
@@ -479,24 +480,34 @@
                         if (type === 'number' || type === 'percentage') {
                             value = parseFloat(value);
                             if (isNaN(value)) value = 0;
+                            // Round to 2 decimal places
+                            value = Math.round(value * 100) / 100;
                         }
 
                         rowData[key] = value;
                     });
 
-                    // Calculations
+                    // Calculations - Run after collecting all input values
                     inputs.forEach(input => {
                         if (input.dataset.calculate) {
                             try {
                                 const expression = input.dataset.calculate;
-                                // Replace "row.key" with valid values
                                 const calculated = evaluateExpression(expression, rowData);
-                                input.value = isNaN(calculated) || !isFinite(calculated) ? 0 : calculated
-                                    .toFixed(2);
-                                rowData[input.dataset.key] = parseFloat(input
-                                    .value); // Update rowData with calculated value
+                                const finalValue = isNaN(calculated) || !isFinite(calculated) ? 0 :
+                                    Math.round(calculated * 100) / 100;
+
+                                // Update input display value
+                                input.value = finalValue.toFixed(2);
+
+                                // Update rowData with calculated value (already rounded)
+                                rowData[input.dataset.key] = finalValue;
+
+                                console.log(`Calculated ${input.dataset.key}:`, expression, '=',
+                                    finalValue);
                             } catch (e) {
-                                console.error('Calculation error:', e);
+                                console.error('Calculation error for', input.dataset.key, ':', e);
+                                input.value = '0';
+                                rowData[input.dataset.key] = 0;
                             }
                         }
                     });
@@ -517,23 +528,30 @@
             // Example: (row.total_passed / row.total_participants) * 100
             let evalString = expression;
 
+            console.log('Evaluating expression:', expression, 'with data:', rowData);
+
             // Sort keys by length desc to avoid partial replacements (e.g. total vs total_passed)
             const keys = Object.keys(rowData).sort((a, b) => b.length - a.length);
 
             keys.forEach(key => {
-                const val = rowData[key] || 0;
+                const val = parseFloat(rowData[key]) || 0;
                 // Replace row.key with value
                 evalString = evalString.replaceAll('row.' + key, val);
             });
 
+            console.log('After replacement:', evalString);
+
             try {
-                // Determine if unsafe characters exist
+                // Validate the expression contains only safe characters
                 if (/[^0-9+\-*/().\s]/.test(evalString)) {
-                    // console.warn('Unsafe characters in expression', evalString);
-                    // return 0;
+                    console.warn('Expression contains non-numeric characters after replacement:', evalString);
                 }
-                return Function('"use strict";return (' + evalString + ')')();
+
+                const result = Function('"use strict";return (' + evalString + ')')();
+                console.log('Calculation result:', result);
+                return result;
             } catch (err) {
+                console.error('Expression evaluation failed:', err, 'Expression:', evalString);
                 return 0;
             }
         }
