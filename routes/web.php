@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminValidationController;
+use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\AssessmentAnswerController;
 use App\Http\Controllers\Admin\AssessmentController;
 use App\Http\Controllers\Admin\InstrumentController;
@@ -33,8 +35,17 @@ Route::middleware('auth')->group(function () {
         return view('dashboard.index');
     })->name('dashboard');
 
+    // Verifier routes
+    Route::prefix('verifier')->middleware(['role:verifier'])->name('verifier.')->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Verifier\VerifierDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/submissions', [\App\Http\Controllers\Verifier\VerifierSubmissionController::class, 'index'])->name('submissions.index');
+        Route::get('/submissions/{submission}', [\App\Http\Controllers\Verifier\VerifierSubmissionController::class, 'show'])->name('submissions.show');
+        Route::post('/submissions/{submission}/verify', [\App\Http\Controllers\Verifier\VerifierSubmissionController::class, 'verify'])->name('submissions.verify');
+        Route::post('/submissions/{submission}/reject', [\App\Http\Controllers\Verifier\VerifierSubmissionController::class, 'reject'])->name('submissions.reject');
+    });
+
     // Admin routes
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->middleware(['role:admin'])->name('admin.')->group(function () {
         // School Management
         Route::prefix('schools')->name('schools.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\SchoolController::class, 'index'])->name('index');
@@ -129,5 +140,16 @@ Route::middleware('auth')->group(function () {
         });
         // Submission Management
         Route::resource('submissions', \App\Http\Controllers\Admin\SubmissionController::class)->only(['index', 'show']);
+
+        // Validation routes
+        Route::get('/validations', [AdminValidationController::class, 'index'])->name('validations.index');
+        Route::get('/validations/{submission}', [AdminValidationController::class, 'show'])->name('validations.show');
+        Route::post('/validations/{submission}/validate', [AdminValidationController::class, 'validateSubmission'])->name('validations.validate');
+        Route::post('/validations/{submission}/reject', [AdminValidationController::class, 'reject'])->name('validations.reject');
+        Route::post('/validations/{submission}/release', [AdminValidationController::class, 'release'])->name('validations.release');
+        Route::post('/validations/bulk-release', [AdminValidationController::class, 'bulkRelease'])->name('validations.bulk-release');
+
+        // Analytics routes
+        Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
     });
 });

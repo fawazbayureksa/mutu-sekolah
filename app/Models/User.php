@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -45,6 +45,16 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    public function isVerifier(): bool
+    {
+        return $this->role === 'verifier';
+    }
+
+    public function isSchool(): bool
+    {
+        return $this->role === 'school';
+    }
+
     public function isActive(): bool
     {
         return $this->is_active;
@@ -60,17 +70,22 @@ class User extends Authenticatable
         return $query->where('role', 'admin');
     }
 
-    public function scopeRegular($query)
+    public function scopeVerifier($query)
     {
-        return $query->where('role', 'user');
+        return $query->where('role', 'verifier');
+    }
+
+    public function scopeSchool($query)
+    {
+        return $query->where('role', 'school');
     }
 
     public function scopeSearch($query, $term)
     {
         return $query->where(function ($q) use ($term) {
             $q->where('name', 'like', "%{$term}%")
-              ->orWhere('email', 'like', "%{$term}%")
-              ->orWhere('phone', 'like', "%{$term}%");
+                ->orWhere('email', 'like', "%{$term}%")
+                ->orWhere('phone', 'like', "%{$term}%");
         });
     }
 }

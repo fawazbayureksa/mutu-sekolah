@@ -22,6 +22,8 @@ class AdminUserSeeder extends Seeder
                 'name' => 'Administrator BPPMPV',
                 'email' => 'admin@bppmpv.com',
                 'password' => Hash::make('password123'),
+                'role' => 'admin',
+                'is_active' => true,
                 'email_verified_at' => now(),
                 'created_at' => now(),
                 'updated_at' => now(),
