@@ -54,8 +54,7 @@ class InstrumentSubmissionService
                     'school_name' => $validated['school_name'],
                 ],
                 [
-                    'province' => $validated['province'],
-                    'city' => $validated['city'],
+                    'address' => $validated['address'],
                 ]
             );
 
@@ -197,8 +196,7 @@ class InstrumentSubmissionService
         $validator = Validator::make($payload, [
             'school_name' => 'required|string|max:255',
             'npsn' => 'nullable|string|max:20',
-            'province' => 'required|string|max:100',
-            'city' => 'required|string|max:100',
+            'address' => 'required|string',
             'respondent_name' => 'required|string|max:255',
             'respondent_position' => 'required|string|max:255',
             'answers' => 'required|array',

@@ -24,10 +24,10 @@
                     <input type="text" name="npsn" class="form-control" placeholder="Cari NPSN..."
                         value="{{ request('npsn') }}">
                 </div>
-                {{-- <div class="col-md-3">
-                    <input type="text" name="province" class="form-control" placeholder="Cari provinsi..."
-                        value="{{ request('province') }}">
-                </div> --}}
+                <div class="col-md-3">
+                    <input type="text" name="address" class="form-control" placeholder="Cari alamat..."
+                        value="{{ request('address') }}">
+                </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-secondary w-100">
                         <i class="bi bi-funnel me-1"></i>Filter

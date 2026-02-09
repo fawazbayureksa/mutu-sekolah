@@ -191,21 +191,11 @@
                                 <label class="form-label">NPSN</label>
                                 <input type="text" name="npsn" class="form-control" value="{{ old('npsn') }}">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Provinsi <span class="text-danger">*</span></label>
-                                <input type="text" name="province"
-                                    class="form-control @error('province') is-invalid @enderror" required
-                                    value="{{ old('province') }}">
-                                @error('province')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Kota/Kabupaten <span class="text-danger">*</span></label>
-                                <input type="text" name="city"
-                                    class="form-control @error('city') is-invalid @enderror" required
-                                    value="{{ old('city') }}">
-                                @error('city')
+                            <div class="col-md-12">
+                                <label class="form-label">Alamat <span class="text-danger">*</span></label>
+                                <textarea name="address" rows="3" class="form-control @error('address') is-invalid @enderror" required
+                                    placeholder="Masukkan alamat lengkap sekolah (termasuk provinsi dan kota/kabupaten)">{{ old('address') }}</textarea>
+                                @error('address')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -449,7 +439,7 @@
                                 input.value = isNaN(calculated) || !isFinite(calculated) ? 0 : calculated
                                     .toFixed(2);
                                 rowData[input.dataset.key] = parseFloat(input
-                                .value); // Update rowData with calculated value
+                                    .value); // Update rowData with calculated value
                             } catch (e) {
                                 console.error('Calculation error:', e);
                             }

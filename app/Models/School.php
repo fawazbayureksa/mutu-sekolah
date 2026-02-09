@@ -13,8 +13,7 @@ class School extends Model
     protected $fillable = [
         'school_name',
         'npsn',
-        'province',
-        'city',
+        'address',
     ];
 
     public function responses(): HasMany
@@ -37,14 +36,9 @@ class School extends Model
         return $this->hasOne(Submission::class)->latestOfMany('filled_at');
     }
 
-    public function scopeByProvince($query, $province)
+    public function scopeByAddress($query, $address)
     {
-        return $query->where('province', $province);
-    }
-
-    public function scopeByCity($query, $city)
-    {
-        return $query->where('city', $city);
+        return $query->where('address', 'like', '%' . $address . '%');
     }
 
     public function scopeByNpsn($query, $npsn)

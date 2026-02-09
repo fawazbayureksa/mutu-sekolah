@@ -15,15 +15,15 @@ class SchoolController extends Controller
         $query = School::query();
 
         if ($request->filled('search')) {
-            $query->where('school_name', 'like', '%'.$request->search.'%');
+            $query->where('school_name', 'like', '%' . $request->search . '%');
         }
 
         if ($request->filled('npsn')) {
-            $query->where('npsn', 'like', '%'.$request->npsn.'%');
+            $query->where('npsn', 'like', '%' . $request->npsn . '%');
         }
 
-        if ($request->filled('province')) {
-            $query->where('province', 'like', '%'.$request->province.'%');
+        if ($request->filled('address')) {
+            $query->where('address', 'like', '%' . $request->address . '%');
         }
 
         $schools = $query->latest()->paginate(15);
@@ -41,8 +41,7 @@ class SchoolController extends Controller
         $validated = $request->validate([
             'school_name' => 'required|string|max:255',
             'npsn' => 'required|string|max:20|unique:schools,npsn',
-            'province' => 'required|string|max:100',
-            'city' => 'required|string|max:100',
+            'address' => 'required|string',
         ]);
 
         School::create($validated);
@@ -68,9 +67,8 @@ class SchoolController extends Controller
     {
         $validated = $request->validate([
             'school_name' => 'required|string|max:255',
-            'npsn' => 'required|string|max:20|unique:schools,npsn,'.$school->id,
-            'province' => 'required|string|max:100',
-            'city' => 'required|string|max:100',
+            'npsn' => 'required|string|max:20|unique:schools,npsn,' . $school->id,
+            'address' => 'required|string',
         ]);
 
         $school->update($validated);
