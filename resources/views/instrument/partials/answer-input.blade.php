@@ -48,7 +48,14 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                // Parse old value ONCE if available
+                                $oldData = $oldValue ? json_decode($oldValue, true) : [];
+                            @endphp
                             @foreach ($rows as $rowIndex => $row)
+                                @php
+                                    $rowValues = $oldData[$rowIndex] ?? [];
+                                @endphp
                                 <tr data-row-index="{{ $rowIndex }}">
                                     <td class="px-4 py-3 align-middle fw-medium text-dark border-bottom-0 border-top">
                                         {{ $row['label'] }}</td>
@@ -59,7 +66,7 @@
                                                     <input type="text"
                                                         class="form-control form-control-sm bg-light border-0 fw-bold text-primary table-input"
                                                         data-type="{{ $col['type'] }}" data-key="{{ $col['key'] }}"
-                                                        disabled readonly>
+                                                        value="{{ $rowValues[$col['key']] ?? '' }}" disabled readonly>
                                                     @if ($col['type'] === 'percentage')
                                                         <span
                                                             class="input-group-text bg-light border-0 text-primary fw-bold">%</span>
@@ -71,6 +78,7 @@
                                                     class="form-control form-control-sm border-light bg-light-subtle focus-ring table-input"
                                                     style="transition: all 0.2s;" data-type="{{ $col['type'] }}"
                                                     data-key="{{ $col['key'] }}" data-row="{{ $rowIndex }}"
+                                                    value="{{ $rowValues[$col['key']] ?? '' }}"
                                                     @if ($col['type'] === 'percentage') min="0" max="100" step="0.01" @endif
                                                     @if (isset($col['calculate'])) data-calculate="{{ $col['calculate'] }}" @endif
                                                     onchange="updateTableValue('{{ $tableId }}')"
