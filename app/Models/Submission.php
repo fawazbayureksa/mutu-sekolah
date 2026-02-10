@@ -36,6 +36,9 @@ class Submission extends Model
         'verified_by',
         'verified_at',
         'verification_notes',
+        'update_token',
+        'update_token_used_at',
+        'update_token_expires_at',
         'validated_by',
         'validated_at',
         'validation_notes',
@@ -46,6 +49,8 @@ class Submission extends Model
     protected $casts = [
         'filled_at' => 'date',
         'verified_at' => 'datetime',
+        'update_token_used_at' => 'datetime',
+        'update_token_expires_at' => 'datetime',
         'validated_at' => 'datetime',
         'released_at' => 'datetime',
         'total_score' => 'decimal:2',
@@ -144,5 +149,50 @@ class Submission extends Model
         $answered = $this->responses()->count();
 
         return $total > 0 ? ($answered / $total) * 100 : 0;
+    }
+
+    public function generateUpdateToken(): string
+    {
+        // Generate a short random token (8 characters alphanumeric)
+        $token = strtoupper(substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ23456789'), 0, 8));
+        
+        // Ensure uniqueness
+        while (self::where('update_token', $token)->exists()) {
+            $token = strtoupper(substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ23456789'), 0, 8));
+        }
+        
+        $this->update([
+            'update_token' => $token,
+            'update_token_expires_at' => now()->addDays(7), // Token expires in 7 days
+            'update_token_used_at' => null, // Reset if regenerated
+        ]);
+        
+        return $token;
+    }
+
+    public function isUpdateTokenValid(): bool
+    {
+        if (!$this->update_token) {
+            return false;
+        }
+
+        // Token already used
+        if ($this->update_token_used_at) {
+            return false;
+        }
+
+        // Token expired
+        if ($this->update_token_expires_at && $this->update_token_expires_at->isPast()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function markTokenAsUsed(): void
+    {
+        $this->update([
+            'update_token_used_at' => now(),
+        ]);
     }
 }

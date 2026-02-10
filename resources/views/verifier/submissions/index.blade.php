@@ -57,6 +57,13 @@
                                             class="btn btn-primary btn-sm">
                                             <i class="bi bi-eye"></i> Detail
                                         </a>
+                                        @if ($submission->isRejected())
+                                            <button type="button" class="btn btn-warning btn-sm" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#generateTokenModal{{ $submission->id }}">
+                                                <i class="bi bi-link-45deg"></i> Generate Link
+                                            </button>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
@@ -73,4 +80,83 @@
             </div>
         </div>
     </div>
+
+    {{-- Modals for generating update tokens --}}
+    @foreach ($submissions as $submission)
+        @if ($submission->isRejected())
+            <div class="modal fade" id="generateTokenModal{{ $submission->id }}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Generate Update Link</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <form action="{{ route('verifier.submissions.generate-token', $submission) }}" method="POST">
+                            @csrf
+                            <div class="modal-body">
+                                <p>Generate link akses satu kali untuk responden agar dapat memperbarui data submission mereka?</p>
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle"></i> Link akan berlaku selama 7 hari dan hanya dapat digunakan 1 kali.
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-warning">Generate Link</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endforeach
+
+    {{-- Update URL Display Modal --}}
+    @if (session('update_url'))
+        <div class="modal fade show" id="updateUrlModal" tabindex="-1" style="display: block;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title"><i class="bi bi-check-circle"></i> Link Berhasil Dibuat</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Link akses untuk update data submission:</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="updateUrl" value="{{ session('update_url') }}" readonly>
+                            <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">
+                                <i class="bi bi-clipboard"></i> Copy
+                            </button>
+                        </div>
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i> Kirimkan link ini kepada responden. Link berlaku 7 hari dan hanya dapat digunakan 1 kali.
+                        </small>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+        <script>
+            function copyToClipboard() {
+                const input = document.getElementById('updateUrl');
+                input.select();
+                document.execCommand('copy');
+                alert('Link berhasil disalin!');
+            }
+            
+            document.getElementById('updateUrlModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                    document.querySelector('.modal-backdrop').remove();
+                }
+            });
+            
+            document.querySelector('#updateUrlModal .btn-close, #updateUrlModal .btn-primary').addEventListener('click', function() {
+                document.getElementById('updateUrlModal').style.display = 'none';
+                document.querySelector('.modal-backdrop').remove();
+            });
+        </script>
+    @endif
 @endsection
