@@ -275,14 +275,15 @@
                                                         'assessment_question_id',
                                                         $question->id,
                                                     );
-                                                    // Pre-fill with old values
-                                                    $oldValue = old("answers.{$item->id}") ?? ($oldAnswers[$item->id] ?? null);
+                                                    // Get prefill value
+                                                    $prefillValue = $prefillAnswers[$item->id] ?? null;
                                                 @endphp
 
                                                 @if ($item)
                                                     @include('instrument.partials.answer-input', [
                                                         'question' => $question,
                                                         'item' => $item,
+                                                        'prefillValue' => $prefillValue,
                                                     ])
                                                     @error("answers.{$item->id}")
                                                         <div class="text-danger small mt-2">{{ $message }}</div>
@@ -315,52 +316,53 @@
 
                                         <div class="answer-input">
                                             @php
-                                                $oldValue = old("answers.{$item->id}") ?? ($oldAnswers[$item->id] ?? null);
+                                                $prefillValue = $prefillAnswers[$item->id] ?? null;
+                                                $displayValue = old("answers.{$item->id}", $prefillValue);
                                             @endphp
 
                                             @if ($item->answer_type === 'boolean')
                                                 <div class="btn-group" role="group" aria-label="Yes/No">
                                                     <input type="radio" class="btn-check"
                                                         name="answers[{{ $item->id }}]" id="yes_{{ $item->id }}"
-                                                        value="Yes" @if ($oldValue === 'Yes') checked @endif
+                                                        value="Yes" @if ($displayValue === 'Yes') checked @endif
                                                         required>
                                                     <label class="btn btn-outline-primary"
                                                         for="yes_{{ $item->id }}">Ya</label>
 
                                                     <input type="radio" class="btn-check"
                                                         name="answers[{{ $item->id }}]" id="no_{{ $item->id }}"
-                                                        value="No" @if ($oldValue === 'No') checked @endif>
+                                                        value="No" @if ($displayValue === 'No') checked @endif>
                                                     <label class="btn btn-outline-primary"
                                                         for="no_{{ $item->id }}">Tidak</label>
                                                 </div>
                                             @elseif($item->answer_type === 'scale' || $item->answer_type === 'number')
                                                 <input type="number" name="answers[{{ $item->id }}]"
                                                     class="form-control" required
-                                                    value="{{ $oldValue }}"
+                                                    value="{{ $displayValue }}"
                                                     placeholder="Masukkan nilai">
                                             @elseif($item->answer_type === 'option')
                                                 <select name="answers[{{ $item->id }}]" class="form-select" required>
                                                     <option value="">Pilih opsi</option>
                                                     <option value="Sangat Baik"
-                                                        @if ($oldValue === 'Sangat Baik') selected @endif>Sangat Baik
+                                                        @if ($displayValue === 'Sangat Baik') selected @endif>Sangat Baik
                                                     </option>
                                                     <option value="Baik"
-                                                        @if ($oldValue === 'Baik') selected @endif>
+                                                        @if ($displayValue === 'Baik') selected @endif>
                                                         Baik</option>
                                                     <option value="Cukup"
-                                                        @if ($oldValue === 'Cukup') selected @endif>
+                                                        @if ($displayValue === 'Cukup') selected @endif>
                                                         Cukup</option>
                                                     <option value="Kurang"
-                                                        @if ($oldValue === 'Kurang') selected @endif>
+                                                        @if ($displayValue === 'Kurang') selected @endif>
                                                         Kurang</option>
                                                     <option value="Sangat Kurang"
-                                                        @if ($oldValue === 'Sangat Kurang') selected @endif>Sangat Kurang
+                                                        @if ($displayValue === 'Sangat Kurang') selected @endif>Sangat Kurang
                                                     </option>
                                                 </select>
                                             @else
                                                 <input type="text" name="answers[{{ $item->id }}]"
                                                     class="form-control" required
-                                                    value="{{ $oldValue }}" placeholder="Jawaban Anda">
+                                                    value="{{ $displayValue }}" placeholder="Jawaban Anda">
                                             @endif
                                         </div>
 

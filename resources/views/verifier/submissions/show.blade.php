@@ -79,6 +79,42 @@
             </div>
         @endif
 
+        @if($submission->isRejected())
+            <div class="card shadow mb-4 border-warning">
+                <div class="card-header py-3 bg-warning text-white">
+                    <h6 class="m-0 font-weight-bold">Generate Update Link</h6>
+                </div>
+                <div class="card-body">
+                    @if($submission->update_token && $submission->isUpdateTokenValid())
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle"></i> Link aktif sudah dibuat
+                            <div class="input-group mt-2">
+                                <input type="text" class="form-control" id="existingUpdateUrl" 
+                                    value="{{ route('submission.update.show', $submission->update_token) }}" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyExistingUrl()">
+                                    <i class="bi bi-clipboard"></i> Copy
+                                </button>
+                            </div>
+                            <small class="text-muted d-block mt-2">
+                                Expires: {{ $submission->update_token_expires_at->format('d M Y H:i') }}
+                            </small>
+                        </div>
+                    @elseif($submission->update_token_used_at)
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> Link sudah digunakan pada {{ $submission->update_token_used_at->format('d M Y H:i') }}
+                        </div>
+                    @endif
+                    
+                    <form action="{{ route('verifier.submissions.generate-token', $submission) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-link-45deg"></i> {{ $submission->update_token ? 'Generate Ulang Link' : 'Generate Link' }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        @endif
+
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Review Jawaban</h6>
@@ -247,4 +283,13 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function copyExistingUrl() {
+            const input = document.getElementById('existingUpdateUrl');
+            input.select();
+            document.execCommand('copy');
+            alert('Link berhasil disalin!');
+        }
+    </script>
 @endsection

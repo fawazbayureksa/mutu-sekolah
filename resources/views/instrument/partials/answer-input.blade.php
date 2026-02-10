@@ -1,4 +1,4 @@
-@props(['question', 'item'])
+@props(['question', 'item', 'prefillValue' => null])
 
 @php
     $isRequired = $question->is_required;
@@ -7,7 +7,7 @@
     $scaleTemplate = $question->scaleTemplate;
     $itemId = $item->id;
     $inputName = "answers[{$itemId}]";
-    $oldValue = old("answers.{$itemId}");
+    $oldValue = old("answers.{$itemId}", $prefillValue);
 @endphp
 
 <div class="answer-input-container">

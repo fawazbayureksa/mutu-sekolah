@@ -17,7 +17,7 @@ class SubmissionUpdateController extends Controller
         $this->service = $service;
     }
 
-    public function show(string $token)
+    public function show(Request $request, string $token)
     {
         $submission = Submission::where('update_token', $token)->firstOrFail();
 
@@ -40,9 +40,11 @@ class SubmissionUpdateController extends Controller
         $aspects = $useHierarchy ? $instrument->aspects : collect();
 
         // Pre-fill old values from existing responses
-        $oldAnswers = [];
+        $prefillAnswers = [];
         foreach ($submission->responses as $response) {
-            $oldAnswers[$response->instrument_item_id] = $response->answer;
+            // Convert answer to string for structure type (JSON)
+            $answerValue = is_array($response->answer) ? json_encode($response->answer) : $response->answer;
+            $prefillAnswers[$response->instrument_item_id] = $answerValue;
         }
 
         return view('submission.update', compact(
@@ -50,7 +52,7 @@ class SubmissionUpdateController extends Controller
             'instrument',
             'aspects',
             'useHierarchy',
-            'oldAnswers',
+            'prefillAnswers',
             'token'
         ));
     }
