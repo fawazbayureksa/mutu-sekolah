@@ -31,7 +31,7 @@ class AssessmentAspect extends Model
     {
         return $this->belongsToMany(Instrument::class, 'instrument_aspects', 'aspect_id', 'instrument_id')
             ->withPivot(['order', 'weight'])
-            ->orderBy('pivot_order');
+            ->orderBy('order');
     }
 
     public function scopeOrdered($query)

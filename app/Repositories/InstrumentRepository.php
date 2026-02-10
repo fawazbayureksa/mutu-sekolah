@@ -26,7 +26,7 @@ class InstrumentRepository implements InstrumentRepositoryInterface
                 $query->with('scaleTemplate');
             },
             'aspects' => function ($query) {
-                $query->orderBy('pivot_order')
+                $query->orderByPivot('order')
                     ->with([
                         'indicators' => function ($q) {
                             $q->orderBy('order')
