@@ -154,11 +154,21 @@ class Submission extends Model
     public function generateUpdateToken(): string
     {
         // Generate a short random token (8 characters alphanumeric)
-        $token = strtoupper(substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ23456789'), 0, 8));
+        // Use cryptographically secure random generation
+        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        $token = '';
+        $max = strlen($characters) - 1;
+        
+        for ($i = 0; $i < 8; $i++) {
+            $token .= $characters[random_int(0, $max)];
+        }
         
         // Ensure uniqueness
         while (self::where('update_token', $token)->exists()) {
-            $token = strtoupper(substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ23456789'), 0, 8));
+            $token = '';
+            for ($i = 0; $i < 8; $i++) {
+                $token .= $characters[random_int(0, $max)];
+            }
         }
         
         $this->update([

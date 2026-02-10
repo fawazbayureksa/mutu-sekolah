@@ -287,9 +287,25 @@
     <script>
         function copyExistingUrl() {
             const input = document.getElementById('existingUpdateUrl');
-            input.select();
-            document.execCommand('copy');
-            alert('Link berhasil disalin!');
+            
+            // Use modern Clipboard API if available, fallback to execCommand
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(input.value).then(() => {
+                    alert('Link berhasil disalin!');
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    alert('Gagal menyalin link.');
+                });
+            } else {
+                // Fallback for older browsers
+                input.select();
+                try {
+                    document.execCommand('copy');
+                    alert('Link berhasil disalin!');
+                } catch (err) {
+                    alert('Gagal menyalin link.');
+                }
+            }
         }
     </script>
 @endsection

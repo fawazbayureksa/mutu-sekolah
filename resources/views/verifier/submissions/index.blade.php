@@ -141,21 +141,43 @@
         <script>
             function copyToClipboard() {
                 const input = document.getElementById('updateUrl');
-                input.select();
-                document.execCommand('copy');
-                alert('Link berhasil disalin!');
+                
+                // Use modern Clipboard API if available, fallback to execCommand
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(input.value).then(() => {
+                        alert('Link berhasil disalin!');
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                        alert('Gagal menyalin link.');
+                    });
+                } else {
+                    // Fallback for older browsers
+                    input.select();
+                    try {
+                        document.execCommand('copy');
+                        alert('Link berhasil disalin!');
+                    } catch (err) {
+                        alert('Gagal menyalin link.');
+                    }
+                }
             }
             
             document.getElementById('updateUrlModal').addEventListener('click', function(e) {
                 if (e.target === this) {
                     this.style.display = 'none';
-                    document.querySelector('.modal-backdrop').remove();
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) backdrop.remove();
                 }
             });
             
-            document.querySelector('#updateUrlModal .btn-close, #updateUrlModal .btn-primary').addEventListener('click', function() {
-                document.getElementById('updateUrlModal').style.display = 'none';
-                document.querySelector('.modal-backdrop').remove();
+            // Attach close handlers to both buttons
+            const closeButtons = document.querySelectorAll('#updateUrlModal .btn-close, #updateUrlModal .btn-primary');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    document.getElementById('updateUrlModal').style.display = 'none';
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) backdrop.remove();
+                });
             });
         </script>
     @endif
