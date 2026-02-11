@@ -266,7 +266,13 @@
                         <div class="card-body">
                             <h6>Tipe Pertanyaan:</h6>
                             <ul class="small">
-                                <li><strong>Struktur:</strong> Konfigurasi tabel dengan kolom dan baris</li>
+                                <li>
+                                    <strong>Struktur:</strong> Konfigurasi tabel dengan kolom dan baris
+                                    <button type="button" class="btn btn-sm btn-outline-info ms-2"
+                                        data-bs-toggle="modal" data-bs-target="#structureExampleModal">
+                                        <i class="bi bi-lightbulb"></i> Lihat Contoh
+                                    </button>
+                                </li>
                                 <li><strong>Teks:</strong> Teks bebas</li>
                                 <li><strong>Angka:</strong> Hanya input angka</li>
                                 <li><strong>Skala:</strong> Skala rating (mis., 1-5, 1-10)</li>
@@ -297,6 +303,185 @@
                 </div>
             </div>
         </form>
+    </div>
+
+    <!-- Structure Example Modal -->
+    <div class="modal fade" id="structureExampleModal" tabindex="-1" aria-labelledby="structureExampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="structureExampleModalLabel">
+                        <i class="bi bi-table"></i> Contoh Konfigurasi Struktur Tabel
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- JSON Configuration -->
+                        <div class="col-md-6 mb-4">
+                            <h6 class="fw-bold mb-3">
+                                <i class="bi bi-code-square"></i> Konfigurasi JSON:
+                            </h6>
+                            <div class="position-relative">
+                                <button type="button"
+                                    class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2"
+                                    onclick="copyStructureExample()">
+                                    <i class="bi bi-clipboard"></i> Salin
+                                </button>
+                                <pre class="border rounded p-3 bg-light" style="max-height: 500px; overflow-y: auto;"><code id="structureExampleJson">{
+    "type": "table",
+    "columns": [
+        {
+            "key": "year",
+            "label": "Tahun",
+            "type": "number",
+            "width": "15%"
+        },
+        {
+            "key": "total_participants",
+            "label": "Jumlah Peserta",
+            "type": "number",
+            "width": "20%"
+        },
+        {
+            "key": "total_passed",
+            "label": "Jumlah Lulus",
+            "type": "number",
+            "width": "20%"
+        },
+        {
+            "key": "pass_rate",
+            "label": "Tingkat Kelulusan (%)",
+            "type": "percentage",
+            "read_only": true,
+            "calculate": "(row.total_passed / row.total_participants) * 100"
+        },
+        {
+            "key": "organizer",
+            "label": "Lembaga Sertifikasi/Penyelenggara",
+            "type": "text",
+            "width": "25%"
+        }
+    ],
+    "rows": [
+        {
+            "label": "Uji Kompetensi Keahlian (UKK) Mandiri"
+        },
+        {
+            "label": "Uji Kompetensi Keahlian (UKK) LSP"
+        },
+        {
+            "label": "Sertifikasi Profesi (Contoh: BNSP, TOEIC, dll)"
+        }
+    ]
+}</code></pre>
+                            </div>
+
+                            <div class="alert alert-info mt-3">
+                                <h6 class="alert-heading"><i class="bi bi-info-circle"></i> Penjelasan Properti:</h6>
+                                <ul class="small mb-0">
+                                    <li><strong>type:</strong> Harus "table"</li>
+                                    <li><strong>columns:</strong> Array definisi kolom
+                                        <ul>
+                                            <li><strong>key:</strong> Identifier unik kolom</li>
+                                            <li><strong>label:</strong> Label yang ditampilkan</li>
+                                            <li><strong>type:</strong> text, number, percentage</li>
+                                            <li><strong>width:</strong> Lebar kolom (opsional)</li>
+                                            <li><strong>read_only:</strong> true jika kolom hanya baca (opsional)</li>
+                                            <li><strong>calculate:</strong> Formula perhitungan otomatis (opsional)</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>rows:</strong> Array definisi baris dengan label</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Visual Preview -->
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-3">
+                                <i class="bi bi-eye"></i> Preview Tampilan Form:
+                            </h6>
+                            <div class="border rounded p-3 bg-white">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 20%">Jenis</th>
+                                                <th style="width: 15%">Tahun</th>
+                                                <th style="width: 20%">Jumlah Peserta</th>
+                                                <th style="width: 20%">Jumlah Lulus</th>
+                                                <th>Tingkat Kelulusan (%)</th>
+                                                <th style="width: 25%">Lembaga Sertifikasi/Penyelenggara</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="align-middle"><strong>Uji Kompetensi Keahlian (UKK)
+                                                        Mandiri</strong></td>
+                                                <td><input type="number" class="form-control form-control-sm"
+                                                        placeholder="2024" value="2024"></td>
+                                                <td><input type="number" class="form-control form-control-sm"
+                                                        placeholder="0" value="150"></td>
+                                                <td><input type="number" class="form-control form-control-sm"
+                                                        placeholder="0" value="142"></td>
+                                                <td><input type="text" class="form-control form-control-sm bg-light"
+                                                        placeholder="0.00" value="94.67" readonly></td>
+                                                <td><input type="text" class="form-control form-control-sm"
+                                                        placeholder="..." value="Sekolah"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="align-middle"><strong>Uji Kompetensi Keahlian (UKK) LSP</strong>
+                                                </td>
+                                                <td><input type="number" class="form-control form-control-sm"
+                                                        placeholder="2024" value="2024"></td>
+                                                <td><input type="number" class="form-control form-control-sm"
+                                                        placeholder="0" value="80"></td>
+                                                <td><input type="number" class="form-control form-control-sm"
+                                                        placeholder="0" value="75"></td>
+                                                <td><input type="text" class="form-control form-control-sm bg-light"
+                                                        placeholder="0.00" value="93.75" readonly></td>
+                                                <td><input type="text" class="form-control form-control-sm"
+                                                        placeholder="..." value="LSP P1"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="align-middle"><strong>Sertifikasi Profesi (Contoh: BNSP, TOEIC,
+                                                        dll)</strong></td>
+                                                <td><input type="number" class="form-control form-control-sm"
+                                                        placeholder="2024" value="2024"></td>
+                                                <td><input type="number" class="form-control form-control-sm"
+                                                        placeholder="0" value="45"></td>
+                                                <td><input type="number" class="form-control form-control-sm"
+                                                        placeholder="0" value="40"></td>
+                                                <td><input type="text" class="form-control form-control-sm bg-light"
+                                                        placeholder="0.00" value="88.89" readonly></td>
+                                                <td><input type="text" class="form-control form-control-sm"
+                                                        placeholder="..." value="BNSP"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="alert alert-success mt-3 mb-0">
+                                    <small>
+                                        <i class="bi bi-check-circle"></i>
+                                        <strong>Fitur Perhitungan Otomatis:</strong> Kolom "Tingkat Kelulusan (%)" akan
+                                        dihitung secara otomatis berdasarkan formula yang didefinisikan.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-primary" onclick="useStructureExample()">
+                        <i class="bi bi-arrow-right-circle"></i> Gunakan Template Ini
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     @push('scripts')
@@ -364,6 +549,62 @@
                     document.getElementById('max_score').value = selectedOption.dataset.max;
                 }
             });
+
+            // Copy structure example to clipboard
+            window.copyStructureExample = function() {
+                const jsonText = document.getElementById('structureExampleJson').textContent;
+                navigator.clipboard.writeText(jsonText).then(function() {
+                    // Show success feedback
+                    const btn = event.target.closest('button');
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="bi bi-check"></i> Tersalin!';
+                    btn.classList.remove('btn-outline-secondary');
+                    btn.classList.add('btn-success');
+
+                    setTimeout(function() {
+                        btn.innerHTML = originalHtml;
+                        btn.classList.remove('btn-success');
+                        btn.classList.add('btn-outline-secondary');
+                    }, 2000);
+                }).catch(function(err) {
+                    alert('Gagal menyalin: ' + err);
+                });
+            };
+
+            // Use structure example - populate the textarea
+            window.useStructureExample = function() {
+                const jsonText = document.getElementById('structureExampleJson').textContent;
+                const textarea = document.getElementById('answer_options_structure');
+
+                if (textarea) {
+                    textarea.value = jsonText;
+
+                    // Change answer type to structure if not already
+                    const answerTypeSelect = document.getElementById('answer_type');
+                    if (answerTypeSelect.value !== 'structure') {
+                        answerTypeSelect.value = 'structure';
+                        answerTypeSelect.dispatchEvent(new Event('change'));
+                    }
+
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('structureExampleModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+
+                    // Scroll to the structure options
+                    textarea.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    // Highlight the textarea briefly
+                    textarea.classList.add('border-success', 'border-3');
+                    setTimeout(function() {
+                        textarea.classList.remove('border-success', 'border-3');
+                    }, 2000);
+                }
+            };
         </script>
     @endpush
 @endsection
