@@ -1,5 +1,5 @@
 @auth
-    @if(auth()->user()->isVerifier())
+    @if (auth()->user()->isVerifier())
         <script>
             window.location.href = "{{ route('verifier.dashboard') }}";
         </script>
@@ -36,44 +36,44 @@
                 <a href="{{ route('dashboard') }}"
                     class="sidebar-menu-link {{ request()->is('dashboard*') ? 'active' : '' }}">
                     <i class="bi bi-speedometer2"></i>
-                    <span>Dasbor</span>
+                    <span>Dashboard</span>
                 </a>
             </li>
 
-            @if(auth()->check() && auth()->user()->isAdmin())
-            <li class="sidebar-menu-item">
-                <a href="{{ route('admin.schools.index') }}"
-                    class="sidebar-menu-link {{ request()->is('admin/schools*') ? 'active' : '' }}">
-                    <i class="bi bi-building"></i>
-                    <span>Data Sekolah</span>
-                </a>
-            </li>
+            @if (auth()->check() && auth()->user()->isAdmin())
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.schools.index') }}"
+                        class="sidebar-menu-link {{ request()->is('admin/schools*') ? 'active' : '' }}">
+                        <i class="bi bi-building"></i>
+                        <span>Data Sekolah</span>
+                    </a>
+                </li>
 
-            <li class="sidebar-menu-item">
-                <a href="{{ route('admin.users.index') }}"
-                    class="sidebar-menu-link {{ request()->is('admin/users*') ? 'active' : '' }}">
-                    <i class="bi bi-people"></i>
-                    <span>Manajemen Pengguna</span>
-                </a>
-            </li>
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.users.index') }}"
+                        class="sidebar-menu-link {{ request()->is('admin/users*') ? 'active' : '' }}">
+                        <i class="bi bi-people"></i>
+                        <span>Manajemen Pengguna</span>
+                    </a>
+                </li>
 
-            <li class="sidebar-menu-item">
-                <a href="{{ route('admin.questions.index') }}"
-                    class="sidebar-menu-link {{ request()->is('admin/questions*') ? 'active' : '' }}">
-                    <i class="bi bi-question-circle"></i>
-                    <span>Pustaka Pertanyaan</span>
-                </a>
-            </li>
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.questions.index') }}"
+                        class="sidebar-menu-link {{ request()->is('admin/questions*') ? 'active' : '' }}">
+                        <i class="bi bi-question-circle"></i>
+                        <span>Pustaka Pertanyaan</span>
+                    </a>
+                </li>
 
-            <li class="sidebar-menu-item">
-                <a href="{{ route('admin.instruments.index') }}"
-                    class="sidebar-menu-link {{ request()->is('admin/instruments*') ? 'active' : '' }}">
-                    <i class="bi bi-clipboard-data"></i>
-                    <span>Instrumen</span>
-                </a>
-            </li>
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.instruments.index') }}"
+                        class="sidebar-menu-link {{ request()->is('admin/instruments*') ? 'active' : '' }}">
+                        <i class="bi bi-clipboard-data"></i>
+                        <span>Instrumen</span>
+                    </a>
+                </li>
 
-            {{-- TEMPORARILY HIDDEN
+                {{-- TEMPORARILY HIDDEN
             <li class="sidebar-menu-item">
                 <a href="{{ route('admin.assessments.index') }}"
                     class="sidebar-menu-link {{ request()->is('admin/assessments*') ? 'active' : '' }}">
@@ -83,31 +83,31 @@
             </li>
             --}}
 
-            <li class="sidebar-menu-item">
-                <a href="{{ route('admin.validations.index') }}"
-                    class="sidebar-menu-link {{ request()->is('admin/validations*') ? 'active' : '' }}">
-                    <i class="bi bi-check2-square"></i>
-                    <span>Validasi Data</span>
-                </a>
-            </li>
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.validations.index') }}"
+                        class="sidebar-menu-link {{ request()->is('admin/validations*') ? 'active' : '' }}">
+                        <i class="bi bi-check2-square"></i>
+                        <span>Validasi Data</span>
+                    </a>
+                </li>
 
-            <li class="sidebar-menu-item">
-                <a href="{{ route('admin.analytics.index') }}"
-                    class="sidebar-menu-link {{ request()->is('admin/analytics*') ? 'active' : '' }}">
-                    <i class="bi bi-graph-up"></i>
-                    <span>Analytics</span>
-                </a>
-            </li>
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.analytics.index') }}"
+                        class="sidebar-menu-link {{ request()->is('admin/analytics*') ? 'active' : '' }}">
+                        <i class="bi bi-graph-up"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
             @endif
 
-            @if(auth()->check() && auth()->user()->isAdmin())
-            <li class="sidebar-menu-item">
-                <a href="{{ route('admin.submissions.index') }}"
-                    class="sidebar-menu-link {{ request()->is('admin/submissions*') ? 'active' : '' }}">
-                    <i class="bi bi-file-earmark-text"></i>
-                    <span>Pengajuan</span>
-                </a>
-            </li>
+            @if (auth()->check() && auth()->user()->isAdmin())
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.submissions.index') }}"
+                        class="sidebar-menu-link {{ request()->is('admin/submissions*') ? 'active' : '' }}">
+                        <i class="bi bi-file-earmark-text"></i>
+                        <span>Pengajuan</span>
+                    </a>
+                </li>
             @endif
 
             <li class="sidebar-menu-item mt-4">

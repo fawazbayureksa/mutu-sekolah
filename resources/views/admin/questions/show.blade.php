@@ -1,17 +1,17 @@
 @extends('layouts.admin')
 
-@section('title', 'View Question')
+@section('title', 'Lihat Pertanyaan')
 
 @section('content')
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0">Question Details</h1>
+            <h1 class="h3 mb-0">Detail Pertanyaan</h1>
             <div>
                 <a href="{{ route('admin.questions.edit', $question) }}" class="btn btn-primary">
                     <i class="bi bi-pencil"></i> Edit
                 </a>
                 <a href="{{ route('admin.questions.index') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to List
+                    <i class="bi bi-arrow-left"></i> Kembali ke Daftar
                 </a>
             </div>
         </div>
@@ -28,13 +28,13 @@
                 <div class="card mb-3">
                     <div class="card-header bg-primary text-white">
                         <h5 class="card-title mb-0">
-                            <i class="bi bi-question-circle"></i> Question Information
+                            <i class="bi bi-question-circle"></i> Informasi Pertanyaan
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <strong>Question Code:</strong>
+                                <strong>Kode Pertanyaan:</strong>
                             </div>
                             <div class="col-md-8">
                                 <code class="fs-6">{{ $question->question_code }}</code>
@@ -43,7 +43,7 @@
 
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <strong>Question Text:</strong>
+                                <strong>Teks Pertanyaan:</strong>
                             </div>
                             <div class="col-md-8">
                                 {{ $question->question_text }}
@@ -53,7 +53,7 @@
                         @if ($question->help_text)
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <strong>Help Text:</strong>
+                                    <strong>Teks Bantuan:</strong>
                                 </div>
                                 <div class="col-md-8">
                                     <small class="text-muted">{{ $question->help_text }}</small>
@@ -63,7 +63,7 @@
 
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <strong>Assessment Aspect:</strong>
+                                <strong>Aspek Penilaian:</strong>
                             </div>
                             <div class="col-md-8">
                                 <span class="badge bg-info">{{ $question->indicator->aspect->aspect_name ?? 'N/A' }}</span>
@@ -81,7 +81,7 @@
 
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <strong>Answer Type:</strong>
+                                <strong>Tipe Jawaban:</strong>
                             </div>
                             <div class="col-md-8">
                                 <span class="badge bg-secondary">{{ ucfirst($question->answer_type) }}</span>
@@ -91,12 +91,12 @@
                         @if ($question->answer_type === 'scale')
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <strong>Score Range:</strong>
+                                    <strong>Rentang Nilai:</strong>
                                 </div>
                                 <div class="col-md-8">
-                                    {{ $question->min_score }} to {{ $question->max_score }}
+                                    {{ $question->min_score }} sampai {{ $question->max_score }}
                                     @if ($question->scaleTemplate)
-                                        <small class="text-muted">(Using template:
+                                        <small class="text-muted">(Menggunakan template:
                                             {{ $question->scaleTemplate->name }})</small>
                                     @endif
                                 </div>
@@ -106,7 +106,7 @@
                         @if ($question->answer_type === 'choice' && $question->answer_options)
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <strong>Answer Options:</strong>
+                                    <strong>Opsi Jawaban:</strong>
                                 </div>
                                 <div class="col-md-8">
                                     <ul class="mb-0">
@@ -120,7 +120,7 @@
 
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <strong>Weight:</strong>
+                                <strong>Bobot:</strong>
                             </div>
                             <div class="col-md-8">
                                 {{ $question->weight }}
@@ -129,7 +129,7 @@
 
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <strong>Display Order:</strong>
+                                <strong>Urutan Tampilan:</strong>
                             </div>
                             <div class="col-md-8">
                                 {{ $question->order }}
@@ -138,13 +138,13 @@
 
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <strong>Required:</strong>
+                                <strong>Wajib:</strong>
                             </div>
                             <div class="col-md-8">
                                 @if ($question->is_required)
-                                    <span class="badge bg-danger">Yes</span>
+                                    <span class="badge bg-danger">Ya</span>
                                 @else
-                                    <span class="badge bg-secondary">No</span>
+                                    <span class="badge bg-secondary">Tidak</span>
                                 @endif
                             </div>
                         </div>
@@ -155,21 +155,21 @@
                             </div>
                             <div class="col-md-8">
                                 @if ($question->is_active)
-                                    <span class="badge bg-success">Active</span>
+                                    <span class="badge bg-success">Aktif</span>
                                 @else
-                                    <span class="badge bg-secondary">Inactive</span>
+                                    <span class="badge bg-secondary">Tidak Aktif</span>
                                 @endif
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-4">
-                                <strong>Timestamps:</strong>
+                                <strong>Waktu:</strong>
                             </div>
                             <div class="col-md-8">
                                 <small class="text-muted">
-                                    Created: {{ $question->created_at->format('M d, Y H:i') }}<br>
-                                    Updated: {{ $question->updated_at->format('M d, Y H:i') }}
+                                    Dibuat: {{ $question->created_at->format('M d, Y H:i') }}<br>
+                                    Diperbarui: {{ $question->updated_at->format('M d, Y H:i') }}
                                 </small>
                             </div>
                         </div>
@@ -179,17 +179,17 @@
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">
-                            <i class="bi bi-graph-up"></i> Usage Statistics
+                            <i class="bi bi-graph-up"></i> Statistik Penggunaan
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="alert alert-info mb-3">
                             <i class="bi bi-info-circle"></i>
-                            This question is used in <strong>{{ $usageCount }}</strong> instrument(s).
+                            Pertanyaan ini digunakan dalam <strong>{{ $usageCount }}</strong> instrumen.
                         </div>
 
                         @if ($instruments->count() > 0)
-                            <h6>Instruments using this question:</h6>
+                            <h6>Instrumen yang menggunakan pertanyaan ini:</h6>
                             <div class="list-group">
                                 @foreach ($instruments as $instrument)
                                     <a href="{{ route('admin.instruments.show', $instrument) }}"
@@ -198,9 +198,9 @@
                                             <h6 class="mb-1">{{ $instrument->name }}</h6>
                                             <small>
                                                 @if ($instrument->status === 'published')
-                                                    <span class="badge bg-success">Published</span>
+                                                    <span class="badge bg-success">Diterbitkan</span>
                                                 @else
-                                                    <span class="badge bg-secondary">Draft</span>
+                                                    <span class="badge bg-secondary">Draf</span>
                                                 @endif
                                             </small>
                                         </div>
@@ -212,7 +212,7 @@
                                 @endforeach
                             </div>
                         @else
-                            <p class="text-muted mb-0">This question is not currently used in any instruments.</p>
+                            <p class="text-muted mb-0">Pertanyaan ini saat ini tidak digunakan dalam instrumen apa pun.</p>
                         @endif
                     </div>
                 </div>
@@ -221,18 +221,18 @@
             <div class="col-md-4">
                 <div class="card mb-3">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Actions</h5>
+                        <h5 class="card-title mb-0">Aksi</h5>
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2">
                             <a href="{{ route('admin.questions.edit', $question) }}" class="btn btn-primary">
-                                <i class="bi bi-pencil"></i> Edit Question
+                                <i class="bi bi-pencil"></i> Edit Pertanyaan
                             </a>
 
                             <form action="{{ route('admin.questions.duplicate', $question) }}" method="POST">
                                 @csrf
                                 <button type="submit" class="btn btn-secondary w-100">
-                                    <i class="bi bi-files"></i> Duplicate Question
+                                    <i class="bi bi-files"></i> Duplikat Pertanyaan
                                 </button>
                             </form>
 
@@ -241,7 +241,7 @@
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" class="btn btn-warning w-100">
-                                        <i class="bi bi-pause-circle"></i> Deactivate
+                                        <i class="bi bi-pause-circle"></i> Nonaktifkan
                                     </button>
                                 </form>
                             @else
@@ -249,7 +249,7 @@
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" class="btn btn-success w-100">
-                                        <i class="bi bi-play-circle"></i> Activate
+                                        <i class="bi bi-play-circle"></i> Aktifkan
                                     </button>
                                 </form>
                             @endif
@@ -258,17 +258,17 @@
 
                             @if ($usageCount > 0)
                                 <button type="button" class="btn btn-danger w-100" disabled
-                                    title="Cannot delete: question is in use">
-                                    <i class="bi bi-trash"></i> Delete Question (In Use)
+                                    title="Tidak dapat menghapus: pertanyaan sedang digunakan">
+                                    <i class="bi bi-trash"></i> Hapus Pertanyaan (Digunakan)
                                 </button>
-                                <small class="text-muted">Remove from all instruments before deleting</small>
+                                <small class="text-muted">Hapus dari semua instrumen sebelum menghapus</small>
                             @else
                                 <form action="{{ route('admin.questions.destroy', $question) }}" method="POST"
-                                    onsubmit="return confirm('Are you sure you want to delete this question? This action cannot be undone.');">
+                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus pertanyaan ini? Tindakan ini tidak dapat dibatalkan.');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger w-100">
-                                        <i class="bi bi-trash"></i> Delete Question
+                                        <i class="bi bi-trash"></i> Hapus Pertanyaan
                                     </button>
                                 </form>
                             @endif
@@ -278,44 +278,44 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Related Information</h5>
+                        <h5 class="card-title mb-0">Informasi Terkait</h5>
                     </div>
                     <div class="card-body">
-                        <h6>Indicator Details:</h6>
+                        <h6>Detail Indikator:</h6>
                         @if ($question->indicator)
                             <p class="small mb-2">
-                                <strong>Code:</strong> <code>{{ $question->indicator->indicator_code }}</code><br>
-                                <strong>Name:</strong> {{ $question->indicator->indicator_name }}<br>
-                                <strong>Aspect:</strong> {{ $question->indicator->aspect->aspect_name ?? 'N/A' }}
+                                <strong>Kode:</strong> <code>{{ $question->indicator->indicator_code }}</code><br>
+                                <strong>Nama:</strong> {{ $question->indicator->indicator_name }}<br>
+                                <strong>Aspek:</strong> {{ $question->indicator->aspect->aspect_name ?? 'N/A' }}
                             </p>
                         @else
-                            <p class="text-muted small">No indicator linked</p>
+                            <p class="text-muted small">Tidak ada indikator yang terhubung</p>
                         @endif
 
                         <hr>
 
-                        <h6>Answer Type Info:</h6>
+                        <h6>Info Tipe Jawaban:</h6>
                         <p class="small mb-0">
                             @switch($question->answer_type)
                                 @case('text')
-                                    Free-form text response allows respondents to provide detailed written answers.
+                                    Teks bebas memungkinkan responden memberikan jawaban tertulis yang rinci.
                                 @break
 
                                 @case('number')
-                                    Numeric input only - useful for quantities, percentages, or counts.
+                                    Hanya input angka - berguna untuk kuantitas, persentase, atau jumlah.
                                 @break
 
                                 @case('scale')
-                                    Rating scale from {{ $question->min_score }} to {{ $question->max_score }} - commonly used for
-                                    Likert-type questions.
+                                    Skala rating dari {{ $question->min_score }} sampai {{ $question->max_score }} - umumnya digunakan untuk
+                                    pertanyaan tipe Likert.
                                 @break
 
                                 @case('choice')
-                                    Multiple choice with {{ count($question->answer_options ?? []) }} predefined options.
+                                    Pilihan ganda dengan {{ count($question->answer_options ?? []) }} opsi yang telah ditentukan.
                                 @break
 
                                 @case('date')
-                                    Date picker input - useful for collecting specific dates or timeframes.
+                                    Input pemilih tanggal - berguna untuk mengumpulkan tanggal atau periode waktu tertentu.
                                 @break
                             @endswitch
                         </p>
