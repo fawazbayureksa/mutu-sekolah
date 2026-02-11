@@ -96,12 +96,12 @@
             </div>
 
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                {{-- <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Riwayat Pengajuan</h5>
                     <a href="{{ route('admin.schools.submissions', $school) }}" class="btn btn-sm btn-outline-primary">
                         Lihat Semua
                     </a>
-                </div>
+                </div> --}}
                 <div class="card-body">
                     @forelse($school->submissions()->latest()->take(5)->get() as $submission)
                         <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">

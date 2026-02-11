@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('verifier.layouts.verifier')
 
 @section('title', 'Detail Submission')
 
@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Detail Submission</h1>
-            <a href="{{ route('admin.submissions.index') }}" class="btn btn-secondary btn-sm">
+            <a href="{{ route('verifier.submissions.index') }}" class="btn btn-secondary btn-sm">
                 <i class="bi bi-arrow-left"></i> Kembali
             </a>
         </div>
@@ -46,7 +46,7 @@
                             <tr>
                                 <td class="fw-bold">Status</td>
                                 <td>: <span
-                                        class="badge bg-{{ $submission->status === 'submitted' ? 'success' : 'secondary' }}">{{ ucfirst($submission->status) }}</span>
+                                        class="badge bg-{{ $submission->status === 'submitted' ? 'primary' : ($submission->status === 'verified' ? 'success' : ($submission->status === 'rejected' ? 'danger' : 'secondary')) }}">{{ ucfirst($submission->status) }}</span>
                                 </td>
                             </tr>
                         </table>
@@ -55,6 +55,30 @@
             </div>
         </div>
 
+        @if($submission->status === 'submitted')
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Verifikasi</h6>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('verifier.submissions.verify', $submission) }}" method="POST"
+                        class="mb-3">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label">Catatan Verifikasi (Opsional)</label>
+                            <textarea name="notes" class="form-control" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-lg"></i> Verifikasi
+                        </button>
+                    </form>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                        <i class="bi bi-x-lg"></i> Tolak
+                    </button>
+                </div>
+            </div>
+        @endif
+
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Review Jawaban</h6>
@@ -62,6 +86,7 @@
             <div class="card-body">
                 @php
                     $aspects = $submission->instrument->aspects;
+                    $responses = $submission->responses->keyBy('instrument_item_id');
                 @endphp
 
                 @foreach ($aspects as $aspect)
@@ -77,8 +102,6 @@
                                 <div class="card-body">
                                     @foreach ($indicator->questions as $question)
                                         @php
-                                            // Find the instrument item ID for this question
-                                            // Ideally this should be a direct relationship or lookup
                                             $item = $submission->instrument->items->firstWhere(
                                                 'assessment_question_id',
                                                 $question->id,
@@ -92,8 +115,7 @@
                                                 <div>
                                                     <p class="mb-1 text-dark fw-medium">{{ $question->question_text }}</p>
                                                     @if ($question->help_text)
-                                                        <small
-                                                            class="text-muted fst-italic">{{ $question->help_text }}</small>
+                                                        <small class="text-muted fst-italic">{{ $question->help_text }}</small>
                                                     @endif
                                                 </div>
                                             </div>
@@ -103,7 +125,6 @@
                                                     <span class="text-danger fst-italic"><i class="bi bi-x-circle"></i>
                                                         Belum dijawab / Tidak ada data</span>
                                                 @else
-                                                    <!-- Display Logic -->
                                                     @if ($question->answer_type === 'structure')
                                                         @php
                                                             $structureData = is_string($response->answer)
@@ -186,7 +207,7 @@
 
                                                     @if ($response->notes)
                                                         <div class="mt-2 text-muted small border-top pt-2">
-                                                            <i class="bi bi-sticky"></i> Catatan: {{ $response->notes }}
+                                                            <i class="bi bi-sticky"></i> Catatan: {{ is_array($response->notes) ? json_encode($response->notes) : $response->notes }}
                                                         </div>
                                                     @endif
                                                 @endif
@@ -198,6 +219,31 @@
                         @endforeach
                     </div>
                 @endforeach
+            </div>
+        </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div class="modal fade" id="rejectModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tolak Submission</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('verifier.submissions.reject', $submission) }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
+                            <textarea name="notes" class="form-control" rows="4" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger">Tolak</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
