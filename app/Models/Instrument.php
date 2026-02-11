@@ -45,7 +45,7 @@ class Instrument extends Model
     {
         return $this->belongsToMany(AssessmentAspect::class, 'instrument_aspects', 'instrument_id', 'aspect_id')
             ->withPivot(['order', 'weight'])
-            ->orderBy('pivot_order');
+            ->orderByPivot('order');
     }
 
     public function creator(): BelongsTo

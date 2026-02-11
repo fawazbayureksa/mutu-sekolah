@@ -63,4 +63,18 @@ class VerifierSubmissionController extends Controller
         return redirect()->route('verifier.submissions.index')
             ->with('success', 'Submission ditolak');
     }
+
+    public function generateUpdateToken(Submission $submission)
+    {
+        // Only allow token generation for rejected submissions
+        if (!$submission->isRejected()) {
+            return back()->with('error', 'Token hanya dapat dibuat untuk submission yang ditolak');
+        }
+
+        $token = $submission->generateUpdateToken();
+        $updateUrl = route('submission.update.show', $token);
+
+        return back()->with('success', 'Token berhasil dibuat')
+            ->with('update_url', $updateUrl);
+    }
 }

@@ -1,9 +1,9 @@
 <div id="scaleTemplateSelector" style="display: none;" class="mb-3">
-    <label class="form-label">Scale Template</label>
-    
+    <label class="form-label">Template Skala</label>
+
     <div class="mb-3">
         <select class="form-select" id="scale_template_id" name="scale_template_id">
-            <option value="">-- Select Scale Template --</option>
+            <option value="">-- Pilih Template Skala --</option>
             @foreach ($scaleTemplates as $template)
                 <option 
                     value="{{ $template->id }}" 
@@ -20,16 +20,16 @@
             @endforeach
         </select>
         <small class="form-text text-muted">
-            Select a predefined scale template or set custom values below
+            Pilih template skala yang telah ditentukan atau atur nilai kustom di bawah
         </small>
     </div>
-    
+
     <div class="card bg-light mb-3">
         <div class="card-body">
-            <h6 class="card-title mb-2">Custom Scale Configuration</h6>
+            <h6 class="card-title mb-2">Konfigurasi Skala Kustom</h6>
             <div class="row">
                 <div class="col-md-6 mb-2">
-                    <label for="min_score" class="form-label small">Minimum Score</label>
+                    <label for="min_score" class="form-label small">Nilai Minimum</label>
                     <input 
                         type="number" 
                         class="form-control" 
@@ -40,7 +40,7 @@
                         value="{{ old('min_score', $question->min_score ?? 1) }}">
                 </div>
                 <div class="col-md-6 mb-2">
-                    <label for="max_score" class="form-label small">Maximum Score</label>
+                    <label for="max_score" class="form-label small">Nilai Maksimum</label>
                     <input 
                         type="number" 
                         class="form-control" 
@@ -59,7 +59,7 @@
                     name="allow_decimals"
                     {{ old('allow_decimals', $question->allow_decimals ?? false) ? 'checked' : '' }}>
                 <label class="form-check-label small" for="allow_decimals">
-                    Allow decimal scores
+                    Izinkan nilai desimal
                 </label>
             </div>
         </div>
@@ -68,7 +68,7 @@
     <div id="scalePreview" class="card" style="display: none;">
         <div class="card-header py-2">
             <h6 class="card-title mb-0 small">
-                <i class="bi bi-eye"></i> Scale Preview
+                <i class="bi bi-eye"></i> Pratinjau Skala
             </h6>
         </div>
         <div class="card-body">
@@ -114,9 +114,9 @@ function updateScalePreview() {
                 html += '<div class="flex-grow-1 border-bottom"></div>';
             }
         }
-        
+
         html += '</div>';
-        html += `<small class="text-muted">Range: ${min} - ${max} (${max - min + 1} points)</small>`;
+        html += `<small class="text-muted">Rentang: ${min} - ${max} (${max - min + 1} poin)</small>`;
         content.innerHTML = html;
         preview.style.display = 'block';
     } else {

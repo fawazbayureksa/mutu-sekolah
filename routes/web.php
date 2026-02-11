@@ -20,6 +20,13 @@ Route::get('/instrumen', [PublicInstrumentController::class, 'index'])
 Route::post('/instrumen', [PublicInstrumentController::class, 'store'])
     ->name('instrument.submit');
 
+// Submission update via one-time token
+Route::get('/submission/update/{token}', [\App\Http\Controllers\SubmissionUpdateController::class, 'show'])
+    ->name('submission.update.show');
+
+Route::post('/submission/update/{token}', [\App\Http\Controllers\SubmissionUpdateController::class, 'update'])
+    ->name('submission.update.store');
+
 // Authentication routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -42,6 +49,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/submissions/{submission}', [\App\Http\Controllers\Verifier\VerifierSubmissionController::class, 'show'])->name('submissions.show');
         Route::post('/submissions/{submission}/verify', [\App\Http\Controllers\Verifier\VerifierSubmissionController::class, 'verify'])->name('submissions.verify');
         Route::post('/submissions/{submission}/reject', [\App\Http\Controllers\Verifier\VerifierSubmissionController::class, 'reject'])->name('submissions.reject');
+        Route::post('/submissions/{submission}/generate-token', [\App\Http\Controllers\Verifier\VerifierSubmissionController::class, 'generateUpdateToken'])->name('submissions.generate-token');
     });
 
     // Admin routes

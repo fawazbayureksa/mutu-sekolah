@@ -1,20 +1,20 @@
 @extends('layouts.admin')
 
-@section('title', 'Question Library')
+@section('title', 'Perpustakaan Pertanyaan')
 
 @section('content')
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0">Question Library</h1>
+            <h1 class="h3 mb-0">Perpustakaan Pertanyaan</h1>
             <div>
-                <a href="{{ route('admin.questions.import') }}" class="btn btn-outline-primary">
-                    <i class="bi bi-upload"></i> Import
+                {{-- <a href="{{ route('admin.questions.import') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-upload"></i> Impor
                 </a>
                 <a href="{{ route('admin.questions.export') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-download"></i> Export
-                </a>
+                    <i class="bi bi-download"></i> Ekspor
+                </a> --}}
                 <a href="{{ route('admin.questions.create') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Add Question
+                    <i class="bi bi-plus-circle"></i> Tambah Pertanyaan
                 </a>
             </div>
         </div>
@@ -42,17 +42,17 @@
 
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Filter Questions</h5>
+                <h5 class="card-title mb-0">Filter Pertanyaan</h5>
             </div>
             <div class="card-body">
                 <form action="{{ route('admin.questions.index') }}" method="GET" class="row g-3">
                     <div class="col-md-3">
-                        <input type="text" name="search" class="form-control" placeholder="Search question..."
+                        <input type="text" name="search" class="form-control" placeholder="Cari pertanyaan..."
                             value="{{ request('search') }}">
                     </div>
                     <div class="col-md-2">
                         <select name="aspect_id" class="form-select">
-                            <option value="">All Aspects</option>
+                            <option value="">Semua Aspek</option>
                             @foreach ($aspects as $aspect)
                                 <option value="{{ $aspect->id }}"
                                     {{ request('aspect_id') == $aspect->id ? 'selected' : '' }}>
@@ -63,7 +63,7 @@
                     </div>
                     <div class="col-md-2">
                         <select name="indicator_id" class="form-select">
-                            <option value="">All Indicators</option>
+                            <option value="">Semua Indikator</option>
                             @foreach ($indicators as $indicator)
                                 <option value="{{ $indicator->id }}"
                                     {{ request('indicator_id') == $indicator->id ? 'selected' : '' }}>
@@ -74,21 +74,22 @@
                     </div>
                     <div class="col-md-2">
                         <select name="answer_type" class="form-select">
-                            <option value="">All Types</option>
-                            <option value="text" {{ request('answer_type') == 'text' ? 'selected' : '' }}>Text</option>
-                            <option value="number" {{ request('answer_type') == 'number' ? 'selected' : '' }}>Number
+                            <option value="">Semua Tipe</option>
+                            <option value="text" {{ request('answer_type') == 'text' ? 'selected' : '' }}>Teks</option>
+                            <option value="number" {{ request('answer_type') == 'number' ? 'selected' : '' }}>Angka
                             </option>
-                            <option value="scale" {{ request('answer_type') == 'scale' ? 'selected' : '' }}>Scale</option>
-                            <option value="choice" {{ request('answer_type') == 'choice' ? 'selected' : '' }}>Multiple
-                                Choice</option>
-                            <option value="date" {{ request('answer_type') == 'date' ? 'selected' : '' }}>Date</option>
+                            <option value="scale" {{ request('answer_type') == 'scale' ? 'selected' : '' }}>Skala</option>
+                            <option value="choice" {{ request('answer_type') == 'choice' ? 'selected' : '' }}>Pilihan
+                                Ganda</option>
+                            <option value="date" {{ request('answer_type') == 'date' ? 'selected' : '' }}>Tanggal
+                            </option>
                         </select>
                     </div>
                     <div class="col-md-2">
                         <select name="status" class="form-select">
-                            <option value="">All Status</option>
-                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive
+                            <option value="">Semua Status</option>
+                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Aktif</option>
+                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Tidak Aktif
                             </option>
                         </select>
                     </div>
@@ -109,16 +110,16 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
                                 <input type="checkbox" id="selectAll" class="form-check-input me-2">
-                                <label for="selectAll" class="form-check-label">Select All</label>
+                                <label for="selectAll" class="form-check-label">Pilih Semua</label>
                             </div>
                             <div class="d-flex gap-2">
                                 <select name="action" class="form-select form-select-sm" style="width: auto;" required>
-                                    <option value="">Bulk Actions</option>
-                                    <option value="activate">Activate</option>
-                                    <option value="deactivate">Deactivate</option>
-                                    <option value="delete">Delete</option>
+                                    <option value="">Aksi Massal</option>
+                                    <option value="activate">Aktifkan</option>
+                                    <option value="deactivate">Nonaktifkan</option>
+                                    <option value="delete">Hapus</option>
                                 </select>
-                                <button type="submit" class="btn btn-sm btn-primary">Apply</button>
+                                <button type="submit" class="btn btn-sm btn-primary">Terapkan</button>
                             </div>
                         </div>
 
@@ -127,14 +128,14 @@
                                 <thead>
                                     <tr>
                                         <th width="30"><input type="checkbox" class="form-check-input"></th>
-                                        <th>Code</th>
-                                        <th>Question</th>
-                                        <th>Aspect/Indicator</th>
-                                        <th>Type</th>
-                                        <th>Weight</th>
+                                        <th>Kode</th>
+                                        <th>Pertanyaan</th>
+                                        <th>Aspek/Indikator</th>
+                                        <th>Tipe</th>
+                                        <th>Bobot</th>
                                         <th>Status</th>
-                                        <th>Usage</th>
-                                        <th width="200">Actions</th>
+                                        <th>Penggunaan</th>
+                                        <th width="200">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,20 +166,20 @@
                                             <td>{{ $question->weight }}</td>
                                             <td>
                                                 @if ($question->is_active)
-                                                    <span class="badge bg-success">Active</span>
+                                                    <span class="badge bg-success">Aktif</span>
                                                 @else
-                                                    <span class="badge bg-secondary">Inactive</span>
+                                                    <span class="badge bg-secondary">Tidak Aktif</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 <span class="badge bg-light text-dark">
-                                                    {{ $question->instrumentItems()->count() }} instrument(s)
+                                                    {{ $question->instrumentItems()->count() }} instrumen
                                                 </span>
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm" role="group">
                                                     <a href="{{ route('admin.questions.show', $question) }}"
-                                                        class="btn btn-outline-info" title="View">
+                                                        class="btn btn-outline-info" title="Lihat">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
                                                     <a href="{{ route('admin.questions.edit', $question) }}"
@@ -192,7 +193,7 @@
                                                             @csrf
                                                             @method('PATCH')
                                                             <button type="submit" class="btn btn-outline-warning"
-                                                                title="Deactivate">
+                                                                title="Nonaktifkan">
                                                                 <i class="bi bi-pause-circle"></i>
                                                             </button>
                                                         </form>
@@ -202,7 +203,7 @@
                                                             @csrf
                                                             @method('PATCH')
                                                             <button type="submit" class="btn btn-outline-success"
-                                                                title="Activate">
+                                                                title="Aktifkan">
                                                                 <i class="bi bi-play-circle"></i>
                                                             </button>
                                                         </form>
@@ -211,17 +212,17 @@
                                                         method="POST" class="d-inline">
                                                         @csrf
                                                         <button type="submit" class="btn btn-outline-secondary"
-                                                            title="Duplicate">
+                                                            title="Duplikat">
                                                             <i class="bi bi-files"></i>
                                                         </button>
                                                     </form>
                                                     <form action="{{ route('admin.questions.destroy', $question) }}"
                                                         method="POST" class="d-inline"
-                                                        onsubmit="return confirm('Are you sure you want to delete this question?');">
+                                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus pertanyaan ini?');">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-outline-danger"
-                                                            title="Delete">
+                                                            title="Hapus">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
@@ -236,8 +237,8 @@
 
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <div>
-                            Showing {{ $questions->firstItem() }} to {{ $questions->lastItem() }} of
-                            {{ $questions->total() }} questions
+                            Menampilkan {{ $questions->firstItem() }} sampai {{ $questions->lastItem() }} dari
+                            {{ $questions->total() }} pertanyaan
                         </div>
                         <div>
                             {{ $questions->links() }}
@@ -246,7 +247,8 @@
                 @else
                     <div class="text-center py-5">
                         <i class="bi bi-question-circle" style="font-size: 3rem; color: #ccc;"></i>
-                        <p class="mt-3 text-muted">No questions found. Click "Add Question" to create your first question.
+                        <p class="mt-3 text-muted">Tidak ada pertanyaan ditemukan. Klik "Tambah Pertanyaan" untuk membuat
+                            pertanyaan pertama Anda.
                         </p>
                     </div>
                 @endif
