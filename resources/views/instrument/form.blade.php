@@ -140,9 +140,9 @@
 @endpush
 
 @section('content')
-    <div class="container py-5">
+    <div class="container-fluid py-5" style="max-width: 1400px;">
         <div class="row justify-content-center">
-            <div class="col-lg-10">
+            <div class="col-12">
                 <div class="text-center mb-5">
                     <h2 class="fw-bold mb-2 text-primary">Instrumen Penjaminan Mutu</h2>
                     <p class="text-secondary small">Lengkapi data sekolah dan penilaian di bawah ini dengan seksama</p>
@@ -404,6 +404,13 @@
                 updateTableValue(table.id);
             });
 
+            // Ensure all forms are updated before submit
+            document.querySelectorAll('[id^="form-"][id$="-input"]').forEach(input => {
+                const formId = input.id.replace('-input', '');
+                console.log('Updating form before submit:', formId);
+                updateFormValue(formId);
+            });
+
             if (!confirm('Apakah Anda yakin data yang diisi sudah benar?')) {
                 e.preventDefault();
             }
@@ -413,9 +420,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, initializing tables...');
             initializeTables();
+            initializeForms();
 
             // Fallback: also initialize after a short delay (for dynamically loaded content)
             setTimeout(initializeTables, 500);
+            setTimeout(initializeForms, 500);
 
             // Event delegation for table inputs (instead of inline onchange)
             document.addEventListener('input', function(e) {
@@ -424,6 +433,15 @@
                     if (tableId) {
                         console.log('Input changed in table:', tableId);
                         updateTableValue(tableId);
+                    }
+                }
+
+                // Handle form inputs
+                if (e.target.classList.contains('form-input')) {
+                    const formId = e.target.dataset.formId;
+                    if (formId) {
+                        console.log('Input changed in form:', formId);
+                        updateFormValue(formId);
                     }
                 }
             });
@@ -452,6 +470,46 @@
             });
         }
 
+        function initializeForms() {
+            const forms = document.querySelectorAll('[id$="-input"]');
+            forms.forEach(input => {
+                const formId = input.id.replace('-input', '');
+                if (formId.startsWith('form-')) {
+                    console.log('Initializing form:', formId);
+                    updateFormValue(formId);
+                }
+            });
+        }
+
+        function updateFormValue(formId) {
+            try {
+                const hiddenInput = document.getElementById(formId + '-input');
+                if (!hiddenInput) {
+                    console.warn('Form hidden input not found:', formId);
+                    return;
+                }
+
+                const formInputs = document.querySelectorAll(`[data-form-id="${formId}"]`);
+                const data = {};
+
+                formInputs.forEach(input => {
+                    const section = input.dataset.section;
+                    const field = input.dataset.field;
+
+                    if (!data[section]) {
+                        data[section] = {};
+                    }
+
+                    data[section][field] = input.value;
+                });
+
+                hiddenInput.value = JSON.stringify(data);
+                console.log('Form', formId, 'updated with data:', hiddenInput.value);
+            } catch (error) {
+                console.error('Error updating form value:', error);
+            }
+        }
+
         function updateTableValue(tableId) {
             try {
                 const table = document.getElementById(tableId);
@@ -467,8 +525,24 @@
 
                 rows.forEach(row => {
                     const rowData = {};
-                    // Label from first cell
-                    rowData['label'] = row.cells[0].innerText.trim();
+
+                    // Check if label is in an input field (dynamic rows) or plain text
+                    const labelInput = row.querySelector('.table-input[data-key="label"]');
+                    if (labelInput) {
+                        rowData['label'] = labelInput.value;
+                    } else {
+                        // Find the label cell (skip row number cell if exists)
+                        const cells = row.querySelectorAll('td');
+                        for (let i = 0; i < cells.length; i++) {
+                            const cell = cells[i];
+                            // Skip if cell contains only a number (row number)
+                            if (cell.innerText.trim().match(/^\d+$/)) continue;
+                            // Skip if cell contains an input (it's a data cell)
+                            if (cell.querySelector('.table-input')) continue;
+                            rowData['label'] = cell.innerText.trim();
+                            break;
+                        }
+                    }
 
                     // Inputs
                     const inputs = row.querySelectorAll('.table-input');
