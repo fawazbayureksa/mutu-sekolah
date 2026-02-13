@@ -57,7 +57,7 @@
                     </a>
                 </li>
 
-                <li class="sidebar-menu-item">
+                {{-- <li class="sidebar-menu-item">
                     <a href="{{ route('admin.questions.index') }}"
                         class="sidebar-menu-link {{ request()->is('admin/questions*') ? 'active' : '' }}">
                         <i class="bi bi-question-circle"></i>
@@ -71,7 +71,7 @@
                         <i class="bi bi-clipboard-data"></i>
                         <span>Instrumen</span>
                     </a>
-                </li>
+                </li> --}}
 
                 {{-- TEMPORARILY HIDDEN
             <li class="sidebar-menu-item">
@@ -83,7 +83,7 @@
             </li>
             --}}
 
-                <li class="sidebar-menu-item">
+                {{-- <li class="sidebar-menu-item">
                     <a href="{{ route('admin.validations.index') }}"
                         class="sidebar-menu-link {{ request()->is('admin/validations*') ? 'active' : '' }}">
                         <i class="bi bi-check2-square"></i>
@@ -97,7 +97,7 @@
                         <i class="bi bi-graph-up"></i>
                         <span>Analytics</span>
                     </a>
-                </li>
+                </li> --}}
             @endif
 
             @if (auth()->check() && auth()->user()->isAdmin())

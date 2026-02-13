@@ -1,18 +1,18 @@
 @extends('layouts.admin')
 
-@section('title', 'Data Submissions')
+@section('title', 'Data Pengajuan')
 
 @section('content')
     <div class="container-fluid">
         <div class="row mb-4">
             <div class="col-md-6">
-                <h1 class="h3 mb-0 text-gray-800">Data Submissions</h1>
+                <h1 class="h3 mb-0 text-gray-800">Data Pengajuan</h1>
             </div>
         </div>
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">List Submissions</h6>
+                <h6 class="m-0 font-weight-bold text-primary">List Pengajuan</h6>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

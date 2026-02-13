@@ -5,7 +5,7 @@
 @section('content')
     <div class="container-fluid">
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Detail Submission</h1>
+            <h1 class="h3 mb-0 text-gray-800">Detail Pengajuan</h1>
             <a href="{{ route('admin.submissions.index') }}" class="btn btn-secondary btn-sm">
                 <i class="bi bi-arrow-left"></i> Kembali
             </a>
@@ -13,7 +13,7 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Info Submission</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Info Pengajuan</h6>
             </div>
             <div class="card-body">
                 <div class="row">
