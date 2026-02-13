@@ -318,19 +318,43 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <!-- JSON Configuration -->
-                        <div class="col-md-6 mb-4">
-                            <h6 class="fw-bold mb-3">
-                                <i class="bi bi-code-square"></i> Konfigurasi JSON:
-                            </h6>
-                            <div class="position-relative">
-                                <button type="button"
-                                    class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2"
-                                    onclick="copyStructureExample()">
-                                    <i class="bi bi-clipboard"></i> Salin
-                                </button>
-                                <pre class="border rounded p-3 bg-light" style="max-height: 500px; overflow-y: auto;"><code id="structureExampleJson">{
+                    <!-- Tab Navigation -->
+                    <ul class="nav nav-tabs mb-3" id="structureExampleTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="example1-tab" data-bs-toggle="tab"
+                                data-bs-target="#example1" type="button" role="tab">
+                                <i class="bi bi-table"></i> Tabel Dasar
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="example2-tab" data-bs-toggle="tab" data-bs-target="#example2"
+                                type="button" role="tab">
+                                <i class="bi bi-list-ol"></i> Tabel dengan Nomor Baris
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="example3-tab" data-bs-toggle="tab" data-bs-target="#example3"
+                                type="button" role="tab">
+                                <i class="bi bi-plus-circle"></i> Tabel Dinamis
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="structureExampleTabsContent">
+                        <!-- Example 1: Basic Table -->
+                        <div class="tab-pane fade show active" id="example1" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <h6 class="fw-bold mb-3">
+                                        <i class="bi bi-code-square"></i> Konfigurasi JSON - Tabel Dasar:
+                                    </h6>
+                                    <div class="position-relative">
+                                        <button type="button"
+                                            class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2"
+                                            onclick="copyStructureExample('structureExampleJson1')">
+                                            <i class="bi bi-clipboard"></i> Salin
+                                        </button>
+                                        <pre class="border rounded p-3 bg-light" style="max-height: 400px; overflow-y: auto;"><code id="structureExampleJson1">{
     "type": "table",
     "columns": [
         {
@@ -360,115 +384,328 @@
         },
         {
             "key": "organizer",
-            "label": "Lembaga Sertifikasi/Penyelenggara",
+            "label": "Lembaga Sertifikasi",
             "type": "text",
             "width": "25%"
         }
     ],
     "rows": [
-        {
-            "label": "Uji Kompetensi Keahlian (UKK) Mandiri"
-        },
-        {
-            "label": "Uji Kompetensi Keahlian (UKK) LSP"
-        },
-        {
-            "label": "Sertifikasi Profesi (Contoh: BNSP, TOEIC, dll)"
-        }
+        { "label": "UKK Mandiri" },
+        { "label": "UKK LSP" },
+        { "label": "Sertifikasi Profesi" }
     ]
 }</code></pre>
-                            </div>
-
-                            <div class="alert alert-info mt-3">
-                                <h6 class="alert-heading"><i class="bi bi-info-circle"></i> Penjelasan Properti:</h6>
-                                <ul class="small mb-0">
-                                    <li><strong>type:</strong> Harus "table"</li>
-                                    <li><strong>columns:</strong> Array definisi kolom
-                                        <ul>
-                                            <li><strong>key:</strong> Identifier unik kolom</li>
-                                            <li><strong>label:</strong> Label yang ditampilkan</li>
-                                            <li><strong>type:</strong> text, number, percentage</li>
-                                            <li><strong>width:</strong> Lebar kolom (opsional)</li>
-                                            <li><strong>read_only:</strong> true jika kolom hanya baca (opsional)</li>
-                                            <li><strong>calculate:</strong> Formula perhitungan otomatis (opsional)</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>rows:</strong> Array definisi baris dengan label</li>
-                                </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold mb-3"><i class="bi bi-eye"></i> Preview:</h6>
+                                    <div class="border rounded p-3 bg-white">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-sm">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Jenis</th>
+                                                        <th>Tahun</th>
+                                                        <th>Jumlah Peserta</th>
+                                                        <th>Jumlah Lulus</th>
+                                                        <th>Tingkat Kelulusan (%)</th>
+                                                        <th>Lembaga Sertifikasi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><strong>UKK Mandiri</strong></td>
+                                                        <td><input type="number" class="form-control form-control-sm"
+                                                                value="2024"></td>
+                                                        <td><input type="number" class="form-control form-control-sm"
+                                                                value="150"></td>
+                                                        <td><input type="number" class="form-control form-control-sm"
+                                                                value="142"></td>
+                                                        <td><input type="text"
+                                                                class="form-control form-control-sm bg-light"
+                                                                value="94.67" readonly></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                value="Sekolah"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>UKK LSP</strong></td>
+                                                        <td><input type="number" class="form-control form-control-sm"
+                                                                value="2024"></td>
+                                                        <td><input type="number" class="form-control form-control-sm"
+                                                                value="80"></td>
+                                                        <td><input type="number" class="form-control form-control-sm"
+                                                                value="75"></td>
+                                                        <td><input type="text"
+                                                                class="form-control form-control-sm bg-light"
+                                                                value="93.75" readonly></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                value="LSP P1"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Visual Preview -->
-                        <div class="col-md-6">
-                            <h6 class="fw-bold mb-3">
-                                <i class="bi bi-eye"></i> Preview Tampilan Form:
-                            </h6>
-                            <div class="border rounded p-3 bg-white">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-sm">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th style="width: 20%">Jenis</th>
-                                                <th style="width: 15%">Tahun</th>
-                                                <th style="width: 20%">Jumlah Peserta</th>
-                                                <th style="width: 20%">Jumlah Lulus</th>
-                                                <th>Tingkat Kelulusan (%)</th>
-                                                <th style="width: 25%">Lembaga Sertifikasi/Penyelenggara</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="align-middle"><strong>Uji Kompetensi Keahlian (UKK)
-                                                        Mandiri</strong></td>
-                                                <td><input type="number" class="form-control form-control-sm"
-                                                        placeholder="2024" value="2024"></td>
-                                                <td><input type="number" class="form-control form-control-sm"
-                                                        placeholder="0" value="150"></td>
-                                                <td><input type="number" class="form-control form-control-sm"
-                                                        placeholder="0" value="142"></td>
-                                                <td><input type="text" class="form-control form-control-sm bg-light"
-                                                        placeholder="0.00" value="94.67" readonly></td>
-                                                <td><input type="text" class="form-control form-control-sm"
-                                                        placeholder="..." value="Sekolah"></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="align-middle"><strong>Uji Kompetensi Keahlian (UKK) LSP</strong>
-                                                </td>
-                                                <td><input type="number" class="form-control form-control-sm"
-                                                        placeholder="2024" value="2024"></td>
-                                                <td><input type="number" class="form-control form-control-sm"
-                                                        placeholder="0" value="80"></td>
-                                                <td><input type="number" class="form-control form-control-sm"
-                                                        placeholder="0" value="75"></td>
-                                                <td><input type="text" class="form-control form-control-sm bg-light"
-                                                        placeholder="0.00" value="93.75" readonly></td>
-                                                <td><input type="text" class="form-control form-control-sm"
-                                                        placeholder="..." value="LSP P1"></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="align-middle"><strong>Sertifikasi Profesi (Contoh: BNSP, TOEIC,
-                                                        dll)</strong></td>
-                                                <td><input type="number" class="form-control form-control-sm"
-                                                        placeholder="2024" value="2024"></td>
-                                                <td><input type="number" class="form-control form-control-sm"
-                                                        placeholder="0" value="45"></td>
-                                                <td><input type="number" class="form-control form-control-sm"
-                                                        placeholder="0" value="40"></td>
-                                                <td><input type="text" class="form-control form-control-sm bg-light"
-                                                        placeholder="0.00" value="88.89" readonly></td>
-                                                <td><input type="text" class="form-control form-control-sm"
-                                                        placeholder="..." value="BNSP"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                        <!-- Example 2: Table with Row Numbers -->
+                        <div class="tab-pane fade" id="example2" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <h6 class="fw-bold mb-3">
+                                        <i class="bi bi-code-square"></i> Konfigurasi JSON - Dengan Nomor Baris:
+                                    </h6>
+                                    <div class="position-relative">
+                                        <button type="button"
+                                            class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2"
+                                            onclick="copyStructureExample('structureExampleJson2')">
+                                            <i class="bi bi-clipboard"></i> Salin
+                                        </button>
+                                        <pre class="border rounded p-3 bg-light" style="max-height: 400px; overflow-y: auto;"><code id="structureExampleJson2">{
+    "type": "table",
+    "show_row_number": true,
+    "row_label_header": "No",
+    "columns": [
+        {
+            "key": "name",
+            "label": "Nama Sarana/Prasarana",
+            "type": "text",
+            "width": "30%"
+        },
+        {
+            "key": "quantity",
+            "label": "Jumlah",
+            "type": "number",
+            "width": "15%"
+        },
+        {
+            "key": "condition",
+            "label": "Kondisi",
+            "type": "text",
+            "width": "20%"
+        },
+        {
+            "key": "notes",
+            "label": "Keterangan",
+            "type": "text",
+            "width": "25%"
+        }
+    ],
+    "rows": [
+        { "label": "Komputer" },
+        { "label": "Laptop" },
+        { "label": "Proyektor" },
+        { "label": "Router/Switch" }
+    ]
+}</code></pre>
+                                    </div>
+                                    <div class="alert alert-info mt-3">
+                                        <small>
+                                            <i class="bi bi-info-circle"></i>
+                                            <strong>show_row_number:</strong> Menampilkan nomor urut baris otomatis<br>
+                                            <strong>row_label_header:</strong> Label header untuk kolom nomor (default:
+                                            "No")
+                                        </small>
+                                    </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold mb-3"><i class="bi bi-eye"></i> Preview:</h6>
+                                    <div class="border rounded p-3 bg-white">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-sm">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th style="width: 50px">No</th>
+                                                        <th>Nama Sarana/Prasarana</th>
+                                                        <th>Jumlah</th>
+                                                        <th>Kondisi</th>
+                                                        <th>Keterangan</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-center">1</td>
+                                                        <td>Komputer</td>
+                                                        <td><input type="number" class="form-control form-control-sm"
+                                                                value="25"></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                value="Baik"></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                value="-"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-center">2</td>
+                                                        <td>Laptop</td>
+                                                        <td><input type="number" class="form-control form-control-sm"
+                                                                value="10"></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                value="Baik"></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                value="-"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-center">3</td>
+                                                        <td>Proyektor</td>
+                                                        <td><input type="number" class="form-control form-control-sm"
+                                                                value="5"></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                value="Cukup"></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                value="1 rusak"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                                <div class="alert alert-success mt-3 mb-0">
-                                    <small>
-                                        <i class="bi bi-check-circle"></i>
-                                        <strong>Fitur Perhitungan Otomatis:</strong> Kolom "Tingkat Kelulusan (%)" akan
-                                        dihitung secara otomatis berdasarkan formula yang didefinisikan.
-                                    </small>
+                        <!-- Example 3: Dynamic Table -->
+                        <div class="tab-pane fade" id="example3" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <h6 class="fw-bold mb-3">
+                                        <i class="bi bi-code-square"></i> Konfigurasi JSON - Tabel Dinamis:
+                                    </h6>
+                                    <div class="position-relative">
+                                        <button type="button"
+                                            class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2"
+                                            onclick="copyStructureExample('structureExampleJson3')">
+                                            <i class="bi bi-clipboard"></i> Salin
+                                        </button>
+                                        <pre class="border rounded p-3 bg-light" style="max-height: 400px; overflow-y: auto;"><code id="structureExampleJson3">{
+    "type": "table",
+    "show_row_number": true,
+    "row_label_header": "No",
+    "dynamic_rows": true,
+    "min_rows": 1,
+    "max_rows": 20,
+    "columns": [
+        {
+            "key": "partner_name",
+            "label": "Nama Mitra/DUDI",
+            "type": "text",
+            "width": "30%"
+        },
+        {
+            "key": "cooperation_type",
+            "label": "Jenis Kerjasama",
+            "type": "text",
+            "width": "25%"
+        },
+        {
+            "key": "mou_number",
+            "label": "No. MoU",
+            "type": "text",
+            "width": "20%"
+        },
+        {
+            "key": "valid_until",
+            "label": "Berlaku Sampai",
+            "type": "text",
+            "width": "15%"
+        }
+    ],
+    "rows": []
+}</code></pre>
+                                    </div>
+                                    <div class="alert alert-warning mt-3">
+                                        <small>
+                                            <i class="bi bi-plus-circle"></i>
+                                            <strong>dynamic_rows:</strong> User dapat menambah/hapus baris<br>
+                                            <strong>min_rows:</strong> Minimal jumlah baris (default: 1)<br>
+                                            <strong>max_rows:</strong> Maksimal jumlah baris (default: 20)<br>
+                                            <strong>rows:</strong> Kosong [] untuk tabel dinamis murni
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold mb-3"><i class="bi bi-eye"></i> Preview:</h6>
+                                    <div class="border rounded p-3 bg-white">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-sm">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th style="width: 50px">No</th>
+                                                        <th>Nama Mitra/DUDI</th>
+                                                        <th>Jenis Kerjasama</th>
+                                                        <th>No. MoU</th>
+                                                        <th>Berlaku Sampai</th>
+                                                        <th style="width: 50px">Aksi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-center">1</td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                value="PT. ABC"></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                value="PKL"></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                value="001/MoU/2024"></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                value="2026"></td>
+                                                        <td><button class="btn btn-sm btn-outline-danger" disabled><i
+                                                                    class="bi bi-trash"></i></button></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-center">2</td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                placeholder="..."></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                placeholder="..."></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                placeholder="..."></td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                placeholder="..."></td>
+                                                        <td><button class="btn btn-sm btn-outline-danger"><i
+                                                                    class="bi bi-trash"></i></button></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary mt-2" disabled>
+                                            <i class="bi bi-plus"></i> Tambah Baris
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Property Reference -->
+                    <div class="card mt-4 bg-light">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="bi bi-book"></i> Referensi Properti Konfigurasi</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Properti Utama:</h6>
+                                    <ul class="small mb-0">
+                                        <li><code>type</code>: "table" (wajib)</li>
+                                        <li><code>columns</code>: Array definisi kolom (wajib)</li>
+                                        <li><code>rows</code>: Array definisi baris dengan label</li>
+                                        <li><code>show_row_number</code>: true untuk nomor baris otomatis</li>
+                                        <li><code>row_label_header</code>: Label header nomor (default: "No")</li>
+                                        <li><code>dynamic_rows</code>: true untuk tambah/hapus baris</li>
+                                        <li><code>min_rows</code>: Minimal jumlah baris</li>
+                                        <li><code>max_rows</code>: Maksimal jumlah baris</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Properti Kolom:</h6>
+                                    <ul class="small mb-0">
+                                        <li><code>key</code>: Identifier unik kolom (wajib)</li>
+                                        <li><code>label</code>: Label yang ditampilkan (wajib)</li>
+                                        <li><code>type</code>: text, number, percentage</li>
+                                        <li><code>width</code>: Lebar kolom (mis: "20%")</li>
+                                        <li><code>read_only</code>: true untuk kolom hanya baca</li>
+                                        <li><code>calculate</code>: Formula perhitungan otomatis</li>
+                                        <li><code>placeholder</code>: Teks placeholder input</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -477,7 +714,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                     <button type="button" class="btn btn-primary" onclick="useStructureExample()">
-                        <i class="bi bi-arrow-right-circle"></i> Gunakan Template Ini
+                        <i class="bi bi-arrow-right-circle"></i> Gunakan Template Aktif
                     </button>
                 </div>
             </div>
@@ -551,8 +788,8 @@
             });
 
             // Copy structure example to clipboard
-            window.copyStructureExample = function() {
-                const jsonText = document.getElementById('structureExampleJson').textContent;
+            window.copyStructureExample = function(elementId) {
+                const jsonText = document.getElementById(elementId).textContent;
                 navigator.clipboard.writeText(jsonText).then(function() {
                     // Show success feedback
                     const btn = event.target.closest('button');
@@ -571,9 +808,17 @@
                 });
             };
 
-            // Use structure example - populate the textarea
+            // Use structure example - populate the textarea with active tab's JSON
             window.useStructureExample = function() {
-                const jsonText = document.getElementById('structureExampleJson').textContent;
+                // Find the active tab pane
+                const activePane = document.querySelector('#structureExampleTabsContent .tab-pane.active');
+                if (!activePane) return;
+
+                // Find the JSON code element in the active pane
+                const codeElement = activePane.querySelector('code[id^="structureExampleJson"]');
+                if (!codeElement) return;
+
+                const jsonText = codeElement.textContent;
                 const textarea = document.getElementById('answer_options_structure');
 
                 if (textarea) {
