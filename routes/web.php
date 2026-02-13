@@ -9,16 +9,24 @@ use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PublicInstrumentController;
+use App\Http\Controllers\PublicInstrumentV2Controller;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
-Route::get('/', fn () => view('landing'))->name('landing');
+Route::get('/', fn() => view('landing'))->name('landing');
 
 Route::get('/instrumen', [PublicInstrumentController::class, 'index'])
     ->name('instrument.form');
 
 Route::post('/instrumen', [PublicInstrumentController::class, 'store'])
     ->name('instrument.submit');
+
+// V2 Instrument routes (hardcoded form with dynamic rows)
+Route::get('/instrumen/v2', [PublicInstrumentV2Controller::class, 'index'])
+    ->name('instrument.v2.form');
+
+Route::post('/instrumen/v2', [PublicInstrumentV2Controller::class, 'store'])
+    ->name('instrument.v2.submit');
 
 // Submission update via one-time token
 Route::get('/submission/update/{token}', [\App\Http\Controllers\SubmissionUpdateController::class, 'show'])
