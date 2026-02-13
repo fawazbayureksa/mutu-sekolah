@@ -157,6 +157,18 @@ Route::middleware('auth')->group(function () {
         // Submission Management
         Route::resource('submissions', \App\Http\Controllers\Admin\SubmissionController::class)->only(['index', 'show']);
 
+        // Submission V2 Management
+        Route::prefix('submissions-v2')->name('submissions-v2.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'index'])->name('index');
+            Route::get('/{submission}', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'show'])->name('show');
+            Route::post('/{submission}/verify', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'verify'])->name('verify');
+            Route::post('/{submission}/reject', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'reject'])->name('reject');
+            Route::post('/{submission}/validate', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'validateSubmission'])->name('validate');
+            Route::post('/{submission}/generate-token', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'generateUpdateToken'])->name('generate-token');
+            Route::get('/export/all', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'export'])->name('export');
+            Route::delete('/{submission}', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'destroy'])->name('destroy');
+        });
+
         // Validation routes
         Route::get('/validations', [AdminValidationController::class, 'index'])->name('validations.index');
         Route::get('/validations/{submission}', [AdminValidationController::class, 'show'])->name('validations.show');
