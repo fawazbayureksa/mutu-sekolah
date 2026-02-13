@@ -66,13 +66,17 @@
 
                 @foreach ($aspects as $aspect)
                     <div class="mb-5">
-                        <h4 class="text-primary border-bottom pb-2 mb-3">{{ is_array($aspect->code) ? json_encode($aspect->code) : $aspect->code }} - {{ is_array($aspect->name) ? json_encode($aspect->name) : $aspect->name }}</h4>
+                        <h4 class="text-primary border-bottom pb-2 mb-3">
+                            {{ is_array($aspect->code) ? json_encode($aspect->code) : $aspect->code }} -
+                            {{ is_array($aspect->name) ? json_encode($aspect->name) : $aspect->name }}</h4>
 
                         @foreach ($aspect->indicators as $indicator)
                             <div class="card mb-4 border-left-primary">
                                 <div class="card-header bg-light">
-                                    <span class="badge bg-secondary me-2">{{ is_array($indicator->code) ? json_encode($indicator->code) : $indicator->code }}</span>
-                                    <span class="fw-bold text-dark">{{ is_array($indicator->description) ? json_encode($indicator->description) : $indicator->description }}</span>
+                                    <span
+                                        class="badge bg-secondary me-2">{{ is_array($indicator->code) ? json_encode($indicator->code) : $indicator->code }}</span>
+                                    <span
+                                        class="fw-bold text-dark">{{ is_array($indicator->description) ? json_encode($indicator->description) : $indicator->description }}</span>
                                 </div>
                                 <div class="card-body">
                                     @foreach ($indicator->questions as $question)
@@ -88,7 +92,8 @@
 
                                         <div class="mb-4 pb-3 border-bottom last:border-0">
                                             <div class="d-flex align-items-start mb-2">
-                                                <span class="badge bg-info me-2 mt-1">{{ is_array($question->question_code) ? json_encode($question->question_code) : $question->question_code }}</span>
+                                                <span
+                                                    class="badge bg-info me-2 mt-1">{{ is_array($question->question_code) ? json_encode($question->question_code) : $question->question_code }}</span>
                                                 <div>
                                                     <p class="mb-1 text-dark fw-medium">{{ $question->question_text }}</p>
                                                     @if ($question->help_text)
@@ -112,14 +117,44 @@
                                                             $config = $question->getAnswerOptionsArray();
                                                             $columns = $config['columns'] ?? [];
                                                             $rowsConfig = $config['rows'] ?? [];
+                                                            $showRowNumber = $config['show_row_number'] ?? false;
+                                                            $rowLabelHeader = $config['row_label_header'] ?? 'No';
+                                                            $dynamicRows = $config['dynamic_rows'] ?? false;
+
+                                                            // Auto-detect columns from data if config columns are empty
+                                                            if (
+                                                                empty($columns) &&
+                                                                is_array($structureData) &&
+                                                                count($structureData) > 0
+                                                            ) {
+                                                                $firstRow = reset($structureData);
+                                                                if (is_array($firstRow)) {
+                                                                    foreach (array_keys($firstRow) as $key) {
+                                                                        if ($key !== '_row_label') {
+                                                                            $columns[] = [
+                                                                                'key' => $key,
+                                                                                'label' => ucfirst(
+                                                                                    str_replace('_', ' ', $key),
+                                                                                ),
+                                                                            ];
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
                                                         @endphp
 
-                                                        @if (is_array($structureData) && count($structureData) > 0)
+                                                        @if (is_array($structureData) && count($structureData) > 0 && count($columns) > 0)
                                                             <div class="table-responsive bg-white rounded shadow-sm">
                                                                 <table class="table table-sm table-bordered mb-0">
                                                                     <thead class="table-light">
                                                                         <tr>
-                                                                            <th>Item</th>
+                                                                            @if ($showRowNumber || $dynamicRows)
+                                                                                <th style="width: 50px">
+                                                                                    {{ $rowLabelHeader }}</th>
+                                                                            @endif
+                                                                            @if (!$showRowNumber && !$dynamicRows && count($rowsConfig) > 0)
+                                                                                <th>Item</th>
+                                                                            @endif
                                                                             @foreach ($columns as $col)
                                                                                 <th>{{ $col['label'] }}</th>
                                                                             @endforeach
@@ -128,9 +163,15 @@
                                                                     <tbody>
                                                                         @foreach ($structureData as $rowIndex => $rowData)
                                                                             <tr>
-                                                                                <td class="fw-medium">
-                                                                                    {{ $rowsConfig[$rowIndex]['label'] ?? 'Row ' . ($rowIndex + 1) }}
-                                                                                </td>
+                                                                                @if ($showRowNumber || $dynamicRows)
+                                                                                    <td class="text-center fw-medium">
+                                                                                        {{ $rowIndex + 1 }}</td>
+                                                                                @endif
+                                                                                @if (!$showRowNumber && !$dynamicRows && count($rowsConfig) > 0)
+                                                                                    <td class="fw-medium">
+                                                                                        {{ $rowData['_row_label'] ?? ($rowsConfig[$rowIndex]['label'] ?? 'Row ' . ($rowIndex + 1)) }}
+                                                                                    </td>
+                                                                                @endif
                                                                                 @foreach ($columns as $col)
                                                                                     <td>{{ $rowData[$col['key']] ?? '-' }}
                                                                                     </td>
@@ -139,6 +180,27 @@
                                                                         @endforeach
                                                                     </tbody>
                                                                 </table>
+                                                            </div>
+                                                        @elseif (is_array($structureData) && count($structureData) > 0)
+                                                            {{-- Fallback: show raw data as key-value pairs --}}
+                                                            <div class="bg-white rounded shadow-sm p-3">
+                                                                @foreach ($structureData as $rowIndex => $rowData)
+                                                                    <div
+                                                                        class="mb-3 {{ !$loop->last ? 'border-bottom pb-3' : '' }}">
+                                                                        <strong class="text-primary">Baris
+                                                                            {{ $rowIndex + 1 }}</strong>
+                                                                        @if (is_array($rowData))
+                                                                            <ul class="mb-0 mt-2">
+                                                                                @foreach ($rowData as $key => $value)
+                                                                                    <li><strong>{{ ucfirst(str_replace('_', ' ', $key)) }}:</strong>
+                                                                                        {{ $value ?? '-' }}</li>
+                                                                                @endforeach
+                                                                            </ul>
+                                                                        @else
+                                                                            <p class="mb-0 mt-1">{{ $rowData }}</p>
+                                                                        @endif
+                                                                    </div>
+                                                                @endforeach
                                                             </div>
                                                         @else
                                                             <div class="alert alert-warning mb-0">
@@ -153,7 +215,9 @@
                                                         @endif
                                                     @elseif ($question->answer_type === 'boolean')
                                                         @php
-                                                            $answerValue = is_array($response->answer) ? json_encode($response->answer) : $response->answer;
+                                                            $answerValue = is_array($response->answer)
+                                                                ? json_encode($response->answer)
+                                                                : $response->answer;
                                                         @endphp
                                                         @if (strtolower($answerValue) == 'yes' || $answerValue == '1')
                                                             <span class="badge bg-success"><i class="bi bi-check-lg"></i>
@@ -178,10 +242,12 @@
                                                         @endphp
                                                         <span class="fw-bold">{{ $label }}</span>
                                                         @if ($label !== $response->answer)
-                                                            <small class="text-muted">({{ is_array($response->answer) ? json_encode($response->answer) : $response->answer }})</small>
+                                                            <small
+                                                                class="text-muted">({{ is_array($response->answer) ? json_encode($response->answer) : $response->answer }})</small>
                                                         @endif
                                                     @else
-                                                        <span class="fw-bold">{{ is_array($response->answer) ? json_encode($response->answer) : $response->answer }}</span>
+                                                        <span
+                                                            class="fw-bold">{{ is_array($response->answer) ? json_encode($response->answer) : $response->answer }}</span>
                                                     @endif
 
                                                     @if ($response->notes)
