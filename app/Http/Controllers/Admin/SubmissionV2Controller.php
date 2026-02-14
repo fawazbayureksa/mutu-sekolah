@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\InstrumentSubmissionV2;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class SubmissionV2Controller extends Controller
 {
@@ -30,7 +30,9 @@ class SubmissionV2Controller extends Controller
             'rejected' => InstrumentSubmissionV2::where('status', InstrumentSubmissionV2::STATUS_REJECTED)->count(),
         ];
 
-        return view('admin.submissions-v2.index', compact('submissions', 'status', 'stats'));
+        $viewPrefix = request()->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
+
+        return view("{$viewPrefix}.submissions-v2.index", compact('submissions', 'status', 'stats'));
     }
 
     /**
@@ -40,7 +42,9 @@ class SubmissionV2Controller extends Controller
     {
         $submission->load(['details', 'verifier', 'validator']);
 
-        return view('admin.submissions-v2.show', compact('submission'));
+        $viewPrefix = request()->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
+
+        return view("{$viewPrefix}.submissions-v2.show", compact('submission'));
     }
 
     /**
@@ -63,7 +67,9 @@ class SubmissionV2Controller extends Controller
             'verification_notes' => $request->notes,
         ]);
 
-        return redirect()->route('admin.submissions-v2.index')
+        $routePrefix = request()->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
+
+        return redirect()->route("{$routePrefix}.submissions-v2.index")
             ->with('success', 'Submission berhasil diverifikasi');
     }
 
@@ -83,7 +89,9 @@ class SubmissionV2Controller extends Controller
             'verification_notes' => $request->notes,
         ]);
 
-        return redirect()->route('admin.submissions-v2.index')
+        $routePrefix = request()->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
+
+        return redirect()->route("{$routePrefix}.submissions-v2.index")
             ->with('success', 'Submission ditolak');
     }
 
@@ -121,7 +129,7 @@ class SubmissionV2Controller extends Controller
         }
 
         $token = $submission->generateUpdateToken();
-        $updateUrl = route('instrument.v2.update.show', $token);
+        $updateUrl = route('submission.update.show', $token);
 
         return back()
             ->with('success', 'Token berhasil dibuat. URL update akan berlaku selama 24 jam.')

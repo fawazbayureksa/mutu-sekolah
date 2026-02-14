@@ -68,10 +68,18 @@
                             <div class="col-md-6">
                                 <label class="form-label">Role</label>
                                 <select name="role" class="form-select">
-                                    <option value="user"
+
+                                    @foreach (config('constant.user_role') as $key => $role)
+                                        <option value="{{ $key }}"
+                                            {{ old('role') === $user->role ? 'selected' : '' }}>
+                                            {{ $role }}
+                                        </option>
+                                    @endforeach
+
+                                    {{-- <option value="user"
                                         {{ old('role', $user->role ?? 'user') === 'user' ? 'selected' : '' }}>User</option>
                                     <option value="admin"
-                                        {{ old('role', $user->role ?? '') === 'admin' ? 'selected' : '' }}>Admin</option>
+                                        {{ old('role', $user->role ?? '') === 'admin' ? 'selected' : '' }}>Admin</option> --}}
                                 </select>
                                 @error('role')
                                     <div class="text-danger small">{{ $message }}</div>
@@ -111,7 +119,6 @@
                 <div class="card-body">
                     <ul class="mb-0">
                         <li class="mb-2"><strong>Admin Role:</strong> Has full access to all admin features</li>
-                        <li class="mb-2"><strong>User Role:</strong> Has limited access based on permissions</li>
                         <li class="mb-2"><strong>Active Users:</strong> Can log in and access the system</li>
                         <li><strong>Inactive Users:</strong> Cannot log in until activated</li>
                     </ul>

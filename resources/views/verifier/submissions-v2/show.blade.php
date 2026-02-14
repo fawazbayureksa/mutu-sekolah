@@ -1,0 +1,424 @@
+@extends('verifier.layouts.verifier')
+
+@section('title', 'Detail Pengajuan V2')
+
+@section('content')
+    <div class="container-fluid">
+        {{-- Header --}}
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h1 class="h3 mb-1 text-gray-800">Detail Pengajuan V2</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="{{ route('verifier.submissions-v2.index') }}">Pengajuan V2</a></li>
+                        <li class="breadcrumb-item active">Detail</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="d-flex gap-2">
+                @if ($submission->status === 'submitted')
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#verifyModal">
+                        <i class="bi bi-check-lg me-1"></i> Verifikasi
+                    </button>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                        <i class="bi bi-x-lg me-1"></i> Tolak
+                    </button>
+                @elseif($submission->status === 'rejected')
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#tokenModal">
+                        <i class="bi bi-link-45deg me-1"></i> Generate Link Update
+                    </button>
+                @endif
+                <a href="{{ route('verifier.submissions-v2.index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Kembali
+                </a>
+            </div>
+        </div>
+
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                @if (session('update_url'))
+                    <hr>
+                    <p class="mb-1"><strong>Link Update:</strong></p>
+                    <code class="d-block p-2 bg-light rounded">{{ session('update_url') }}</code>
+                    <button type="button" class="btn btn-sm btn-outline-success mt-2"
+                        onclick="copyToClipboard('{{ session('update_url') }}')">
+                        <i class="bi bi-clipboard me-1"></i> Salin Link
+                    </button>
+                @endif
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        <div class="row">
+            {{-- Info Sidebar --}}
+            <div class="col-lg-4 mb-4">
+                {{-- School Info Card --}}
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="bi bi-building me-2"></i>Informasi Sekolah
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless table-sm mb-0">
+                            <tr>
+                                <td class="fw-semibold text-muted" style="width: 40%">Nama Sekolah</td>
+                                <td>{{ $submission->school_name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-muted">NPSN</td>
+                                <td>{{ $submission->npsn ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-muted">Alamat</td>
+                                <td>{{ $submission->address }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                {{-- Respondent Info Card --}}
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="bi bi-person-badge me-2"></i>Informasi Responden
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless table-sm mb-0">
+                            <tr>
+                                <td class="fw-semibold text-muted" style="width: 40%">Nama</td>
+                                <td>{{ $submission->respondent_name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-muted">Jabatan</td>
+                                <td>{{ $submission->respondent_position }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-muted">Tanggal Isi</td>
+                                <td>{{ $submission->filled_at ? $submission->filled_at->format('d M Y') : '-' }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                {{-- Status Card --}}
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="bi bi-info-circle me-2"></i>Status Pengajuan
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <span class="badge {{ $submission->getStatusBadgeClass() }} fs-6 px-3 py-2">
+                                {{ $submission->getStatusLabel() }}
+                            </span>
+                        </div>
+
+                        @if ($submission->completion_percentage)
+                            <div class="mb-3">
+                                <label class="form-label small text-muted mb-1">Kelengkapan Data</label>
+                                <div class="progress" style="height: 10px;">
+                                    @php
+                                        $pct = $submission->completion_percentage;
+                                        $colorClass = $pct >= 80 ? 'success' : ($pct >= 50 ? 'warning' : 'danger');
+                                    @endphp
+                                    <div class="progress-bar bg-{{ $colorClass }}" style="width: {{ $pct }}%">
+                                    </div>
+                                </div>
+                                <small class="text-muted">{{ number_format($pct, 0) }}% lengkap</small>
+                            </div>
+                        @endif
+
+                        @if ($submission->verified_at)
+                            <hr>
+                            <div class="small">
+                                <div class="fw-semibold text-muted mb-1">Diverifikasi oleh:</div>
+                                <div>{{ $submission->verifier?->name ?? '-' }}</div>
+                                <div class="text-muted">{{ $submission->verified_at->format('d M Y H:i') }}</div>
+                                @if ($submission->verification_notes)
+                                    <div class="mt-2 p-2 bg-light rounded small">
+                                        <strong>Catatan:</strong> {{ $submission->verification_notes }}
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Metadata Card --}}
+                <div class="card shadow">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="bi bi-gear me-2"></i>Metadata
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless table-sm mb-0 small">
+                            <tr>
+                                <td class="text-muted">ID</td>
+                                <td><code>{{ $submission->id }}</code></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Versi Form</td>
+                                <td>{{ $submission->form_version }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">IP Address</td>
+                                <td><code>{{ $submission->ip_address ?? '-' }}</code></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Created</td>
+                                <td>{{ $submission->created_at->format('d M Y H:i') }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Main Content --}}
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="bi bi-file-text me-2"></i>Review Jawaban
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        @php
+                            $answers = $submission->answers ?? [];
+                        @endphp
+
+                        {{-- ASPECT A --}}
+                        <div class="mb-5">
+                            <h5 class="text-primary border-bottom pb-2 mb-3">
+                                <i class="bi bi-journal-text me-2"></i>A - Standar Peserta Didik
+                            </h5>
+
+                            {{-- A.1.1 --}}
+                            @include('admin.submissions-v2.partials.section-table', [
+                                'code' => 'A.1.1',
+                                'title' => 'Data Kelulusan Uji Kompetensi dan Sertifikasi',
+                                'data' => $answers['A.1.1'] ?? null,
+                                'columns' => [
+                                    ['key' => 'year', 'label' => 'Tahun'],
+                                    ['key' => 'total_participants', 'label' => 'Jumlah Peserta'],
+                                    ['key' => 'total_passed', 'label' => 'Jumlah Lulus'],
+                                    ['key' => 'pass_rate', 'label' => 'Tingkat Kelulusan (%)'],
+                                    ['key' => 'organizer', 'label' => 'Lembaga'],
+                                ],
+                                'staticRows' => [
+                                    'Uji Kompetensi Keahlian (UKK) Mandiri',
+                                    'Uji Kompetensi Keahlian (UKK) LSP',
+                                    'Sertifikasi Profesi',
+                                ],
+                            ])
+
+                            {{-- A.2.1 --}}
+                            @include('admin.submissions-v2.partials.section-tracer', [
+                                'code' => 'A.2.1',
+                                'title' => 'Penelusuran Alumni (Tracer Study)',
+                                'data' => $answers['A.2.1'] ?? null,
+                            ])
+                        </div>
+
+                        {{-- ASPECT B --}}
+                        <div class="mb-5">
+                            <h5 class="text-primary border-bottom pb-2 mb-3">
+                                <i class="bi bi-journal-text me-2"></i>B - Data Sarana Prasarana
+                            </h5>
+
+                            {{-- B.1.1 --}}
+                            @include('admin.submissions-v2.partials.section-table', [
+                                'code' => 'B.1.1',
+                                'title' => 'Inventarisasi dan Kesesuaian dengan Standar Industri',
+                                'data' => $answers['B.1.1'] ?? null,
+                                'columns' => [
+                                    ['key' => 'label', 'label' => 'Item/Perangkat'],
+                                    ['key' => 'specification', 'label' => 'Spesifikasi'],
+                                    ['key' => 'quantity', 'label' => 'Jumlah'],
+                                    ['key' => 'condition', 'label' => 'Kondisi'],
+                                    ['key' => 'industry_standard', 'label' => 'Standar Industri'],
+                                    ['key' => 'remarks', 'label' => 'Keterangan'],
+                                ],
+                                'dynamicRows' => true,
+                            ])
+
+                            {{-- B.2.1 --}}
+                            @include('admin.submissions-v2.partials.section-checklist', [
+                                'code' => 'B.2.1',
+                                'title' => 'Penilaian Kesiapan Fasilitas (Checklist)',
+                                'data' => $answers['B.2.1'] ?? null,
+                            ])
+                        </div>
+
+                        {{-- ASPECT C --}}
+                        <div class="mb-5">
+                            <h5 class="text-primary border-bottom pb-2 mb-3">
+                                <i class="bi bi-journal-text me-2"></i>C - Data Tata Kelola
+                            </h5>
+
+                            {{-- C.1.1 --}}
+                            @include('admin.submissions-v2.partials.section-table', [
+                                'code' => 'C.1.1',
+                                'title' => 'Kerjasama Industri',
+                                'data' => $answers['C.1.1'] ?? null,
+                                'columns' => [
+                                    ['key' => 'label', 'label' => 'Nama Industri Mitra'],
+                                    ['key' => 'cooperation_type', 'label' => 'Bentuk Kerjasama'],
+                                    ['key' => 'duration', 'label' => 'Durasi'],
+                                    ['key' => 'output', 'label' => 'Output/Kontribusi'],
+                                    ['key' => 'mou_status', 'label' => 'Status MoU'],
+                                ],
+                                'dynamicRows' => true,
+                            ])
+
+                            {{-- C.2.1 --}}
+                            @include('admin.submissions-v2.partials.section-table', [
+                                'code' => 'C.2.1',
+                                'title' => 'Teaching Factory (TEFA) / Unit Produksi Sekolah',
+                                'data' => $answers['C.2.1'] ?? null,
+                                'columns' => [
+                                    ['key' => 'label', 'label' => 'Nama Program'],
+                                    ['key' => 'industry_partner', 'label' => 'Mitra Industri'],
+                                    ['key' => 'operation_scale', 'label' => 'Skala Operasi'],
+                                    ['key' => 'achievement', 'label' => 'Pencapaian'],
+                                    ['key' => 'constraints', 'label' => 'Kendala'],
+                                ],
+                                'dynamicRows' => true,
+                            ])
+
+                            {{-- C.3.1 --}}
+                            @include('admin.submissions-v2.partials.section-table', [
+                                'code' => 'C.3.1',
+                                'title' => 'Data Pelatihan dan Sertifikasi Guru',
+                                'data' => $answers['C.3.1'] ?? null,
+                                'columns' => [
+                                    ['key' => 'label', 'label' => 'Nama Guru'],
+                                    ['key' => 'subject', 'label' => 'Mata Pelajaran'],
+                                    ['key' => 'training_type', 'label' => 'Jenis Pelatihan'],
+                                    ['key' => 'year', 'label' => 'Tahun'],
+                                    ['key' => 'provider', 'label' => 'Penyedia'],
+                                    ['key' => 'evidence', 'label' => 'Bukti'],
+                                ],
+                                'dynamicRows' => true,
+                            ])
+
+                            {{-- C.3.2 --}}
+                            @include('admin.submissions-v2.partials.section-form', [
+                                'code' => 'C.3.2',
+                                'title' => 'Analisis Kebutuhan Pelatihan Guru ke Depan',
+                                'data' => $answers['C.3.2'] ?? null,
+                            ])
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Verify Modal --}}
+    @if ($submission->status === 'submitted')
+        <div class="modal fade" id="verifyModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{{ route('verifier.submissions-v2.verify', $submission) }}" method="POST">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title">Verifikasi Pengajuan</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Anda akan memverifikasi pengajuan dari <strong>{{ $submission->school_name }}</strong>.</p>
+                            <div class="mb-3">
+                                <label class="form-label">Catatan (Opsional)</label>
+                                <textarea name="notes" class="form-control" rows="3" placeholder="Tambahkan catatan..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-success"><i class="bi bi-check-lg me-1"></i>
+                                Verifikasi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="rejectModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{{ route('verifier.submissions-v2.reject', $submission) }}" method="POST">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title">Tolak Pengajuan</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Anda akan menolak pengajuan dari <strong>{{ $submission->school_name }}</strong>.</p>
+                            <div class="mb-3">
+                                <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
+                                <textarea name="notes" class="form-control" rows="3" required placeholder="Jelaskan alasan penolakan..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-danger"><i class="bi bi-x-lg me-1"></i> Tolak</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- Token Modal --}}
+    @if ($submission->status === 'rejected')
+        <div class="modal fade" id="tokenModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{{ route('verifier.submissions-v2.generate-token', $submission) }}" method="POST">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title">Generate Link Update</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Anda akan membuat link update untuk pengajuan dari
+                                <strong>{{ $submission->school_name }}</strong>.</p>
+                            <div class="alert alert-info small">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Link akan berlaku selama 24 jam dan hanya dapat digunakan sekali.
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-warning"><i class="bi bi-link-45deg me-1"></i> Generate
+                                Link</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
+@endsection
+
+@push('scripts')
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Link berhasil disalin!');
+            }, function(err) {
+                console.error('Gagal menyalin: ', err);
+            });
+        }
+    </script>
+@endpush
