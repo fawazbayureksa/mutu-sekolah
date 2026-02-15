@@ -1,3 +1,9 @@
+@php
+    $existingData = $existingData ?? [];
+    $rows = $existingData['rows'] ?? [];
+    $rowCount = max(2, count($rows));
+@endphp
+
 {{-- Table C.1.1: Kerjasama Industri (Dynamic Rows) --}}
 <div class="card table-card">
     <div class="card-header">
@@ -14,7 +20,13 @@
     </div>
 
     <div class="card-body p-0">
-        <input type="hidden" name="answers[C.1.1]" id="table-c11-input" value="{{ old('answers.C.1.1', '{}') }}">
+        @php
+            $initialValue = old('answers.C.1.1');
+            if (is_null($initialValue) && !empty($existingData)) {
+                $initialValue = json_encode($existingData);
+            }
+        @endphp
+        <input type="hidden" name="answers[C.1.1]" id="table-c11-input" value="{{ $initialValue ?? '{}' }}">
 
         <div class="table-responsive">
             <table class="table instrument-table mb-0" id="table-c11">
@@ -30,33 +42,40 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for ($i = 0; $i < 2; $i++)
+                    @for ($i = 0; $i < $rowCount; $i++)
+                        @php
+                            $rowData = $rows[$i] ?? [];
+                        @endphp
                         <tr data-row="{{ $i }}">
                             <td class="text-center row-number">{{ $i + 1 }}</td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input" data-key="label"
-                                    data-row="{{ $i }}" placeholder="Nama industri">
+                                    data-row="{{ $i }}" placeholder="Nama industri"
+                                    value="{{ $rowData['label'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
                                     data-key="cooperation_type" data-row="{{ $i }}"
-                                    placeholder="Magang, Rekrutmen, Donasi Alat, dll">
+                                    placeholder="Magang, Rekrutmen, Donasi Alat, dll"
+                                    value="{{ $rowData['cooperation_type'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="duration" data-row="{{ $i }}" placeholder="Contoh: 1 tahun">
+                                    data-key="duration" data-row="{{ $i }}" placeholder="Contoh: 1 tahun"
+                                    value="{{ $rowData['duration'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input" data-key="output"
                                     data-row="{{ $i }}"
-                                    placeholder="Jumlah siswa magang, nilai bantuan, dll">
+                                    placeholder="Jumlah siswa magang, nilai bantuan, dll"
+                                    value="{{ $rowData['output'] ?? '' }}">
                             </td>
                             <td>
                                 <select class="form-select form-select-sm table-input" data-key="mou_status"
                                     data-row="{{ $i }}">
                                     <option value="">Pilih</option>
-                                    <option value="Aktif">Aktif</option>
-                                    <option value="Tidak">Tidak Aktif</option>
+                                    <option value="Aktif" {{ ($rowData['mou_status'] ?? '') === 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                                    <option value="Tidak" {{ ($rowData['mou_status'] ?? '') === 'Tidak' ? 'selected' : '' }}>Tidak Aktif</option>
                                 </select>
                             </td>
                             <td class="text-center">

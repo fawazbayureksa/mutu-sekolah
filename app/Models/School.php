@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class School extends Model
@@ -18,8 +19,24 @@ class School extends Model
         'regency_code',
         'expertise',
         'expertise_program',
-        'expertise_concentration'
+        'expertise_concentration',
     ];
+
+    protected $casts = [
+        'expertise' => 'array',
+        'expertise_program' => 'array',
+        'expertise_concentration' => 'array',
+    ];
+
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(Province::class, 'province_code', 'code');
+    }
+
+    public function regency(): BelongsTo
+    {
+        return $this->belongsTo(Regency::class, 'regency_code', 'code');
+    }
 
     public function responses(): HasMany
     {

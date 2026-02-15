@@ -10,9 +10,6 @@ use Illuminate\View\View;
 
 class SubmissionV2Controller extends Controller
 {
-    /**
-     * Display list of V2 submissions
-     */
     public function index(Request $request): View
     {
         $status = $request->get('status', 'all');
@@ -24,32 +21,26 @@ class SubmissionV2Controller extends Controller
 
         $stats = [
             'total' => InstrumentSubmissionV2::count(),
-            'submitted' => InstrumentSubmissionV2::where('status', InstrumentSubmissionV2::STATUS_SUBMITTED)->count(),
-            'verified' => InstrumentSubmissionV2::where('status', InstrumentSubmissionV2::STATUS_VERIFIED)->count(),
-            'validated' => InstrumentSubmissionV2::where('status', InstrumentSubmissionV2::STATUS_VALIDATED)->count(),
-            'rejected' => InstrumentSubmissionV2::where('status', InstrumentSubmissionV2::STATUS_REJECTED)->count(),
+            'submitted' => InstrumentSubmissionV2::where('status', 'submitted')->count(),
+            'verified' => InstrumentSubmissionV2::where('status', 'verified')->count(),
+            'validated' => InstrumentSubmissionV2::where('status', 'validated')->count(),
+            'rejected' => InstrumentSubmissionV2::where('status', 'rejected')->count(),
         ];
 
-        $viewPrefix = request()->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
+        $viewPrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
 
         return view("{$viewPrefix}.submissions-v2.index", compact('submissions', 'status', 'stats'));
     }
 
-    /**
-     * Display submission detail
-     */
-    public function show(InstrumentSubmissionV2 $submission): View
+    public function show(Request $request, InstrumentSubmissionV2 $submission): View
     {
-        $submission->load(['details', 'verifier', 'validator']);
+        $submission->load(['details', 'verifier', 'validator', 'school', 'province', 'regency']);
 
-        $viewPrefix = request()->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
+        $viewPrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
 
         return view("{$viewPrefix}.submissions-v2.show", compact('submission'));
     }
 
-    /**
-     * Verify submission
-     */
     public function verify(Request $request, InstrumentSubmissionV2 $submission): RedirectResponse
     {
         $request->validate([
@@ -67,15 +58,12 @@ class SubmissionV2Controller extends Controller
             'verification_notes' => $request->notes,
         ]);
 
-        $routePrefix = request()->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
+        $routePrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
 
         return redirect()->route("{$routePrefix}.submissions-v2.index")
             ->with('success', 'Submission berhasil diverifikasi');
     }
 
-    /**
-     * Reject submission
-     */
     public function reject(Request $request, InstrumentSubmissionV2 $submission): RedirectResponse
     {
         $request->validate([
@@ -89,15 +77,12 @@ class SubmissionV2Controller extends Controller
             'verification_notes' => $request->notes,
         ]);
 
-        $routePrefix = request()->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
+        $routePrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
 
         return redirect()->route("{$routePrefix}.submissions-v2.index")
             ->with('success', 'Submission ditolak');
     }
 
-    /**
-     * Validate submission (after verification)
-     */
     public function validateSubmission(Request $request, InstrumentSubmissionV2 $submission): RedirectResponse
     {
         $request->validate([
@@ -115,13 +100,12 @@ class SubmissionV2Controller extends Controller
             'validation_notes' => $request->notes,
         ]);
 
-        return redirect()->route('admin.submissions-v2.index')
+        $routePrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
+
+        return redirect()->route("{$routePrefix}.submissions-v2.index")
             ->with('success', 'Submission berhasil divalidasi');
     }
 
-    /**
-     * Generate update token for rejected submission
-     */
     public function generateUpdateToken(InstrumentSubmissionV2 $submission): RedirectResponse
     {
         if ($submission->status !== InstrumentSubmissionV2::STATUS_REJECTED) {
@@ -129,27 +113,24 @@ class SubmissionV2Controller extends Controller
         }
 
         $token = $submission->generateUpdateToken();
-        $updateUrl = route('submission.update.show', $token);
+
+        $updateUrl = route('submissions-v2.update.show', $token);
 
         return back()
             ->with('success', 'Token berhasil dibuat. URL update akan berlaku selama 24 jam.')
             ->with('update_url', $updateUrl);
     }
 
-    /**
-     * Delete submission
-     */
-    public function destroy(InstrumentSubmissionV2 $submission): RedirectResponse
+    public function destroy(Request $request, InstrumentSubmissionV2 $submission): RedirectResponse
     {
         $submission->delete();
 
-        return redirect()->route('admin.submissions-v2.index')
+        $routePrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
+
+        return redirect()->route("{$routePrefix}.submissions-v2.index")
             ->with('success', 'Submission berhasil dihapus');
     }
 
-    /**
-     * Export submissions to CSV/Excel
-     */
     public function export(Request $request)
     {
         // TODO: Implement export functionality

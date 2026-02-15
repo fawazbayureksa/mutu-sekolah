@@ -1,3 +1,9 @@
+@php
+    $existingData = $existingData ?? [];
+    $rows = $existingData['rows'] ?? [];
+    $rowCount = max(2, count($rows));
+@endphp
+
 {{-- Table C.3.1: Data Pelatihan dan Sertifikasi Guru yang Telah Diikuti (Dynamic Rows) --}}
 <div class="card table-card">
     <div class="card-header">
@@ -15,7 +21,13 @@
     </div>
 
     <div class="card-body p-0">
-        <input type="hidden" name="answers[C.3.1]" id="table-c31-input" value="{{ old('answers.C.3.1', '{}') }}">
+        @php
+            $initialValue = old('answers[C.3.1');
+            if (is_null($initialValue) && !empty($existingData)) {
+                $initialValue = json_encode($existingData);
+            }
+        @endphp
+        <input type="hidden" name="answers[C.3.1]" id="table-c31-input" value="{{ $initialValue ?? '{}' }}">
 
         <div class="table-responsive">
             <table class="table instrument-table mb-0" id="table-c31">
@@ -32,33 +44,42 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for ($i = 0; $i < 2; $i++)
+                    @for ($i = 0; $i < $rowCount; $i++)
+                        @php
+                            $rowData = $rows[$i] ?? [];
+                        @endphp
                         <tr data-row="{{ $i }}">
                             <td class="text-center row-number">{{ $i + 1 }}</td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input" data-key="label"
-                                    data-row="{{ $i }}" placeholder="Nama guru">
+                                    data-row="{{ $i }}" placeholder="Nama guru"
+                                    value="{{ $rowData['label'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="subject" data-row="{{ $i }}" placeholder="Mata pelajaran">
+                                    data-key="subject" data-row="{{ $i }}" placeholder="Mata pelajaran"
+                                    value="{{ $rowData['subject'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
                                     data-key="training_type" data-row="{{ $i }}"
-                                    placeholder="Contoh: Pelatihan CNC, Sertifikat Asesor BNSP">
+                                    placeholder="Contoh: Pelatihan CNC, Sertifikat Asesor BNSP"
+                                    value="{{ $rowData['training_type'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="number" class="form-control form-control-sm table-input" data-key="year"
-                                    data-row="{{ $i }}" placeholder="Tahun" min="2000" max="2100">
+                                    data-row="{{ $i }}" placeholder="Tahun" min="2000" max="2100"
+                                    value="{{ $rowData['year'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="provider" data-row="{{ $i }}" placeholder="Nama penyedia">
+                                    data-key="provider" data-row="{{ $i }}" placeholder="Nama penyedia"
+                                    value="{{ $rowData['provider'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="evidence" data-row="{{ $i }}" placeholder="Keterangan bukti">
+                                    data-key="evidence" data-row="{{ $i }}" placeholder="Keterangan bukti"
+                                    value="{{ $rowData['evidence'] ?? '' }}">
                             </td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-remove-row" title="Hapus baris">

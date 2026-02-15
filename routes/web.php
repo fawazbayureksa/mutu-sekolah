@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PublicInstrumentController;
 use App\Http\Controllers\PublicInstrumentV2Controller;
 use App\Http\Controllers\SubmissionUpdateController;
+use App\Http\Controllers\SubmissionV2UpdateController;
 use App\Http\Controllers\Verifier\VerifierDashboardController;
 use App\Http\Controllers\Verifier\VerifierSubmissionController;
 use Illuminate\Support\Facades\Route;
@@ -26,12 +27,14 @@ Route::get('/instrumen', [PublicInstrumentController::class, 'index'])
 Route::post('/instrumen', [PublicInstrumentController::class, 'store'])
     ->name('instrument.submit');
 
-// V2 Instrument routes (hardcoded form with dynamic rows)
 Route::get('/instrumen/v2', [PublicInstrumentV2Controller::class, 'index'])
     ->name('instrument.v2.form');
 
 Route::post('/instrumen/v2', [PublicInstrumentV2Controller::class, 'store'])
     ->name('instrument.v2.submit');
+
+Route::get('/api/regencies/{provinceCode}', [PublicInstrumentV2Controller::class, 'getRegencies'])
+    ->name('api.regencies');
 
 // Submission update via one-time token
 Route::get('/submission/update/{token}', [SubmissionUpdateController::class, 'show'])
@@ -39,6 +42,13 @@ Route::get('/submission/update/{token}', [SubmissionUpdateController::class, 'sh
 
 Route::post('/submission/update/{token}', [SubmissionUpdateController::class, 'update'])
     ->name('submission.update.store');
+
+// Submission V2 update via one-time token
+Route::get('/submission-v2/update/{token}', [SubmissionV2UpdateController::class, 'show'])
+    ->name('submissions-v2.update.show');
+
+Route::post('/submission-v2/update/{token}', [SubmissionV2UpdateController::class, 'update'])
+    ->name('submissions-v2.update.store');
 
 // Authentication routes
 Route::middleware('guest')->group(function () {
@@ -50,7 +60,6 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Dashboard
     Route::get('/dashboard', function () {
         return view('dashboard.index');
     })->name('dashboard');
@@ -66,11 +75,12 @@ Route::middleware('auth')->group(function () {
 
         // Submission V2 routes for verifier
         Route::prefix('submissions-v2')->name('submissions-v2.')->group(function () {
-            Route::get('/', [SubmissionV2Controller::class, 'index'])->name('index');
-            Route::get('/{submission}', [SubmissionV2Controller::class, 'show'])->name('show');
-            Route::post('/{submission}/verify', [SubmissionV2Controller::class, 'verify'])->name('verify');
-            Route::post('/{submission}/reject', [SubmissionV2Controller::class, 'reject'])->name('reject');
-            Route::post('/{submission}/generate-token', [SubmissionV2Controller::class, 'generateUpdateToken'])->name('generate-token');
+            Route::get('/', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'index'])->name('index');
+            Route::get('/{submission}', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'show'])->name('show');
+            Route::post('/{submission}/verify', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'verify'])->name('verify');
+            Route::post('/{submission}/reject', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'reject'])->name('reject');
+            Route::post('/{submission}/validate', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'validateSubmission'])->name('validate');
+            Route::post('/{submission}/generate-token', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'generateUpdateToken'])->name('generate-token');
         });
     });
 
@@ -137,7 +147,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/{instrument}/unpublish', [InstrumentController::class, 'unpublish'])->name('unpublish');
             Route::post('/{instrument}/duplicate', [InstrumentController::class, 'duplicate'])->name('duplicate');
             Route::get('/export', [InstrumentController::class, 'export'])->name('export');
-            Route::post('/bulk', [InstrumentController::class, 'bulkAction'])->name('bulk');
+            Route::post('/bulk', [InstrumentController::class, 'bulkAction'])->name('bulkAction');
         });
 
         // Assessment Management
@@ -155,10 +165,10 @@ Route::middleware('auth')->group(function () {
             Route::post('/{assessment}/reject', [AssessmentController::class, 'reject'])->name('reject');
             Route::post('/{assessment}/recalculate', [AssessmentController::class, 'recalculateScores'])->name('recalculate');
             Route::get('/{assessment}/export', [AssessmentController::class, 'export'])->name('export');
-            Route::post('/bulk', [AssessmentController::class, 'bulkAction'])->name('bulk');
+            Route::post('/bulk', [AssessmentController::class, 'bulkAction'])->name('bulkAction');
 
             // Assessment Answers
-            Route::prefix('{assessmentId}/answers')->name('answers.')->group(function () {
+            Route::prefix('{assessment}/answers')->name('answers.')->group(function () {
                 Route::get('/', [AssessmentAnswerController::class, 'index'])->name('index');
                 Route::get('/form', [AssessmentAnswerController::class, 'answer'])->name('form');
                 Route::post('/', [AssessmentAnswerController::class, 'store'])->name('store');
@@ -168,8 +178,12 @@ Route::middleware('auth')->group(function () {
                 Route::post('/{answer}/validate', [AssessmentAnswerController::class, 'validate'])->name('validate');
             });
         });
-        // Submission Management
-        Route::resource('submissions', SubmissionController::class)->only(['index', 'show']);
+
+        // Submission Management V1
+        Route::prefix('submissions')->name('submissions.')->group(function () {
+            Route::get('/', [SubmissionController::class, 'index'])->name('index');
+            Route::get('/{submission}', [SubmissionController::class, 'show'])->name('show');
+        });
 
         // Submission V2 Management
         Route::prefix('submissions-v2')->name('submissions-v2.')->group(function () {
@@ -184,12 +198,14 @@ Route::middleware('auth')->group(function () {
         });
 
         // Validation routes
-        Route::get('/validations', [AdminValidationController::class, 'index'])->name('validations.index');
-        Route::get('/validations/{submission}', [AdminValidationController::class, 'show'])->name('validations.show');
-        Route::post('/validations/{submission}/validate', [AdminValidationController::class, 'validateSubmission'])->name('validations.validate');
-        Route::post('/validations/{submission}/reject', [AdminValidationController::class, 'reject'])->name('validations.reject');
-        Route::post('/validations/{submission}/release', [AdminValidationController::class, 'release'])->name('validations.release');
-        Route::post('/validations/bulk-release', [AdminValidationController::class, 'bulkRelease'])->name('validations.bulk-release');
+        Route::prefix('validations')->name('validations.')->group(function () {
+            Route::get('/', [AdminValidationController::class, 'index'])->name('index');
+            Route::get('/{submission}', [AdminValidationController::class, 'show'])->name('show');
+            Route::post('/{submission}/validate', [AdminValidationController::class, 'validateSubmission'])->name('validate');
+            Route::post('/{submission}/reject', [AdminValidationController::class, 'reject'])->name('reject');
+            Route::post('/{submission}/release', [AdminValidationController::class, 'release'])->name('release');
+            Route::post('/bulk-release', [AdminValidationController::class, 'bulkRelease'])->name('bulk-release');
+        });
 
         // Analytics routes
         Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');

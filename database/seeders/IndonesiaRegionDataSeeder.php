@@ -72,10 +72,20 @@ class IndonesiaRegionDataSeeder extends Seeder
 
         fclose($handle);
 
-        DB::table('provinces')->insert(array_values($provinces));
+        foreach (array_values($provinces) as $province) {
+            DB::table('provinces')->updateOrInsert(
+                ['code' => $province['code']],
+                $province
+            );
+        }
         $this->command->info(count($provinces).' provinces seeded from IndonesiaRegionData.csv.');
 
-        DB::table('regencies')->insert(array_values($regencies));
+        foreach (array_values($regencies) as $regency) {
+            DB::table('regencies')->updateOrInsert(
+                ['code' => $regency['code']],
+                $regency
+            );
+        }
         $this->command->info(count($regencies).' regencies seeded from IndonesiaRegionData.csv.');
 
         $this->command->info('Indonesia region data seeded successfully!');

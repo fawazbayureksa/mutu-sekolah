@@ -1,3 +1,10 @@
+@php
+    $existingData = $existingData ?? [];
+    $competencyGap = $existingData['competency_gap'] ?? [];
+    $industryAlignment = $existingData['industry_alignment'] ?? [];
+    $trainingPriority = $existingData['training_priority'] ?? [];
+@endphp
+
 {{-- Form C.3.2: Analisis Kebutuhan Pelatihan Guru ke Depan --}}
 <div class="card table-card">
     <div class="card-header">
@@ -14,7 +21,13 @@
     </div>
 
     <div class="card-body" id="form-c32">
-        <input type="hidden" name="answers[C.3.2]" id="form-c32-input" value="{{ old('answers.C.3.2', '{}') }}">
+        @php
+            $initialValue = old('answers.C.3.2');
+            if (is_null($initialValue) && !empty($existingData)) {
+                $initialValue = json_encode($existingData);
+            }
+        @endphp
+        <input type="hidden" name="answers[C.3.2]" id="form-c32-input" value="{{ $initialValue ?? '{}' }}">
 
         {{-- Section 1: Kesenjangan Kompetensi untuk Siswa --}}
         <div class="form-section mb-4 pb-4 border-bottom">
@@ -34,12 +47,12 @@
                 <div class="mb-3">
                     <label class="form-label fw-medium text-dark">Jawaban:</label>
                     <textarea class="form-control border-light bg-light-subtle" rows="3" data-section="competency_gap"
-                        data-field="answer" placeholder="Masukkan jawaban Anda"></textarea>
+                        data-field="answer" placeholder="Masukkan jawaban Anda">{{ $competencyGap['answer'] ?? '' }}</textarea>
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-medium text-dark">Alasan/Akibat jika tidak dikuasai:</label>
                     <textarea class="form-control border-light bg-light-subtle" rows="3" data-section="competency_gap"
-                        data-field="reason" placeholder="Jelaskan alasan atau akibatnya"></textarea>
+                        data-field="reason" placeholder="Jelaskan alasan atau akibatnya">{{ $competencyGap['reason'] ?? '' }}</textarea>
                 </div>
             </div>
         </div>
@@ -61,12 +74,12 @@
                 <div class="mb-3">
                     <label class="form-label fw-medium text-dark">Jawaban:</label>
                     <textarea class="form-control border-light bg-light-subtle" rows="3" data-section="industry_alignment"
-                        data-field="answer" placeholder="Masukkan jawaban Anda"></textarea>
+                        data-field="answer" placeholder="Masukkan jawaban Anda">{{ $industryAlignment['answer'] ?? '' }}</textarea>
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-medium text-dark">Sumber masukan (jika ada):</label>
                     <textarea class="form-control border-light bg-light-subtle" rows="2" data-section="industry_alignment"
-                        data-field="source" placeholder="Sebutkan sumber masukan"></textarea>
+                        data-field="source" placeholder="Sebutkan sumber masukan">{{ $industryAlignment['source'] ?? '' }}</textarea>
                 </div>
             </div>
         </div>
@@ -88,7 +101,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-medium text-dark">Jawaban:</label>
                     <textarea class="form-control border-light bg-light-subtle" rows="3" data-section="training_priority"
-                        data-field="answer" placeholder="Masukkan prioritas pelatihan"></textarea>
+                        data-field="answer" placeholder="Masukkan prioritas pelatihan">{{ $trainingPriority['answer'] ?? '' }}</textarea>
                 </div>
             </div>
         </div>

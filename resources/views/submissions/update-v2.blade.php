@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Isi Instrumen V2 - Penjaminan Mutu SMK Bidang KPTK')
+@section('title', 'Update Data Submission V2 - Penjaminan Mutu SMK Bidang KPTK')
 
 @push('styles')
     <style>
@@ -15,6 +15,14 @@
             border-radius: 1rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .verification-notes {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
             margin-bottom: 2rem;
         }
 
@@ -259,12 +267,15 @@
 @endpush
 
 @section('content')
+    @php
+        $answers = $submission->answers ?? [];
+    @endphp
     <div class="container-fluid py-5" style="max-width: 1400px;">
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="text-center mb-5">
-                    <h2 class="fw-bold mb-2 text-primary">Instrumen Penjaminan Mutu V2</h2>
-                    <p class="text-secondary small">Lengkapi data sekolah dan penilaian di bawah ini dengan seksama</p>
+                    <h2 class="fw-bold mb-2 text-primary">Update Data Submission V2</h2>
+                    <p class="text-secondary small">Silakan perbarui data sekolah dan penilaian sesuai catatan verifikasi</p>
                 </div>
 
                 @if (session('success'))
@@ -293,16 +304,14 @@
                     </div>
                 @endif
 
-                <form action="{{ route('instrument.v2.submit') }}" method="POST" id="instrumentForm">
+                <form action="{{ $updateUrl }}" method="POST" id="instrumentForm">
                     @csrf
 
                     {{-- Section 1: Identitas Sekolah --}}
                     <div class="form-card mt-3">
                         <div class="section-title">
                             <i class="bi bi-building"></i>
-                            <strong>
-                                Identitas Sekolah
-                            </strong>
+                            <strong>Identitas Sekolah</strong>
                         </div>
 
                         <div class="row g-4">
@@ -310,15 +319,15 @@
                                 <label class="form-label">Nama Sekolah <span class="text-danger">*</span></label>
                                 <input type="text" name="school_name"
                                     class="form-control @error('school_name') is-invalid @enderror" required
-                                    value="{{ old('school_name') }}" placeholder="Nama sekolah">
+                                    value="{{ old('school_name', $submission->school_name) }}" placeholder="Nama sekolah">
                                 @error('school_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">NPSN</label>
-                                <input type="text" name="npsn" class="form-control" value="{{ old('npsn') }}"
-                                    placeholder="NPSN">
+                                <input type="text" name="npsn" class="form-control"
+                                    value="{{ old('npsn', $submission->npsn) }}" placeholder="NPSN">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Provinsi <span class="text-danger">*</span></label>
@@ -328,7 +337,7 @@
                                     <option value="">-- Pilih Provinsi --</option>
                                     @foreach ($provinces as $province)
                                         <option value="{{ $province->code }}"
-                                            {{ old('province_code') == $province->code ? 'selected' : '' }}>
+                                            {{ old('province_code', $submission->province_code) == $province->code ? 'selected' : '' }}>
                                             {{ $province->name }}
                                         </option>
                                     @endforeach
@@ -340,8 +349,16 @@
                             <div class="col-md-6">
                                 <label class="form-label">Kabupaten/Kota <span class="text-danger">*</span></label>
                                 <select name="regency_code" id="regencySelect"
-                                    class="form-select @error('regency_code') is-invalid @enderror" required disabled>
+                                    class="form-select @error('regency_code') is-invalid @enderror" required>
                                     <option value="">-- Pilih Kabupaten/Kota --</option>
+                                    @if ($regencies)
+                                        @foreach ($regencies as $regency)
+                                            <option value="{{ $regency->code }}"
+                                                {{ old('regency_code', $submission->regency_code) == $regency->code ? 'selected' : '' }}>
+                                                {{ $regency->name }}
+                                            </option>
+                                        @endforeach
+                                    @endif
                                 </select>
                                 @error('regency_code')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -350,7 +367,7 @@
                             <div class="col-md-12">
                                 <label class="form-label">Alamat <span class="text-danger">*</span></label>
                                 <textarea name="address" rows="3" class="form-control @error('address') is-invalid @enderror" required
-                                    placeholder="Masukkan alamat lengkap sekolah">{{ old('address') }}</textarea>
+                                    placeholder="Masukkan alamat lengkap sekolah">{{ old('address', $submission->address) }}</textarea>
                                 @error('address')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -361,9 +378,9 @@
                                     class="form-select @error('expertise') is-invalid @enderror"
                                     onchange="loadExpertisePrograms(this.value)">
                                     <option value="">-- Pilih Bidang Keahlian --</option>
-                                    @foreach (array_keys($expertiseData) as $expertise)
+                                    @foreach (array_keys($expertiseData ?? []) as $expertise)
                                         <option value="{{ $expertise }}"
-                                            {{ old('expertise') == $expertise ? 'selected' : '' }}>
+                                            {{ old('expertise', $submission->expertise) == $expertise ? 'selected' : '' }}>
                                             {{ $expertise == 'TIK' ? 'TIK (Teknologi Informasi dan Komunikasi)' : $expertise }}
                                         </option>
                                     @endforeach
@@ -375,8 +392,7 @@
                             <div class="col-md-4">
                                 <label class="form-label">Program Keahlian</label>
                                 <select name="expertise_program" id="expertiseProgramSelect"
-                                    class="form-select @error('expertise_program') is-invalid @enderror" disabled
-                                    onchange="loadExpertiseConcentrations(this.value)">
+                                    class="form-select @error('expertise_program') is-invalid @enderror">
                                     <option value="">-- Pilih Program Keahlian --</option>
                                 </select>
                                 @error('expertise_program')
@@ -386,7 +402,7 @@
                             <div class="col-md-4">
                                 <label class="form-label">Konsentrasi Keahlian</label>
                                 <select name="expertise_concentration" id="expertiseConcentrationSelect"
-                                    class="form-select @error('expertise_concentration') is-invalid @enderror" disabled>
+                                    class="form-select @error('expertise_concentration') is-invalid @enderror">
                                     <option value="">-- Pilih Konsentrasi Keahlian --</option>
                                 </select>
                                 @error('expertise_concentration')
@@ -407,7 +423,8 @@
                                 <label class="form-label">Nama Responden <span class="text-danger">*</span></label>
                                 <input type="text" name="respondent_name"
                                     class="form-control @error('respondent_name') is-invalid @enderror" required
-                                    value="{{ old('respondent_name') }}" placeholder="Masukkan nama responden">
+                                    value="{{ old('respondent_name', $submission->respondent_name) }}"
+                                    placeholder="Masukkan nama responden">
                                 @error('respondent_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -417,9 +434,9 @@
                                 <select name="respondent_position"
                                     class="form-select @error('respondent_position') is-invalid @enderror" required>
                                     <option value="">-- Pilih Jabatan Responden --</option>
-                                    @foreach ($respondentPositions as $position)
+                                    @foreach ($respondentPositions ?? [] as $position)
                                         <option value="{{ $position }}"
-                                            {{ old('respondent_position') == $position ? 'selected' : '' }}>
+                                            {{ old('respondent_position', $submission->respondent_position) == $position ? 'selected' : '' }}>
                                             {{ $position }}
                                         </option>
                                     @endforeach
@@ -455,7 +472,9 @@
                                     untuk tahun terakhir
                                 </small>
 
-                                @include('instrument.partials.v2.table-a11')
+                                @include('instrument.partials.v2.table-a11', [
+                                    'existingData' => $answers['A.1.1'] ?? [],
+                                ])
                             </div>
                         </div>
 
@@ -476,7 +495,9 @@
                                     study untuk kelas lulusan tertentu
                                 </small>
 
-                                @include('instrument.partials.v2.table-a21')
+                                @include('instrument.partials.v2.table-a21', [
+                                    'existingData' => $answers['A.2.1'] ?? [],
+                                ])
                             </div>
                         </div>
                     </div>
@@ -506,7 +527,9 @@
                                     bandingkan dengan standar industri
                                 </small>
 
-                                @include('instrument.partials.v2.table-b11')
+                                @include('instrument.partials.v2.table-b11', [
+                                    'existingData' => $answers['B.1.1'] ?? [],
+                                ])
                             </div>
                         </div>
 
@@ -527,7 +550,9 @@
                                     bengkel/lab
                                 </small>
 
-                                @include('instrument.partials.v2.checklist-b21')
+                                @include('instrument.partials.v2.checklist-b21', [
+                                    'existingData' => $answers['B.2.1'] ?? [],
+                                ])
                             </div>
                         </div>
                     </div>
@@ -556,7 +581,9 @@
                                     <i class="bi bi-info-circle me-1"></i>Isi data kerjasama dengan industri mitra
                                 </small>
 
-                                @include('instrument.partials.v2.table-c11')
+                                @include('instrument.partials.v2.table-c11', [
+                                    'existingData' => $answers['C.1.1'] ?? [],
+                                ])
                             </div>
                         </div>
 
@@ -578,7 +605,9 @@
                                     Produksi Sekolah
                                 </small>
 
-                                @include('instrument.partials.v2.table-c21')
+                                @include('instrument.partials.v2.table-c21', [
+                                    'existingData' => $answers['C.2.1'] ?? [],
+                                ])
                             </div>
                         </div>
 
@@ -600,7 +629,9 @@
                                     diikuti oleh guru
                                 </small>
 
-                                @include('instrument.partials.v2.table-c31')
+                                @include('instrument.partials.v2.table-c31', [
+                                    'existingData' => $answers['C.3.1'] ?? [],
+                                ])
                             </div>
 
                             <div class="indicator-item">
@@ -613,7 +644,9 @@
                                     menganalisis kebutuhan pelatihan
                                 </small>
 
-                                @include('instrument.partials.v2.form-c32')
+                                @include('instrument.partials.v2.form-c32', [
+                                    'existingData' => $answers['C.3.2'] ?? [],
+                                ])
                             </div>
                         </div>
                     </div>
@@ -622,7 +655,7 @@
                     <div class="d-grid gap-3 col-lg-6 mx-auto mt-5 mb-5">
                         <button type="submit" class="btn btn-primary btn-lg shadow rounded-pill py-3 fw-bold"
                             style="font-size: 1rem;">
-                            <i class="bi bi-send-fill me-2"></i> Kirim Data Instrumen
+                            <i class="bi bi-send-fill me-2"></i> Perbarui Data Sekolah
                         </button>
                         <a href="{{ route('landing') }}" class="btn btn-outline-secondary rounded-pill border-0">
                             <i class="bi bi-arrow-left me-2"></i>Kembali ke Halaman Utama
@@ -636,25 +669,24 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeDynamicTables();
-
-            document.getElementById('instrumentForm').addEventListener('submit', function(e) {
-                collectAllTableData();
-
-                if (!confirm('Apakah Anda yakin data yang diisi sudah benar?')) {
-                    e.preventDefault();
-                }
-            });
-        });
-
+        // Define all functions first (to avoid hoisting issues)
         function initializeDynamicTables() {
-            document.querySelectorAll('.btn-add-row').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    addTableRow(this.dataset.tableId);
+            console.log('initializeDynamicTables() called');
+            try {
+                var addButtons = document.querySelectorAll('.btn-add-row');
+                console.log('Found add buttons:', addButtons.length);
+                addButtons.forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        addTableRow(btn.dataset.tableId);
+                    });
                 });
-            });
+            } catch (e) {
+                console.error('Error in initializeDynamicTables:', e);
+            }
+        }
 
+        function initializeTableEventListeners() {
+            console.log('initializeTableEventListeners() called');
             document.addEventListener('click', function(e) {
                 if (e.target.closest('.btn-remove-row')) {
                     const btn = e.target.closest('.btn-remove-row');
@@ -678,6 +710,47 @@
                     }
                 }
             });
+        }
+
+        function restoreExistingData() {
+            // Restore form C.3.2 data if it exists in old() input
+            const formC32Input = document.getElementById('form-c32-input');
+            if (formC32Input && formC32Input.value) {
+                try {
+                    const data = JSON.parse(formC32Input.value);
+                    if (data) {
+                        // Restore competency_gap fields
+                        if (data.competency_gap) {
+                            const answerField = document.querySelector(
+                                '[data-section="competency_gap"][data-field="answer"]');
+                            const reasonField = document.querySelector(
+                                '[data-section="competency_gap"][data-field="reason"]');
+                            if (answerField && data.competency_gap.answer) answerField.value = data.competency_gap.answer;
+                            if (reasonField && data.competency_gap.reason) reasonField.value = data.competency_gap.reason;
+                        }
+                        // Restore industry_alignment fields
+                        if (data.industry_alignment) {
+                            const answerField = document.querySelector(
+                                '[data-section="industry_alignment"][data-field="answer"]');
+                            const sourceField = document.querySelector(
+                                '[data-section="industry_alignment"][data-field="source"]');
+                            if (answerField && data.industry_alignment.answer) answerField.value = data.industry_alignment
+                                .answer;
+                            if (sourceField && data.industry_alignment.source) sourceField.value = data.industry_alignment
+                                .source;
+                        }
+                        // Restore training_priority fields
+                        if (data.training_priority) {
+                            const answerField = document.querySelector(
+                                '[data-section="training_priority"][data-field="answer"]');
+                            if (answerField && data.training_priority.answer) answerField.value = data.training_priority
+                                .answer;
+                        }
+                    }
+                } catch (e) {
+                    console.log('No existing data to restore for form-c32');
+                }
+            }
         }
 
         function addTableRow(tableId) {
@@ -745,30 +818,6 @@
             }
         }
 
-        function collectAllTableData() {
-            const tables = ['table-a11', 'table-a21', 'table-b11', 'table-b21', 'table-c11', 'table-c21', 'table-c31'];
-
-            tables.forEach(tableId => {
-                const table = document.getElementById(tableId);
-                if (table) {
-                    const hiddenInput = document.getElementById(tableId + '-input');
-                    if (hiddenInput) {
-                        const data = collectTableData(table);
-                        hiddenInput.value = JSON.stringify(data);
-                    }
-                }
-            });
-
-            const formC32 = document.getElementById('form-c32');
-            if (formC32) {
-                const hiddenInput = document.getElementById('form-c32-input');
-                if (hiddenInput) {
-                    const data = collectFormData('form-c32');
-                    hiddenInput.value = JSON.stringify(data);
-                }
-            }
-        }
-
         function collectTableData(table) {
             const data = {
                 header: {},
@@ -832,6 +881,41 @@
             return data;
         }
 
+        function collectAllTableData() {
+            console.log('collectAllTableData() called');
+            const tables = ['table-a11', 'table-a21', 'table-b11', 'table-b21', 'table-c11', 'table-c21', 'table-c31'];
+
+            tables.forEach(tableId => {
+                const table = document.getElementById(tableId);
+                if (table) {
+                    const hiddenInput = document.getElementById(tableId + '-input');
+                    if (hiddenInput) {
+                        const data = collectTableData(table);
+                        console.log(`Table ${tableId} data:`, data);
+                        // Only update if there's data in the table
+                        if (data.rows.length > 0 || Object.keys(data.header).length > 0) {
+                            hiddenInput.value = JSON.stringify(data);
+                        }
+                    }
+                } else {
+                    console.warn(`Table ${tableId} not found`);
+                }
+            });
+
+            const formC32 = document.getElementById('form-c32');
+            if (formC32) {
+                const hiddenInput = document.getElementById('form-c32-input');
+                if (hiddenInput) {
+                    const data = collectFormData('form-c32');
+                    console.log('Form C.3.2 data:', data);
+                    // Only update if there's data in the form
+                    if (Object.keys(data).length > 0) {
+                        hiddenInput.value = JSON.stringify(data);
+                    }
+                }
+            }
+        }
+
         function loadRegencies(provinceCode) {
             const regencySelect = document.getElementById('regencySelect');
 
@@ -859,6 +943,14 @@
                         regencySelect.appendChild(option);
                     });
                     regencySelect.disabled = false;
+
+                    // Restore selected regency
+                    @if ($submission->regency_code)
+                        const savedRegencyCode = '{{ $submission->regency_code }}';
+                        if (savedRegencyCode) {
+                            regencySelect.value = savedRegencyCode;
+                        }
+                    @endif
                 })
                 .catch(error => {
                     console.error('Error loading regencies:', error);
@@ -868,7 +960,7 @@
         }
 
         // Expertise cascading dropdowns - loaded from config
-        const expertiseData = @json($expertiseData);
+        const expertiseData = @json($expertiseData ?? []);
 
         function loadExpertisePrograms(expertise) {
             const programSelect = document.getElementById('expertiseProgramSelect');
@@ -924,51 +1016,44 @@
             }
         }
 
-        // Page load - restore old values
+        // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
-            // Restore province and regency if old values exist
-            const oldProvinceCode = "{{ old('province_code') }}";
-            const oldRegencyCode = "{{ old('regency_code') }}";
+            console.log('DOMContentLoaded - Initializing...');
+            initializeDynamicTables();
+            initializeTableEventListeners();
+            restoreExistingData();
+            collectAllTableData();
 
-            if (oldProvinceCode) {
-                // Load regencies for the old province
-                loadRegencies(oldProvinceCode);
+            const form = document.getElementById('instrumentForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    console.log('Form submit - collecting table data...');
+                    collectAllTableData();
 
-                // After regencies are loaded, select the old regency
-                if (oldRegencyCode) {
-                    setTimeout(() => {
-                        const regencySelect = document.getElementById('regencySelect');
-                        regencySelect.value = oldRegencyCode;
-                    }, 500); // Wait for API call to complete
-                }
+                    if (!confirm('Apakah Anda yakin data yang diisi sudah benar?')) {
+                        e.preventDefault();
+                    }
+                });
+            } else {
+                console.error('Form element not found!');
             }
+            // Restore expertise fields if submission has data
+            @if ($submission->expertise)
+                const expertiseSelect = document.getElementById('expertiseSelect');
+                expertiseSelect.value = '{{ $submission->expertise }}';
+                loadExpertisePrograms('{{ $submission->expertise }}');
 
-            // Restore expertise fields if old values exist
-            const expertiseSelect = document.getElementById('expertiseSelect');
-            const programSelect = document.getElementById('expertiseProgramSelect');
+                @if ($submission->expertise_program)
+                    const programSelect = document.getElementById('expertiseProgramSelect');
+                    programSelect.value = '{{ $submission->expertise_program }}';
+                    loadExpertiseConcentrations('{{ $submission->expertise_program }}');
 
-            if (expertiseSelect.value) {
-                loadExpertisePrograms(expertiseSelect.value);
-
-                // If there's an old program value, restore it
-                const oldProgram = "{{ old('expertise_program') }}";
-                if (oldProgram) {
-                    setTimeout(() => {
-                        programSelect.value = oldProgram;
-                        loadExpertiseConcentrations(oldProgram);
-
-                        // If there's an old concentration value, restore it
-                        const oldConcentration = "{{ old('expertise_concentration') }}";
-                        if (oldConcentration) {
-                            setTimeout(() => {
-                                document.getElementById('expertiseConcentrationSelect')
-                                    .value =
-                                    oldConcentration;
-                            }, 100);
-                        }
-                    }, 100);
-                }
-            }
+                    @if ($submission->expertise_concentration)
+                        const concentrationSelect = document.getElementById('expertiseConcentrationSelect');
+                        concentrationSelect.value = '{{ $submission->expertise_concentration }}';
+                    @endif
+                @endif
+            @endif
         });
     </script>
 @endpush

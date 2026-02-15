@@ -85,6 +85,32 @@
                                 <td class="fw-semibold text-muted">Alamat</td>
                                 <td>{{ $submission->address }}</td>
                             </tr>
+                            <tr>
+                                <td class="fw-semibold text-muted">Provinsi</td>
+                                <td>{{ $submission->school?->province?->name ?? ($submission->province?->name ?? '-') }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-muted">Kabupaten/Kota</td>
+                                <td>{{ $submission->school?->regency?->name ?? ($submission->regency?->name ?? '-') }}</td>
+                            </tr>
+                            @if ($submission->school?->expertise)
+                                <tr>
+                                    <td class="fw-semibold text-muted">Bidang Keahlian</td>
+                                    <td>{{ $submission->school->expertise }}</td>
+                                </tr>
+                            @endif
+                            @if ($submission->school?->expertise_program)
+                                <tr>
+                                    <td class="fw-semibold text-muted">Program Keahlian</td>
+                                    <td>{{ $submission->school->expertise_program }}</td>
+                                </tr>
+                            @endif
+                            @if ($submission->school?->expertise_concentration)
+                                <tr>
+                                    <td class="fw-semibold text-muted">Konsentrasi Keahlian</td>
+                                    <td>{{ $submission->school->expertise_concentration }}</td>
+                                </tr>
+                            @endif
                         </table>
                     </div>
                 </div>
@@ -440,7 +466,8 @@
                         </div>
                         <div class="modal-body">
                             <p>Anda akan membuat link update untuk pengajuan dari
-                                <strong>{{ $submission->school_name }}</strong>.</p>
+                                <strong>{{ $submission->school_name }}</strong>.
+                            </p>
                             <div class="alert alert-info small">
                                 <i class="bi bi-info-circle me-1"></i>
                                 Link akan berlaku selama 24 jam dan hanya dapat digunakan sekali.

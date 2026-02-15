@@ -1,3 +1,8 @@
+@php
+    $existingData = $existingData ?? [];
+    $rows = $existingData['rows'] ?? [];
+@endphp
+
 {{-- Checklist B.2.1: Penilaian Kesiapan Fasilitas --}}
 <div class="card table-card">
     <div class="card-header">
@@ -14,7 +19,13 @@
     </div>
 
     <div class="card-body p-0">
-        <input type="hidden" name="answers[B.2.1]" id="table-b21-input" value="{{ old('answers.B.2.1', '{}') }}">
+        @php
+            $initialValue = old('answers.B.2.1');
+            if (is_null($initialValue) && !empty($existingData)) {
+                $initialValue = json_encode($existingData);
+            }
+        @endphp
+        <input type="hidden" name="answers[B.2.1]" id="table-b21-input" value="{{ $initialValue ?? '{}' }}">
 
         <div class="table-responsive">
             <table class="table instrument-table mb-0" id="table-b21">
@@ -48,26 +59,32 @@
                         ];
                     @endphp
                     @foreach ($checklistItems as $index => $item)
+                        @php
+                            $rowData = $rows[$index] ?? [];
+                        @endphp
                         <tr data-row="{{ $index }}">
                             <td>{{ $item['label'] }}</td>
                             <td class="text-center">
                                 <div class="form-check d-flex justify-content-center">
                                     <input type="radio" class="form-check-input table-input"
                                         name="checklist_{{ $item['key'] }}" id="checklist_{{ $item['key'] }}_yes"
-                                        data-key="{{ $item['key'] }}" data-row="{{ $index }}" value="yes">
+                                        data-key="{{ $item['key'] }}" data-row="{{ $index }}" value="yes"
+                                        {{ ($rowData[$item['key']] ?? '') === 'yes' ? 'checked' : '' }}>
                                 </div>
                             </td>
                             <td class="text-center">
                                 <div class="form-check d-flex justify-content-center">
                                     <input type="radio" class="form-check-input table-input"
                                         name="checklist_{{ $item['key'] }}" id="checklist_{{ $item['key'] }}_no"
-                                        data-key="{{ $item['key'] }}" data-row="{{ $index }}" value="no">
+                                        data-key="{{ $item['key'] }}" data-row="{{ $index }}" value="no"
+                                        {{ ($rowData[$item['key']] ?? '') === 'no' ? 'checked' : '' }}>
                                 </div>
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
                                     data-key="{{ $item['key'] }}_notes" data-row="{{ $index }}"
-                                    placeholder="Catatan (opsional)">
+                                    placeholder="Catatan (opsional)"
+                                    value="{{ $rowData["{$item['key']}_notes"] ?? '' }}">
                             </td>
                         </tr>
                     @endforeach

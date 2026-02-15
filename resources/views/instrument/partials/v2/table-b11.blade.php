@@ -1,3 +1,10 @@
+@php
+    $existingData = $existingData ?? [];
+    $headerData = $existingData['header'] ?? [];
+    $rows = $existingData['rows'] ?? [];
+    $rowCount = max(3, count($rows));
+@endphp
+
 {{-- Table B.1.1: Inventarisasi dan Kesesuaian dengan Standar Industri (Dynamic Rows) --}}
 <div class="card table-card">
     <div class="card-header">
@@ -20,21 +27,27 @@
                 <div class="header-input-group mb-0">
                     <label class="form-label fw-semibold">Nama Bengkel/Lab</label>
                     <input type="text" class="form-control header-input" data-key="workshop_name"
-                        placeholder="Masukkan nama bengkel/lab">
+                        placeholder="Masukkan nama bengkel/lab" value="{{ $headerData['workshop_name'] ?? '' }}">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="header-input-group mb-0">
                     <label class="form-label fw-semibold">Bidang Keahlian</label>
                     <input type="text" class="form-control header-input" data-key="expertise_field"
-                        placeholder="Masukkan bidang keahlian">
+                        placeholder="Masukkan bidang keahlian" value="{{ $headerData['expertise_field'] ?? '' }}">
                 </div>
             </div>
         </div>
     </div>
 
     <div class="card-body p-0">
-        <input type="hidden" name="answers[B.1.1]" id="table-b11-input" value="{{ old('answers.B.1.1', '{}') }}">
+        @php
+            $initialValue = old('answers.B.1.1');
+            if (is_null($initialValue) && !empty($existingData)) {
+                $initialValue = json_encode($existingData);
+            }
+        @endphp
+        <input type="hidden" name="answers[B.1.1]" id="table-b11-input" value="{{ $initialValue ?? '{}' }}">
 
         <div class="table-responsive">
             <table class="table instrument-table mb-0" id="table-b11">
@@ -51,40 +64,47 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for ($i = 0; $i < 3; $i++)
+                    @for ($i = 0; $i < $rowCount; $i++)
+                        @php
+                            $rowData = $rows[$i] ?? [];
+                        @endphp
                         <tr data-row="{{ $i }}">
                             <td class="text-center row-number">{{ $i + 1 }}</td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input" data-key="label"
-                                    data-row="{{ $i }}" placeholder="Nama item/perangkat">
+                                    data-row="{{ $i }}" placeholder="Nama item/perangkat"
+                                    value="{{ $rowData['label'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="specification" data-row="{{ $i }}" placeholder="Spesifikasi">
+                                    data-key="specification" data-row="{{ $i }}" placeholder="Spesifikasi"
+                                    value="{{ $rowData['specification'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="number" class="form-control form-control-sm table-input"
-                                    data-key="quantity" data-row="{{ $i }}" placeholder="0" min="0">
+                                    data-key="quantity" data-row="{{ $i }}" placeholder="0" min="0"
+                                    value="{{ $rowData['quantity'] ?? '' }}">
                             </td>
                             <td>
                                 <select class="form-select form-select-sm table-input" data-key="condition"
                                     data-row="{{ $i }}">
                                     <option value="">Pilih</option>
-                                    <option value="Baik">Baik</option>
-                                    <option value="Rusak">Rusak</option>
+                                    <option value="Baik" {{ ($rowData['condition'] ?? '') === 'Baik' ? 'selected' : '' }}>Baik</option>
+                                    <option value="Rusak" {{ ($rowData['condition'] ?? '') === 'Rusak' ? 'selected' : '' }}>Rusak</option>
                                 </select>
                             </td>
                             <td>
                                 <select class="form-select form-select-sm table-input" data-key="industry_standard"
                                     data-row="{{ $i }}">
                                     <option value="">Pilih</option>
-                                    <option value="Ya">Ya</option>
-                                    <option value="Tidak">Tidak</option>
+                                    <option value="Ya" {{ ($rowData['industry_standard'] ?? '') === 'Ya' ? 'selected' : '' }}>Ya</option>
+                                    <option value="Tidak" {{ ($rowData['industry_standard'] ?? '') === 'Tidak' ? 'selected' : '' }}>Tidak</option>
                                 </select>
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="remarks" data-row="{{ $i }}" placeholder="Merek, Tahun, dll">
+                                    data-key="remarks" data-row="{{ $i }}" placeholder="Merek, Tahun, dll"
+                                    value="{{ $rowData['remarks'] ?? '' }}">
                             </td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-remove-row" title="Hapus baris">

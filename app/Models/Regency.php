@@ -17,6 +17,8 @@ class Regency extends Model
     ];
 
     protected $primaryKey = 'code';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     public function province(): BelongsTo
     {
@@ -25,7 +27,7 @@ class Regency extends Model
 
     public function scopeByName($query, $name)
     {
-        return $query->where('name', 'like', '%'.$name.'%');
+        return $query->where('name', 'like', '%' . $name . '%');
     }
 
     public function scopeByCode($query, $code)

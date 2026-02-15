@@ -23,15 +23,8 @@ return new class extends Migration
 // Expertise Program
 
 // A. Bidang Keahlian Kemaritiman:		
-// - Teknika Kapal Penangkapan Ikan		
-// - Nautika Kapal Penangkapan Ikan		
-// - Teknika Kapal Niaga		
-// - Nautika Kapal Niaga		
 // B. Bidang Keahlian Perikanan		
-// - Agribisnis Perikanan		
 // C. Bidang TIK		
-// - Pengembangan Perangkat Lunak dan Gim		
-// - Teknik Jaringan Komputer dan Telekomunikasi		
 
 // Expertise Concentration
 
