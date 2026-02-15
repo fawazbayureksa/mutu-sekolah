@@ -25,6 +25,16 @@ class RepositoryServiceProvider extends ServiceProvider
             \App\Repositories\Contracts\AssessmentAnswerRepositoryInterface::class,
             \App\Repositories\Eloquent\AssessmentAnswerRepository::class
         );
+
+        $this->app->singleton(
+            \App\Repositories\ProvinceRepository::class,
+            fn () => new \App\Repositories\ProvinceRepository
+        );
+
+        $this->app->singleton(
+            \App\Repositories\RegencyRepository::class,
+            fn () => new \App\Repositories\RegencyRepository
+        );
     }
 
     /**

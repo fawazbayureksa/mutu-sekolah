@@ -14,6 +14,11 @@ class School extends Model
         'school_name',
         'npsn',
         'address',
+        'province_code',
+        'regency_code',
+        'expertise',
+        'expertise_program',
+        'expertise_concentration'
     ];
 
     public function responses(): HasMany

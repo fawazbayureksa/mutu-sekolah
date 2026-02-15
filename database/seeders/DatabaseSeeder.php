@@ -13,10 +13,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            IndonesiaRegionDataSeeder::class,
             AdminUserSeeder::class,
             ScaleTemplateSeeder::class,
             AdvancedInstrumentSeeder::class,
-            VerifierUserSeeder::class
+            VerifierUserSeeder::class,
         ]);
     }
 }
