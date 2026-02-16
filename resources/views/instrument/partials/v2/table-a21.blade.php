@@ -1,5 +1,8 @@
 @php
     $existingData = $existingData ?? [];
+    if (is_string($existingData)) {
+        $existingData = json_decode($existingData, true) ?? [];
+    }
     $headerData = $existingData['header'] ?? [];
     $rows = $existingData['rows'] ?? [];
 @endphp
@@ -135,8 +138,7 @@
                                     <input type="number" class="form-control form-control-sm table-input"
                                         data-key="{{ $row['key'] }}_quantitative" data-row="{{ $index }}"
                                         placeholder="{{ $row['quantitative_placeholder'] }}" min="1"
-                                        max="5"
-                                        value="{{ $rowData["{$row['key']}_quantitative"] ?? '' }}">
+                                        max="5" value="{{ $rowData["{$row['key']}_quantitative"] ?? '' }}">
                                 @elseif(isset($row['quantitative_unit']))
                                     <div class="input-group input-group-sm">
                                         <input type="number" class="form-control table-input"

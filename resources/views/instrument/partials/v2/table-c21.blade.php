@@ -1,5 +1,8 @@
 @php
     $existingData = $existingData ?? [];
+    if (is_string($existingData)) {
+        $existingData = json_decode($existingData, true) ?? [];
+    }
     $rows = $existingData['rows'] ?? [];
     $rowCount = max(2, count($rows));
 @endphp
@@ -57,14 +60,12 @@
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
                                     data-key="industry_partner" data-row="{{ $i }}"
-                                    placeholder="Nama mitra industri"
-                                    value="{{ $rowData['industry_partner'] ?? '' }}">
+                                    placeholder="Nama mitra industri" value="{{ $rowData['industry_partner'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
                                     data-key="operation_scale" data-row="{{ $i }}"
-                                    placeholder="Siswa/Guru/Tim Khusus"
-                                    value="{{ $rowData['operation_scale'] ?? '' }}">
+                                    placeholder="Siswa/Guru/Tim Khusus" value="{{ $rowData['operation_scale'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
@@ -75,8 +76,7 @@
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
                                     data-key="constraints" data-row="{{ $i }}"
-                                    placeholder="Kendala yang dihadapi"
-                                    value="{{ $rowData['constraints'] ?? '' }}">
+                                    placeholder="Kendala yang dihadapi" value="{{ $rowData['constraints'] ?? '' }}">
                             </td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-remove-row" title="Hapus baris">

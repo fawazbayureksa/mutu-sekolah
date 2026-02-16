@@ -1,5 +1,8 @@
 @php
     $existingData = $existingData ?? [];
+    if (is_string($existingData)) {
+        $existingData = json_decode($existingData, true) ?? [];
+    }
     $rows = $existingData['rows'] ?? [];
     $rowCount = max(2, count($rows));
 @endphp
@@ -22,7 +25,7 @@
 
     <div class="card-body p-0">
         @php
-            $initialValue = old('answers[C.3.1');
+            $initialValue = old('answers[C.3.1]');
             if (is_null($initialValue) && !empty($existingData)) {
                 $initialValue = json_encode($existingData);
             }

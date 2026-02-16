@@ -1,5 +1,8 @@
 @php
     $existingData = $existingData ?? [];
+    if (is_string($existingData)) {
+        $existingData = json_decode($existingData, true) ?? [];
+    }
     $rows = $existingData['rows'] ?? [];
     $rowCount = max(2, count($rows));
 @endphp
@@ -66,16 +69,19 @@
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input" data-key="output"
-                                    data-row="{{ $i }}"
-                                    placeholder="Jumlah siswa magang, nilai bantuan, dll"
+                                    data-row="{{ $i }}" placeholder="Jumlah siswa magang, nilai bantuan, dll"
                                     value="{{ $rowData['output'] ?? '' }}">
                             </td>
                             <td>
                                 <select class="form-select form-select-sm table-input" data-key="mou_status"
                                     data-row="{{ $i }}">
                                     <option value="">Pilih</option>
-                                    <option value="Aktif" {{ ($rowData['mou_status'] ?? '') === 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                                    <option value="Tidak" {{ ($rowData['mou_status'] ?? '') === 'Tidak' ? 'selected' : '' }}>Tidak Aktif</option>
+                                    <option value="Aktif"
+                                        {{ ($rowData['mou_status'] ?? '') === 'Aktif' ? 'selected' : '' }}>Aktif
+                                    </option>
+                                    <option value="Tidak"
+                                        {{ ($rowData['mou_status'] ?? '') === 'Tidak' ? 'selected' : '' }}>Tidak Aktif
+                                    </option>
                                 </select>
                             </td>
                             <td class="text-center">

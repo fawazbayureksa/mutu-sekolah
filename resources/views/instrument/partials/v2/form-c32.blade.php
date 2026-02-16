@@ -1,5 +1,8 @@
 @php
     $existingData = $existingData ?? [];
+    if (is_string($existingData)) {
+        $existingData = json_decode($existingData, true) ?? [];
+    }
     $competencyGap = $existingData['competency_gap'] ?? [];
     $industryAlignment = $existingData['industry_alignment'] ?? [];
     $trainingPriority = $existingData['training_priority'] ?? [];

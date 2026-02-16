@@ -1041,12 +1041,12 @@
             @if ($submission->expertise)
                 const expertiseSelect = document.getElementById('expertiseSelect');
                 expertiseSelect.value = '{{ $submission->expertise }}';
-                loadExpertisePrograms('{{ $submission->expertise }}');
+                loadExpertisePrograms(expertiseSelect.value);
 
                 @if ($submission->expertise_program)
                     const programSelect = document.getElementById('expertiseProgramSelect');
                     programSelect.value = '{{ $submission->expertise_program }}';
-                    loadExpertiseConcentrations('{{ $submission->expertise_program }}');
+                    loadExpertiseConcentrations(programSelect.value);
 
                     @if ($submission->expertise_concentration)
                         const concentrationSelect = document.getElementById('expertiseConcentrationSelect');

@@ -1,5 +1,8 @@
 @php
     $existingData = $existingData ?? [];
+    if (is_string($existingData)) {
+        $existingData = json_decode($existingData, true) ?? [];
+    }
     $headerData = $existingData['header'] ?? [];
     $rows = $existingData['rows'] ?? [];
     $rowCount = max(3, count($rows));
@@ -89,16 +92,23 @@
                                 <select class="form-select form-select-sm table-input" data-key="condition"
                                     data-row="{{ $i }}">
                                     <option value="">Pilih</option>
-                                    <option value="Baik" {{ ($rowData['condition'] ?? '') === 'Baik' ? 'selected' : '' }}>Baik</option>
-                                    <option value="Rusak" {{ ($rowData['condition'] ?? '') === 'Rusak' ? 'selected' : '' }}>Rusak</option>
+                                    <option value="Baik"
+                                        {{ ($rowData['condition'] ?? '') === 'Baik' ? 'selected' : '' }}>Baik</option>
+                                    <option value="Rusak"
+                                        {{ ($rowData['condition'] ?? '') === 'Rusak' ? 'selected' : '' }}>Rusak
+                                    </option>
                                 </select>
                             </td>
                             <td>
                                 <select class="form-select form-select-sm table-input" data-key="industry_standard"
                                     data-row="{{ $i }}">
                                     <option value="">Pilih</option>
-                                    <option value="Ya" {{ ($rowData['industry_standard'] ?? '') === 'Ya' ? 'selected' : '' }}>Ya</option>
-                                    <option value="Tidak" {{ ($rowData['industry_standard'] ?? '') === 'Tidak' ? 'selected' : '' }}>Tidak</option>
+                                    <option value="Ya"
+                                        {{ ($rowData['industry_standard'] ?? '') === 'Ya' ? 'selected' : '' }}>Ya
+                                    </option>
+                                    <option value="Tidak"
+                                        {{ ($rowData['industry_standard'] ?? '') === 'Tidak' ? 'selected' : '' }}>Tidak
+                                    </option>
                                 </select>
                             </td>
                             <td>
