@@ -380,7 +380,7 @@
                                     <option value="">-- Pilih Bidang Keahlian --</option>
                                     @foreach (array_keys($expertiseData ?? []) as $expertise)
                                         <option value="{{ $expertise }}"
-                                            {{ old('expertise', $submission->expertise) == $expertise ? 'selected' : '' }}>
+                                            {{ old('expertise', $submission->school->expertise) == $expertise ? 'selected' : '' }}>
                                             {{ $expertise == 'TIK' ? 'TIK (Teknologi Informasi dan Komunikasi)' : $expertise }}
                                         </option>
                                     @endforeach
@@ -1038,19 +1038,19 @@
                 console.error('Form element not found!');
             }
             // Restore expertise fields if submission has data
-            @if ($submission->expertise)
+            @if ($submission->school->expertise)
                 const expertiseSelect = document.getElementById('expertiseSelect');
-                expertiseSelect.value = '{{ $submission->expertise }}';
+                expertiseSelect.value = '{{ $submission->school->expertise }}';
                 loadExpertisePrograms(expertiseSelect.value);
 
-                @if ($submission->expertise_program)
+                @if ($submission->school->expertise_program)
                     const programSelect = document.getElementById('expertiseProgramSelect');
-                    programSelect.value = '{{ $submission->expertise_program }}';
+                    programSelect.value = '{{ $submission->school->expertise_program }}';
                     loadExpertiseConcentrations(programSelect.value);
 
-                    @if ($submission->expertise_concentration)
+                    @if ($submission->school->expertise_concentration)
                         const concentrationSelect = document.getElementById('expertiseConcentrationSelect');
-                        concentrationSelect.value = '{{ $submission->expertise_concentration }}';
+                        concentrationSelect.value = '{{ $submission->school->expertise_concentration }}';
                     @endif
                 @endif
             @endif
