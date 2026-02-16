@@ -26,7 +26,6 @@ return [
                     'Teknika Kapal Penangkap Ikan',
                     'Nautika Kapal Niaga',
                     'Teknika Kapal Niaga',
-                    'Lainnya',
                 ],
             ],
         ],
@@ -37,22 +36,20 @@ return [
                     'Agribisnis Ikan Hias',
                     'Agribisnis Perikanan Payau dan Laut',
                     'Agribisnis Perikanan Air Tawar',
-                    'Agribisnis Rumput Laut',
-                    'Lainnya',
+                    'Agribisnis Rumput Laut'
                 ],
             ],
         ],
-        'TIK' => [
-            'programs' => ['Bidang TIK'],
+        'Teknologi Informasi' => [
+            'programs' => ['Bidang Teknologi Informasi'],
             'concentrations' => [
-                'Bidang TIK' => [
+                'Bidang Teknologi Informasi' => [
                     'Rekayasa Perangkat Lunak',
                     'Pengembangan GIM',
                     'Sistem Informasi, Jaringan, dan Aplikasi',
                     'Teknik Komputer dan Jaringan',
                     'Teknik Jaringan Akses Telekomunikasi',
                     'Teknik Transmisi Telekomunikasi',
-                    'Lainnya',
                 ],
             ],
         ],
