@@ -112,7 +112,7 @@
                         <p class="lead mb-5 text-white-50">Upaya sistematis BPPMPV dalam memastikan mutu pendidikan vokasi
                             bidang Kelautan, Perikanan, dan TIK</p>
                         <div class="d-flex gap-3 justify-content-center">
-                            <a href="{{ route('instrument.form') }}" class="btn btn-primary btn-lg px-5 py-3">
+                            <a href="{{ route('instrument.v2.form') }}" class="btn btn-primary btn-lg px-5 py-3">
                                 <i class="bi bi-play-circle me-2"></i>Isi Instrumen
                             </a>
                             @guest
