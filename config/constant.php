@@ -46,7 +46,7 @@ return [
                 'Bidang Teknologi Informasi' => [
                     'Rekayasa Perangkat Lunak',
                     'Pengembangan GIM',
-                    'Sistem Informasi, Jaringan, dan Aplikasi',
+                    'Sistem Informasi, Jaringan dan Aplikasi',
                     'Teknik Komputer dan Jaringan',
                     'Teknik Jaringan Akses Telekomunikasi',
                     'Teknik Transmisi Telekomunikasi',

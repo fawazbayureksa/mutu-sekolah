@@ -32,6 +32,18 @@ class PublicInstrumentV2Controller extends Controller
         return response()->json($regencies);
     }
 
+    public function getSaprasData($concentration)
+    {
+        $saprasData = config('sapras_data');
+        $concentration = urldecode($concentration);
+
+        if (!isset($saprasData[$concentration])) {
+            return response()->json(['sections' => []], 200);
+        }
+
+        return response()->json($saprasData[$concentration]);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -131,8 +143,7 @@ class PublicInstrumentV2Controller extends Controller
         $sectionCodes = [
             'A.1.1',
             'A.2.1',
-            'B.1.1',
-            'B.2.1',
+            'B.sapras',
             'C.1.1',
             'C.2.1',
             'C.3.1',
@@ -164,14 +175,13 @@ class PublicInstrumentV2Controller extends Controller
 
     private function calculateCompletionPercentage(array $answers): float
     {
-        $totalSections = 8;
+        $totalSections = 7;
         $filledSections = 0;
 
         $sectionCodes = [
             'A.1.1',
             'A.2.1',
-            'B.1.1',
-            'B.2.1',
+            'B.sapras',
             'C.1.1',
             'C.2.1',
             'C.3.1',

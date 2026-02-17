@@ -134,7 +134,8 @@
                             <div class="col-md-4">
                                 <label class="form-label">Konsentrasi Keahlian</label>
                                 <select name="expertise_concentration" id="expertiseConcentrationSelect"
-                                    class="form-select @error('expertise_concentration') is-invalid @enderror" disabled>
+                                    class="form-select @error('expertise_concentration') is-invalid @enderror" disabled
+                                    onchange="loadSaprasData(this.value)">
                                     <option value="">-- Pilih Konsentrasi Keahlian --</option>
                                 </select>
                                 @error('expertise_concentration')
@@ -236,48 +237,26 @@
                             <strong>B - Data Sarana Prasarana (Sapras)</strong>
                         </div>
 
-                        {{-- B.1: Inventarisasi dan Kesesuaian dengan Standar Industri --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">B.1</span>
-                                Inventarisasi dan Kesesuaian dengan Standar Industri
-                            </h5>
+                        {{-- Hidden input to store all sapras data --}}
+                        <input type="hidden" name="answers[B.sapras]" id="sapras-data-input" value="{}">
 
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">B.1.1</span>
-                                    <span class="badge bg-info ms-2">Dynamic Rows</span>
-                                </div>
-                                <p class="indicator-text mb-2">Inventarisasi dan Kesesuaian dengan Standar Industri</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data inventaris perangkat bengkel/lab dan
-                                    bandingkan dengan standar industri
-                                </small>
-
-                                @include('instrument.partials.v2.table-b11')
-                            </div>
+                        {{-- Placeholder when no concentration is selected --}}
+                        <div id="sapras-placeholder" class="text-center py-5">
+                            <i class="bi bi-building-gear" style="font-size: 3rem; color: #dee2e6;"></i>
+                            <p class="text-muted mt-3 mb-0">Pilih <strong>Konsentrasi Keahlian</strong> pada bagian Data
+                                Sekolah di atas untuk menampilkan tabel Sarana Prasarana.</p>
                         </div>
 
-                        {{-- B.2: Penilaian Kesiapan Fasilitas (Checklist) --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">B.2</span>
-                                Penilaian Kesiapan Fasilitas (Checklist)
-                            </h5>
-
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">B.2.1</span>
-                                </div>
-                                <p class="indicator-text mb-2">Penilaian Kesiapan Fasilitas (Checklist)</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi checklist penilaian kesiapan fasilitas
-                                    bengkel/lab
-                                </small>
-
-                                @include('instrument.partials.v2.checklist-b21')
+                        {{-- Loading indicator --}}
+                        <div id="sapras-loading" class="text-center py-5" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
                             </div>
+                            <p class="text-muted mt-3 mb-0">Memuat data sarana prasarana...</p>
                         </div>
+
+                        {{-- Dynamic sapras container --}}
+                        <div id="sapras-container" style="display: none;"></div>
                     </div>
 
                     {{-- ASPECT C: Data Tata Kelola --}}
@@ -494,7 +473,7 @@
         }
 
         function collectAllTableData() {
-            const tables = ['table-a11', 'table-a21', 'table-b11', 'table-b21', 'table-c11', 'table-c21', 'table-c31'];
+            const tables = ['table-a11', 'table-a21', 'table-c11', 'table-c21', 'table-c31'];
 
             tables.forEach(tableId => {
                 const table = document.getElementById(tableId);
@@ -506,6 +485,9 @@
                     }
                 }
             });
+
+            // Collect dynamic sapras data
+            collectSaprasData();
 
             const formC32 = document.getElementById('form-c32');
             if (formC32) {
@@ -669,6 +651,9 @@
                     concentrationSelect.appendChild(option);
                 });
                 concentrationSelect.disabled = false;
+
+                // Reset sapras when program changes
+                resetSaprasContainer();
             }
         }
 
@@ -718,5 +703,437 @@
                 }
             }
         });
+
+        // ===== SAPRAS DYNAMIC TABLES =====
+
+        function loadSaprasData(concentration) {
+            const placeholder = document.getElementById('sapras-placeholder');
+            const loading = document.getElementById('sapras-loading');
+            const container = document.getElementById('sapras-container');
+
+            if (!concentration) {
+                resetSaprasContainer();
+                return;
+            }
+
+            // Show loading, hide others
+            placeholder.style.display = 'none';
+            container.style.display = 'none';
+            loading.style.display = 'block';
+
+            fetch(`/api/sapras-data/${encodeURIComponent(concentration)}`)
+                .then(response => response.json())
+                .then(data => {
+                    loading.style.display = 'none';
+                    if (data.sections && data.sections.length > 0) {
+                        renderSaprasSections(data.sections, container);
+                        container.style.display = 'block';
+                    } else {
+                        placeholder.innerHTML = `
+                            <i class="bi bi-exclamation-circle" style="font-size: 3rem; color: #ffc107;"></i>
+                            <p class="text-muted mt-3 mb-0">Data sarana prasarana untuk <strong>${concentration}</strong> belum tersedia.</p>
+                        `;
+                        placeholder.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading sapras data:', error);
+                    loading.style.display = 'none';
+                    placeholder.innerHTML = `
+                        <i class="bi bi-exclamation-triangle" style="font-size: 3rem; color: #dc3545;"></i>
+                        <p class="text-muted mt-3 mb-0">Terjadi kesalahan saat memuat data. Silakan coba lagi.</p>
+                    `;
+                    placeholder.style.display = 'block';
+                });
+        }
+
+        function resetSaprasContainer() {
+            const placeholder = document.getElementById('sapras-placeholder');
+            const loading = document.getElementById('sapras-loading');
+            const container = document.getElementById('sapras-container');
+
+            placeholder.innerHTML = `
+                <i class="bi bi-building-gear" style="font-size: 3rem; color: #dee2e6;"></i>
+                <p class="text-muted mt-3 mb-0">Pilih <strong>Konsentrasi Keahlian</strong> pada bagian Data Sekolah di atas untuk menampilkan tabel Sarana Prasarana.</p>
+            `;
+            placeholder.style.display = 'block';
+            loading.style.display = 'none';
+            container.style.display = 'none';
+            container.innerHTML = '';
+        }
+
+        function renderSaprasSections(sections, container) {
+            container.innerHTML = '';
+
+            sections.forEach((section, sIdx) => {
+                const sectionNum = sIdx + 1;
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'indicator-group mb-4';
+                sectionDiv.dataset.sectionIndex = sIdx;
+
+                let tableHtml = '';
+
+                switch (section.type) {
+                    case 'room':
+                        tableHtml = renderRoomTable(section, sectionNum);
+                        break;
+                    case 'equipment':
+                        tableHtml = renderEquipmentTable(section, sectionNum);
+                        break;
+                    case 'equipment_no_spec':
+                        tableHtml = renderEquipmentNoSpecTable(section, sectionNum);
+                        break;
+                    case 'k3':
+                        tableHtml = renderK3Table(section, sectionNum);
+                        break;
+                    case 'utility':
+                        tableHtml = renderUtilityTable(section, sectionNum);
+                        break;
+                    case 'culture':
+                        tableHtml = renderCultureTable(section, sectionNum);
+                        break;
+                    default:
+                        tableHtml = renderEquipmentTable(section, sectionNum);
+                }
+
+                sectionDiv.innerHTML = `
+                    <h5 class="indicator-header mb-3">
+                        <span class="badge bg-secondary me-2">B.${sectionNum}</span>
+                        ${section.title}
+                    </h5>
+                    <div class="indicator-item">
+                        ${tableHtml}
+                    </div>
+                `;
+
+                container.appendChild(sectionDiv);
+            });
+        }
+
+        function renderEquipmentTable(section, sectionNum) {
+            let rows = '';
+            section.items.forEach((item, i) => {
+                rows += `
+                    <tr data-section="${sectionNum}" data-row="${i}">
+                        <td class="text-center">${i + 1}</td>
+                        <td><strong>${item.name}</strong></td>
+                        <td><small class="text-muted">${item.spec || '-'}</small></td>
+                        <td class="text-center"><span class="badge bg-light text-dark">${item.standard_qty}</span></td>
+                        <td><input type="number" class="form-control form-control-sm table-input sapras-input" data-key="qty_available" placeholder="0" min="0"></td>
+                        <td>
+                            <select class="form-select form-select-sm table-input sapras-input" data-key="condition">
+                                <option value="">Pilih</option>
+                                <option value="Baik">Baik</option>
+                                <option value="Rusak">Rusak</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm table-input sapras-input" data-key="industry_standard">
+                                <option value="">Pilih</option>
+                                <option value="Ya">Ya</option>
+                                <option value="Tidak">Tidak</option>
+                                <option value="Sebagian">Sebagian</option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="form-control form-control-sm table-input sapras-input" data-key="remarks" placeholder="Keterangan"></td>
+                    </tr>`;
+            });
+
+            return `
+                <div class="table-responsive">
+                    <table class="table instrument-table mb-0" id="sapras-table-${sectionNum}">
+                        <thead>
+                            <tr>
+                                <th style="width:4%">No</th>
+                                <th style="width:18%">Nama Peralatan</th>
+                                <th style="width:18%">Spesifikasi Minimal</th>
+                                <th style="width:10%">Jumlah Standar</th>
+                                <th style="width:10%">Jumlah Tersedia</th>
+                                <th style="width:10%">Kondisi</th>
+                                <th style="width:12%">Kesesuaian Standar Industri</th>
+                                <th style="width:18%">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>`;
+        }
+
+        function renderRoomTable(section, sectionNum) {
+            let rows = '';
+            section.items.forEach((item, i) => {
+                rows += `
+                    <tr data-section="${sectionNum}" data-row="${i}">
+                        <td class="text-center">${i + 1}</td>
+                        <td><strong>${item.name}</strong></td>
+                        <td class="text-center"><span class="badge bg-light text-dark">${item.standard_area}</span></td>
+                        <td class="text-center">${item.capacity}</td>
+                        <td><input type="text" class="form-control form-control-sm table-input sapras-input" data-key="actual_area" placeholder="m²"></td>
+                        <td>
+                            <select class="form-select form-select-sm table-input sapras-input" data-key="available">
+                                <option value="">Pilih</option>
+                                <option value="Ada">Ada</option>
+                                <option value="Tidak">Tidak</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm table-input sapras-input" data-key="industry_standard">
+                                <option value="">Pilih</option>
+                                <option value="Ya">Ya</option>
+                                <option value="Tidak">Tidak</option>
+                                <option value="Sebagian">Sebagian</option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="form-control form-control-sm table-input sapras-input" data-key="remarks" placeholder="Keterangan"></td>
+                    </tr>`;
+            });
+
+            return `
+                <div class="table-responsive">
+                    <table class="table instrument-table mb-0" id="sapras-table-${sectionNum}">
+                        <thead>
+                            <tr>
+                                <th style="width:4%">No</th>
+                                <th style="width:22%">Jenis Ruang</th>
+                                <th style="width:12%">Standar Luas Minimal</th>
+                                <th style="width:10%">Kapasitas</th>
+                                <th style="width:12%">Luas Tersedia (m²)</th>
+                                <th style="width:10%">Ada/Tidak</th>
+                                <th style="width:12%">Kesesuaian Standar Industri</th>
+                                <th style="width:18%">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>`;
+        }
+
+        function renderEquipmentNoSpecTable(section, sectionNum) {
+            let rows = '';
+            section.items.forEach((item, i) => {
+                rows += `
+                    <tr data-section="${sectionNum}" data-row="${i}">
+                        <td class="text-center">${i + 1}</td>
+                        <td><strong>${item.name}</strong></td>
+                        <td class="text-center"><span class="badge bg-light text-dark">${item.standard_qty}</span></td>
+                        <td><input type="number" class="form-control form-control-sm table-input sapras-input" data-key="qty_available" placeholder="0" min="0"></td>
+                        <td>
+                            <select class="form-select form-select-sm table-input sapras-input" data-key="condition">
+                                <option value="">Pilih</option>
+                                <option value="Baik">Baik</option>
+                                <option value="Rusak">Rusak</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm table-input sapras-input" data-key="industry_standard">
+                                <option value="">Pilih</option>
+                                <option value="Ya">Ya</option>
+                                <option value="Tidak">Tidak</option>
+                                <option value="Sebagian">Sebagian</option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="form-control form-control-sm table-input sapras-input" data-key="remarks" placeholder="Keterangan"></td>
+                    </tr>`;
+            });
+
+            return `
+                <div class="table-responsive">
+                    <table class="table instrument-table mb-0" id="sapras-table-${sectionNum}">
+                        <thead>
+                            <tr>
+                                <th style="width:4%">No</th>
+                                <th style="width:26%">Nama Peralatan</th>
+                                <th style="width:12%">Jumlah Standar</th>
+                                <th style="width:12%">Jumlah Tersedia</th>
+                                <th style="width:12%">Kondisi</th>
+                                <th style="width:14%">Kesesuaian Standar Industri</th>
+                                <th style="width:20%">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>`;
+        }
+
+        function renderK3Table(section, sectionNum) {
+            let rows = '';
+            section.items.forEach((item, i) => {
+                rows += `
+                    <tr data-section="${sectionNum}" data-row="${i}">
+                        <td class="text-center">${i + 1}</td>
+                        <td><strong>${item.name}</strong></td>
+                        <td><small class="text-muted">${item.spec || '-'}</small></td>
+                        <td class="text-center"><span class="badge bg-light text-dark">${item.standard_qty}</span></td>
+                        <td><input type="number" class="form-control form-control-sm table-input sapras-input" data-key="qty_available" placeholder="0" min="0"></td>
+                        <td>
+                            <select class="form-select form-select-sm table-input sapras-input" data-key="condition">
+                                <option value="">Pilih</option>
+                                <option value="Baik">Baik</option>
+                                <option value="Rusak">Rusak</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm table-input sapras-input" data-key="industry_standard">
+                                <option value="">Pilih</option>
+                                <option value="Ya">Ya</option>
+                                <option value="Tidak">Tidak</option>
+                                <option value="Sebagian">Sebagian</option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="form-control form-control-sm table-input sapras-input" data-key="remarks" placeholder="Keterangan"></td>
+                    </tr>`;
+            });
+
+            return `
+                <div class="table-responsive">
+                    <table class="table instrument-table mb-0" id="sapras-table-${sectionNum}">
+                        <thead>
+                            <tr>
+                                <th style="width:4%">No</th>
+                                <th style="width:16%">Komponen</th>
+                                <th style="width:16%">Standar Minimal</th>
+                                <th style="width:10%">Jumlah Standar</th>
+                                <th style="width:10%">Jumlah Tersedia</th>
+                                <th style="width:10%">Kondisi</th>
+                                <th style="width:14%">Kesesuaian Standar Industri</th>
+                                <th style="width:20%">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>`;
+        }
+
+        function renderUtilityTable(section, sectionNum) {
+            let rows = '';
+            section.items.forEach((item, i) => {
+                rows += `
+                    <tr data-section="${sectionNum}" data-row="${i}">
+                        <td class="text-center">${i + 1}</td>
+                        <td><strong>${item.name}</strong></td>
+                        <td><small class="text-muted">${item.spec || '-'}</small></td>
+                        <td>
+                            <select class="form-select form-select-sm table-input sapras-input" data-key="compliance">
+                                <option value="">Pilih</option>
+                                <option value="Sesuai Standar Minimal">Sesuai Standar Minimal</option>
+                                <option value="Tidak Sesuai Standar Minimal">Tidak Sesuai</option>
+                                <option value="Tidak Ada">Tidak Ada</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm table-input sapras-input" data-key="industry_standard">
+                                <option value="">Pilih</option>
+                                <option value="Ya">Ya</option>
+                                <option value="Tidak">Tidak</option>
+                                <option value="Sebagian">Sebagian</option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="form-control form-control-sm table-input sapras-input" data-key="remarks" placeholder="Keterangan"></td>
+                    </tr>`;
+            });
+
+            return `
+                <div class="table-responsive">
+                    <table class="table instrument-table mb-0" id="sapras-table-${sectionNum}">
+                        <thead>
+                            <tr>
+                                <th style="width:4%">No</th>
+                                <th style="width:22%">Komponen</th>
+                                <th style="width:22%">Standar Minimal</th>
+                                <th style="width:18%">Kesesuaian</th>
+                                <th style="width:14%">Kesesuaian Standar Industri</th>
+                                <th style="width:20%">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>`;
+        }
+
+        function renderCultureTable(section, sectionNum) {
+            let rows = '';
+            section.items.forEach((item, i) => {
+                rows += `
+                    <tr data-section="${sectionNum}" data-row="${i}">
+                        <td class="text-center">${i + 1}</td>
+                        <td><strong>${item.name}</strong></td>
+                        <td>
+                            <select class="form-select form-select-sm table-input sapras-input" data-key="status">
+                                <option value="">Pilih</option>
+                                <option value="Ada, Efektif">Ada, Efektif</option>
+                                <option value="Ada, Tidak Efektif">Ada, Tidak Efektif</option>
+                                <option value="Tidak Ada">Tidak Ada</option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="form-control form-control-sm table-input sapras-input" data-key="remarks" placeholder="Keterangan"></td>
+                    </tr>`;
+            });
+
+            return `
+                <div class="table-responsive">
+                    <table class="table instrument-table mb-0" id="sapras-table-${sectionNum}">
+                        <thead>
+                            <tr>
+                                <th style="width:4%">No</th>
+                                <th style="width:40%">Komponen</th>
+                                <th style="width:26%">Status</th>
+                                <th style="width:30%">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>`;
+        }
+
+        function collectSaprasData() {
+            const container = document.getElementById('sapras-container');
+            const hiddenInput = document.getElementById('sapras-data-input');
+
+            if (!container || container.style.display === 'none') {
+                hiddenInput.value = '{}';
+                return;
+            }
+
+            const saprasData = {
+                sections: []
+            };
+
+            container.querySelectorAll('.indicator-group').forEach(sectionDiv => {
+                const sectionIndex = parseInt(sectionDiv.dataset.sectionIndex);
+                const title = sectionDiv.querySelector('.indicator-header')?.textContent?.trim() || '';
+
+                const sectionData = {
+                    title: title,
+                    rows: []
+                };
+
+                sectionDiv.querySelectorAll('tbody tr').forEach(row => {
+                    const rowData = {};
+
+                    // Get the predefined text from td cells (name, spec, etc.)
+                    const tds = row.querySelectorAll('td');
+                    if (tds.length > 1) {
+                        const nameEl = tds[1].querySelector('strong');
+                        if (nameEl) rowData.name = nameEl.textContent.trim();
+                    }
+
+                    // Get user-filled inputs
+                    row.querySelectorAll('.sapras-input').forEach(input => {
+                        const key = input.dataset.key;
+                        if (key) {
+                            rowData[key] = input.value;
+                        }
+                    });
+
+                    if (Object.keys(rowData).length > 0) {
+                        sectionData.rows.push(rowData);
+                    }
+                });
+
+                saprasData.sections.push(sectionData);
+            });
+
+            hiddenInput.value = JSON.stringify(saprasData);
+        }
     </script>
 @endpush

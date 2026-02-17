@@ -36,6 +36,9 @@ Route::post('/instrumen/v2', [PublicInstrumentV2Controller::class, 'store'])
 Route::get('/api/regencies/{provinceCode}', [PublicInstrumentV2Controller::class, 'getRegencies'])
     ->name('api.regencies');
 
+Route::get('/api/sapras-data/{concentration}', [PublicInstrumentV2Controller::class, 'getSaprasData'])
+    ->name('api.sapras-data');
+
 // Submission update via one-time token
 Route::get('/submission/update/{token}', [SubmissionUpdateController::class, 'show'])
     ->name('submission.update.show');
