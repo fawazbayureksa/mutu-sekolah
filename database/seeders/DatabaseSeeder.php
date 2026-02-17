@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             ScaleTemplateSeeder::class,
             AdvancedInstrumentSeeder::class,
+            VerifierUserSeeder::class
         ]);
     }
 }

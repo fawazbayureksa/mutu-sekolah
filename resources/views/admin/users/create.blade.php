@@ -34,7 +34,7 @@
                             <div class="col-md-6">
                                 <label class="form-label">Email <span class="text-danger">*</span></label>
                                 <input type="email" name="email" class="form-control"
-                                    value="{{ old('email', $user->email ?? '') }}" required>
+                                    value="{{ old('email', $user->email ?? '') }}" required autocomplete="off">
                                 @error('email')
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
@@ -50,10 +50,6 @@
                                         <div class="text-danger small">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                {{-- <div class="col-md-6">
-                                    <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
-                                    <input type="password" name="password_confirmation" class="form-control" required>
-                                </div> --}}
                             </div>
                         @endif
 
@@ -66,10 +62,11 @@
                             <div class="col-md-6">
                                 <label class="form-label">Role</label>
                                 <select name="role" class="form-select">
-                                    <option value="user"
-                                        {{ old('role', $user->role ?? 'user') === 'user' ? 'selected' : '' }}>User</option>
-                                    <option value="admin"
-                                        {{ old('role', $user->role ?? '') === 'admin' ? 'selected' : '' }}>Admin</option>
+                                    @foreach (config('constant.user_role') as $key => $role)
+                                        <option value="{{ $key }}" {{ old('role') === $key ? 'selected' : '' }}>
+                                            {{ $role }}
+                                        </option>
+                                    @endforeach
                                 </select>
                                 @error('role')
                                     <div class="text-danger small">{{ $message }}</div>
@@ -108,8 +105,7 @@
                 </div>
                 <div class="card-body">
                     <ul class="mb-0">
-                        <li class="mb-2"><strong>Admin Role:</strong> Has full access to all admin features</li>
-                        <li class="mb-2"><strong>User Role:</strong> Has limited access based on permissions</li>
+                        <li class="mb-2"><strong>Admin:</strong> Has full access to all admin features</li>
                         <li class="mb-2"><strong>Active Users:</strong> Can log in and access the system</li>
                         <li><strong>Inactive Users:</strong> Cannot log in until activated</li>
                     </ul>

@@ -6,9 +6,15 @@ use App\Http\Controllers\Admin\AssessmentAnswerController;
 use App\Http\Controllers\Admin\AssessmentController;
 use App\Http\Controllers\Admin\InstrumentController;
 use App\Http\Controllers\Admin\QuestionController;
+use App\Http\Controllers\Admin\SubmissionController;
+use App\Http\Controllers\Admin\SubmissionV2Controller;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PublicInstrumentController;
+use App\Http\Controllers\PublicInstrumentV2Controller;
+use App\Http\Controllers\SubmissionUpdateController;
+use App\Http\Controllers\Verifier\VerifierDashboardController;
+use App\Http\Controllers\Verifier\VerifierSubmissionController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -20,11 +26,18 @@ Route::get('/instrumen', [PublicInstrumentController::class, 'index'])
 Route::post('/instrumen', [PublicInstrumentController::class, 'store'])
     ->name('instrument.submit');
 
+// V2 Instrument routes (hardcoded form with dynamic rows)
+Route::get('/instrumen/v2', [PublicInstrumentV2Controller::class, 'index'])
+    ->name('instrument.v2.form');
+
+Route::post('/instrumen/v2', [PublicInstrumentV2Controller::class, 'store'])
+    ->name('instrument.v2.submit');
+
 // Submission update via one-time token
-Route::get('/submission/update/{token}', [\App\Http\Controllers\SubmissionUpdateController::class, 'show'])
+Route::get('/submission/update/{token}', [SubmissionUpdateController::class, 'show'])
     ->name('submission.update.show');
 
-Route::post('/submission/update/{token}', [\App\Http\Controllers\SubmissionUpdateController::class, 'update'])
+Route::post('/submission/update/{token}', [SubmissionUpdateController::class, 'update'])
     ->name('submission.update.store');
 
 // Authentication routes
@@ -44,12 +57,21 @@ Route::middleware('auth')->group(function () {
 
     // Verifier routes
     Route::prefix('verifier')->middleware(['role:verifier'])->name('verifier.')->group(function () {
-        Route::get('/dashboard', [\App\Http\Controllers\Verifier\VerifierDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/submissions', [\App\Http\Controllers\Verifier\VerifierSubmissionController::class, 'index'])->name('submissions.index');
-        Route::get('/submissions/{submission}', [\App\Http\Controllers\Verifier\VerifierSubmissionController::class, 'show'])->name('submissions.show');
-        Route::post('/submissions/{submission}/verify', [\App\Http\Controllers\Verifier\VerifierSubmissionController::class, 'verify'])->name('submissions.verify');
-        Route::post('/submissions/{submission}/reject', [\App\Http\Controllers\Verifier\VerifierSubmissionController::class, 'reject'])->name('submissions.reject');
-        Route::post('/submissions/{submission}/generate-token', [\App\Http\Controllers\Verifier\VerifierSubmissionController::class, 'generateUpdateToken'])->name('submissions.generate-token');
+        Route::get('/dashboard', [VerifierDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/submissions', [VerifierSubmissionController::class, 'index'])->name('submissions.index');
+        Route::get('/submissions/{submission}', [VerifierSubmissionController::class, 'show'])->name('submissions.show');
+        Route::post('/submissions/{submission}/verify', [VerifierSubmissionController::class, 'verify'])->name('submissions.verify');
+        Route::post('/submissions/{submission}/reject', [VerifierSubmissionController::class, 'reject'])->name('submissions.reject');
+        Route::post('/submissions/{submission}/generate-token', [VerifierSubmissionController::class, 'generateUpdateToken'])->name('submissions.generate-token');
+
+        // Submission V2 routes for verifier
+        Route::prefix('submissions-v2')->name('submissions-v2.')->group(function () {
+            Route::get('/', [SubmissionV2Controller::class, 'index'])->name('index');
+            Route::get('/{submission}', [SubmissionV2Controller::class, 'show'])->name('show');
+            Route::post('/{submission}/verify', [SubmissionV2Controller::class, 'verify'])->name('verify');
+            Route::post('/{submission}/reject', [SubmissionV2Controller::class, 'reject'])->name('reject');
+            Route::post('/{submission}/generate-token', [SubmissionV2Controller::class, 'generateUpdateToken'])->name('generate-token');
+        });
     });
 
     // Admin routes
@@ -147,7 +169,19 @@ Route::middleware('auth')->group(function () {
             });
         });
         // Submission Management
-        Route::resource('submissions', \App\Http\Controllers\Admin\SubmissionController::class)->only(['index', 'show']);
+        Route::resource('submissions', SubmissionController::class)->only(['index', 'show']);
+
+        // Submission V2 Management
+        Route::prefix('submissions-v2')->name('submissions-v2.')->group(function () {
+            Route::get('/', [SubmissionV2Controller::class, 'index'])->name('index');
+            Route::get('/{submission}', [SubmissionV2Controller::class, 'show'])->name('show');
+            Route::post('/{submission}/verify', [SubmissionV2Controller::class, 'verify'])->name('verify');
+            Route::post('/{submission}/reject', [SubmissionV2Controller::class, 'reject'])->name('reject');
+            Route::post('/{submission}/validate', [SubmissionV2Controller::class, 'validateSubmission'])->name('validate');
+            Route::post('/{submission}/generate-token', [SubmissionV2Controller::class, 'generateUpdateToken'])->name('generate-token');
+            Route::get('/export/all', [SubmissionV2Controller::class, 'export'])->name('export');
+            Route::delete('/{submission}', [SubmissionV2Controller::class, 'destroy'])->name('destroy');
+        });
 
         // Validation routes
         Route::get('/validations', [AdminValidationController::class, 'index'])->name('validations.index');
