@@ -20,6 +20,10 @@ class School extends Model
         'expertise',
         'expertise_program',
         'expertise_concentration',
+        'school_status',
+        'school_category',
+        'program_duration',
+        'school_accreditation',
     ];
 
     protected $casts = [

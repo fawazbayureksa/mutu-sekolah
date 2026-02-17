@@ -112,6 +112,105 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Status Sekolah</label>
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="school_status"
+                                            id="statusNegeri" value="Negeri"
+                                            {{ old('school_status', $submission->school->school_status) == 'Negeri' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="statusNegeri">Negeri</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="school_status"
+                                            id="statusSwasta" value="Swasta"
+                                            {{ old('school_status', $submission->school->school_status) == 'Swasta' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="statusSwasta">Swasta</label>
+                                    </div>
+                                </div>
+                                @error('school_status')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Durasi Program</label>
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="program_duration"
+                                            id="duration3" value="3 Tahun"
+                                            {{ old('program_duration', $submission->school->program_duration) == '3 Tahun' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="duration3">3 Tahun</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="program_duration"
+                                            id="duration4" value="4 Tahun"
+                                            {{ old('program_duration', $submission->school->program_duration) == '4 Tahun' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="duration4">4 Tahun</label>
+                                    </div>
+                                </div>
+                                @error('program_duration')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Kategori Sekolah</label>
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="school_category"
+                                            id="catReguler" value="SMK PK Reguler"
+                                            {{ old('school_category', $submission->school->school_category) == 'SMK PK Reguler' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="catReguler">SMK PK Reguler</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="school_category"
+                                            id="catPenguatan" value="SMK PK Penguatan Pembelajaran Mendalam"
+                                            {{ old('school_category', $submission->school->school_category) == 'SMK PK Penguatan Pembelajaran Mendalam' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="catPenguatan">SMK PK Penguatan Pembelajaran
+                                            Mendalam</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="school_category"
+                                            id="catModel" value="SMK Model"
+                                            {{ old('school_category', $submission->school->school_category) == 'SMK Model' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="catModel">SMK Model</label>
+                                    </div>
+                                </div>
+                                @error('school_category')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Akreditasi Sekolah</label>
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="school_accreditation"
+                                            id="accA" value="A"
+                                            {{ old('school_accreditation', $submission->school->school_accreditation) == 'A' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="accA">A</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="school_accreditation"
+                                            id="accB" value="B"
+                                            {{ old('school_accreditation', $submission->school->school_accreditation) == 'B' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="accB">B</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="school_accreditation"
+                                            id="accC" value="C"
+                                            {{ old('school_accreditation', $submission->school->school_accreditation) == 'C' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="accC">C</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="school_accreditation"
+                                            id="accTidak" value="Tidak Terakreditasi"
+                                            {{ old('school_accreditation', $submission->school->school_accreditation) == 'Tidak Terakreditasi' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="accTidak">Tidak Terakreditasi</label>
+                                    </div>
+                                </div>
+                                @error('school_accreditation')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="col-md-4">
                                 <label class="form-label">Bidang Keahlian</label>
                                 <select name="expertise" id="expertiseSelect"

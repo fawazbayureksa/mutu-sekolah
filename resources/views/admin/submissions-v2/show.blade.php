@@ -87,7 +87,8 @@
                             </tr>
                             <tr>
                                 <td class="fw-semibold text-muted">Provinsi</td>
-                                <td>{{ $submission->school?->province?->name ?? ($submission->province?->name ?? '-') }}</td>
+                                <td>{{ $submission->school?->province?->name ?? ($submission->province?->name ?? '-') }}
+                                </td>
                             </tr>
                             <tr>
                                 <td class="fw-semibold text-muted">Kabupaten/Kota</td>
@@ -109,6 +110,30 @@
                                 <tr>
                                     <td class="fw-semibold text-muted">Konsentrasi Keahlian</td>
                                     <td>{{ $submission->school->expertise_concentration }}</td>
+                                </tr>
+                            @endif
+                            @if ($submission->school?->school_status)
+                                <tr>
+                                    <td class="fw-semibold text-muted">Status Sekolah</td>
+                                    <td>{{ $submission->school->school_status }}</td>
+                                </tr>
+                            @endif
+                            @if ($submission->school?->school_category)
+                                <tr>
+                                    <td class="fw-semibold text-muted">Kategori Sekolah</td>
+                                    <td>{{ $submission->school->school_category }}</td>
+                                </tr>
+                            @endif
+                            @if ($submission->school?->program_duration)
+                                <tr>
+                                    <td class="fw-semibold text-muted">Durasi Program</td>
+                                    <td>{{ $submission->school->program_duration }}</td>
+                                </tr>
+                            @endif
+                            @if ($submission->school?->school_accreditation)
+                                <tr>
+                                    <td class="fw-semibold text-muted">Akreditasi Sekolah</td>
+                                    <td>{{ $submission->school->school_accreditation }}</td>
                                 </tr>
                             @endif
                         </table>

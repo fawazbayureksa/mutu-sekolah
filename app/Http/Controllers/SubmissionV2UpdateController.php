@@ -87,6 +87,10 @@ class SubmissionV2UpdateController extends Controller
             'address' => 'sometimes|required|string',
             'province_code' => 'sometimes|required|string',
             'regency_code' => 'sometimes|required|string',
+            'school_status' => 'nullable|string|max:20',
+            'school_category' => 'nullable|string|max:100',
+            'program_duration' => 'nullable|string|max:50',
+            'school_accreditation' => 'nullable|string|max:50',
             'expertise' => 'nullable|string|max:255',
             'expertise_program' => 'nullable|string|max:255',
             'expertise_concentration' => 'nullable|string|max:255',
@@ -133,6 +137,18 @@ class SubmissionV2UpdateController extends Controller
             if ($request->filled('expertise_concentration')) {
                 $data['expertise_concentration'] = $request->expertise_concentration;
             }
+            if ($request->filled('school_status')) {
+                $data['school_status'] = $request->school_status;
+            }
+            if ($request->filled('school_category')) {
+                $data['school_category'] = $request->school_category;
+            }
+            if ($request->filled('program_duration')) {
+                $data['program_duration'] = $request->program_duration;
+            }
+            if ($request->filled('school_accreditation')) {
+                $data['school_accreditation'] = $request->school_accreditation;
+            }
             if ($request->filled('respondent_name')) {
                 $data['respondent_name'] = $request->respondent_name;
             }
@@ -157,6 +173,21 @@ class SubmissionV2UpdateController extends Controller
             // Only update if there is data to update
             if (! empty($data)) {
                 $submission->update($data);
+                
+                // Also update the school record with relevant fields
+                if ($submission->school) {
+                    $schoolData = [];
+                    foreach (['school_name', 'npsn', 'address', 'province_code', 'regency_code', 
+                              'school_status', 'school_category', 'program_duration', 'school_accreditation',
+                              'expertise', 'expertise_program', 'expertise_concentration'] as $field) {
+                        if (isset($data[$field])) {
+                            $schoolData[$field] = $data[$field];
+                        }
+                    }
+                    if (!empty($schoolData)) {
+                        $submission->school->update($schoolData);
+                    }
+                }
             }
 
             // Update section details if answers were provided
