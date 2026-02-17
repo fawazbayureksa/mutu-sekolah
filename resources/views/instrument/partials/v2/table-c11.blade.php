@@ -16,7 +16,7 @@
                 <i class="bi bi-building text-primary"></i>
             </div>
             <div>
-                <h6 class="fw-bold mb-0 text-primary">Data Kerjasama Industri</h6>
+                <h6 class="fw-bold mb-0 text-primary">C1. Kerjasama Industri</h6>
                 <small class="text-muted">Silahkan lengkapi data kerjasama dengan industri mitra</small>
             </div>
         </div>
@@ -35,13 +35,14 @@
             <table class="table instrument-table mb-0" id="table-c11">
                 <thead>
                     <tr>
-                        <th style="width: 5%">No</th>
-                        <th style="width: 20%">Nama Industri Mitra</th>
-                        <th style="width: 20%">Bentuk Kerjasama</th>
-                        <th style="width: 12%">Durasi Kerjasama</th>
-                        <th style="width: 23%">Output/Kontribusi Nyata</th>
-                        <th style="width: 15%">Status MoU/MoA</th>
-                        <th style="width: 5%"></th>
+                        <th style="width: 3%; white-space: normal;">No</th>
+                        <th style="width: 15%; white-space: normal;">Nama Industri Mitra</th>
+                        <th style="width: 10%; white-space: normal;">Status MoU/MoA</th>
+                        <th style="width: 10%; white-space: normal;">Durasi Kerjasama (Tahun)</th>
+                        <th style="width: 32%; white-space: normal;">Cakupan Program Kerjasama (Beri √ pada semua yang
+                            berlaku)</th>
+                        <th style="width: 27%; white-space: normal;">Bentuk Kontribusi Nyata (Deskripsikan)</th>
+                        <th style="width: 3%"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,25 +53,9 @@
                         <tr data-row="{{ $i }}">
                             <td class="text-center row-number">{{ $i + 1 }}</td>
                             <td>
-                                <input type="text" class="form-control form-control-sm table-input" data-key="label"
-                                    data-row="{{ $i }}" placeholder="Nama industri"
-                                    value="{{ $rowData['label'] ?? '' }}">
-                            </td>
-                            <td>
                                 <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="cooperation_type" data-row="{{ $i }}"
-                                    placeholder="Magang, Rekrutmen, Donasi Alat, dll"
-                                    value="{{ $rowData['cooperation_type'] ?? '' }}">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="duration" data-row="{{ $i }}" placeholder="Contoh: 1 tahun"
-                                    value="{{ $rowData['duration'] ?? '' }}">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm table-input" data-key="output"
-                                    data-row="{{ $i }}" placeholder="Jumlah siswa magang, nilai bantuan, dll"
-                                    value="{{ $rowData['output'] ?? '' }}">
+                                    data-key="partner_name" data-row="{{ $i }}"
+                                    placeholder="Nama industri mitra" value="{{ $rowData['partner_name'] ?? '' }}">
                             </td>
                             <td>
                                 <select class="form-select form-select-sm table-input" data-key="mou_status"
@@ -79,10 +64,127 @@
                                     <option value="Aktif"
                                         {{ ($rowData['mou_status'] ?? '') === 'Aktif' ? 'selected' : '' }}>Aktif
                                     </option>
-                                    <option value="Tidak"
-                                        {{ ($rowData['mou_status'] ?? '') === 'Tidak' ? 'selected' : '' }}>Tidak Aktif
+                                    <option value="Tidak Aktif"
+                                        {{ ($rowData['mou_status'] ?? '') === 'Tidak Aktif' ? 'selected' : '' }}>Tidak
+                                        Aktif
                                     </option>
                                 </select>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm table-input"
+                                    data-key="duration" data-row="{{ $i }}" placeholder="0" min="0"
+                                    step="0.5" value="{{ $rowData['duration'] ?? '' }}">
+                            </td>
+                            <td>
+                                <div class="small">
+                                    <div class="form-check form-check-sm">
+                                        <input class="form-check-input table-input" type="checkbox"
+                                            id="program_kurikulum_{{ $i }}" data-key="program_kurikulum"
+                                            data-row="{{ $i }}"
+                                            {{ !empty($rowData['program_kurikulum']) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="program_kurikulum_{{ $i }}">
+                                            1. Penyusunan Kurikulum Bersama
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-sm">
+                                        <input class="form-check-input table-input" type="checkbox"
+                                            id="program_guru_{{ $i }}" data-key="program_guru"
+                                            data-row="{{ $i }}"
+                                            {{ !empty($rowData['program_guru']) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="program_guru_{{ $i }}">
+                                            2. Guru Tamu dari Industri
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-sm">
+                                        <input class="form-check-input table-input" type="checkbox"
+                                            id="program_magang_{{ $i }}" data-key="program_magang"
+                                            data-row="{{ $i }}"
+                                            {{ !empty($rowData['program_magang']) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="program_magang_{{ $i }}">
+                                            3. Magang/PKL Siswa (≥ 6 bulan)
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-sm">
+                                        <input class="form-check-input table-input" type="checkbox"
+                                            id="program_sertifikasi_{{ $i }}" data-key="program_sertifikasi"
+                                            data-row="{{ $i }}"
+                                            {{ !empty($rowData['program_sertifikasi']) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="program_sertifikasi_{{ $i }}">
+                                            4. Sertifikasi Kompetensi (LSP)
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-sm">
+                                        <input class="form-check-input table-input" type="checkbox"
+                                            id="program_pelatihan_{{ $i }}" data-key="program_pelatihan"
+                                            data-row="{{ $i }}"
+                                            {{ !empty($rowData['program_pelatihan']) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="program_pelatihan_{{ $i }}">
+                                            5. Pelatihan Guru (Up-skilling/Re-skilling)
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-sm">
+                                        <input class="form-check-input table-input" type="checkbox"
+                                            id="program_rekrutmen_{{ $i }}" data-key="program_rekrutmen"
+                                            data-row="{{ $i }}"
+                                            {{ !empty($rowData['program_rekrutmen']) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="program_rekrutmen_{{ $i }}">
+                                            6. Rekrutmen/Penyerapan Lulusan
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-sm">
+                                        <input class="form-check-input table-input" type="checkbox"
+                                            id="program_kelas_{{ $i }}" data-key="program_kelas"
+                                            data-row="{{ $i }}"
+                                            {{ !empty($rowData['program_kelas']) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="program_kelas_{{ $i }}">
+                                            7. Kelas Industri
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-sm">
+                                        <input class="form-check-input table-input" type="checkbox"
+                                            id="program_donasi_{{ $i }}" data-key="program_donasi"
+                                            data-row="{{ $i }}"
+                                            {{ !empty($rowData['program_donasi']) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="program_donasi_{{ $i }}">
+                                            8. Donasi Alat/Bahan/Beasiswa
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-sm">
+                                        <input class="form-check-input table-input" type="checkbox"
+                                            id="program_tefa_{{ $i }}" data-key="program_tefa"
+                                            data-row="{{ $i }}"
+                                            {{ !empty($rowData['program_tefa']) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="program_tefa_{{ $i }}">
+                                            9. Teaching Factory (TEFA)
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-sm mb-1">
+                                        <input class="form-check-input table-input" type="checkbox"
+                                            id="program_lainnya_{{ $i }}" data-key="program_lainnya"
+                                            data-row="{{ $i }}"
+                                            {{ !empty($rowData['program_lainnya']) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="program_lainnya_{{ $i }}">
+                                            10. Lainnya:
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm table-input"
+                                        data-key="program_lainnya_text" data-row="{{ $i }}"
+                                        placeholder="Sebutkan program lainnya..."
+                                        value="{{ $rowData['program_lainnya_text'] ?? '' }}">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="small mb-2">
+                                    <strong>Kontribusi Kuantitatif:</strong>
+                                    <textarea class="form-control form-control-sm table-input mt-1" data-key="contribution_quantitative"
+                                        data-row="{{ $i }}" rows="3"
+                                        placeholder="• Jumlah siswa magang/tahun: ___ orang&#10;• Jumlah guru terlatih: ___ orang&#10;• Jumlah lulusan direkrut (2 tahun terakhir): ___ orang&#10;• Nilai bantuan (alat/beasiswa): Rp ___">{{ $rowData['contribution_quantitative'] ?? '' }}</textarea>
+                                </div>
+                                <div class="small">
+                                    <strong>Kontribusi Kualitatif:</strong>
+                                    <textarea class="form-control form-control-sm table-input mt-1" data-key="contribution_qualitative"
+                                        data-row="{{ $i }}" rows="2" placeholder="Deskripsi kontribusi kualitatif...">{{ $rowData['contribution_qualitative'] ?? '' }}</textarea>
+                                </div>
                             </td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-remove-row" title="Hapus baris">

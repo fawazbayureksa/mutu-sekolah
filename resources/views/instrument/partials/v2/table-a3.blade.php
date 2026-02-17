@@ -4,10 +4,10 @@
         $existingData = json_decode($existingData, true) ?? [];
     }
     $rows = $existingData['rows'] ?? [];
-    $rowCount = max(3, count($rows));
+    $rowCount = max(2, count($rows));
 @endphp
 
-{{-- Table A.1.1: Data Kelulusan Uji Kompetensi dan Sertifikasi --}}
+{{-- Table A.3: Data Putus Sekolah dan Ketidaklulusan Kelas --}}
 <div class="card table-card">
     <div class="card-header">
         <div class="d-flex align-items-center">
@@ -16,32 +16,33 @@
                 <i class="bi bi-table text-primary"></i>
             </div>
             <div>
-                <h6 class="fw-bold mb-0 text-primary">Input Data Tabel</h6>
-                <small class="text-muted">Silahkan lengkapi data pada tabel di bawah ini</small>
+                <h6 class="fw-bold mb-0 text-primary">Data Putus Sekolah dan Ketidaklulusan Kelas</h6>
+                <small class="text-muted">Silahkan lengkapi data putus sekolah</small>
             </div>
         </div>
     </div>
     <div class="card-body p-0">
         @php
-            $initialValue = old('answers.A.1.1');
+            $initialValue = old('answers.A.3');
             if (is_null($initialValue) && !empty($existingData)) {
                 $initialValue = json_encode($existingData, true);
             }
         @endphp
-        <input type="hidden" name="answers[A.1.1]" id="table-a11-input" value="{{ $initialValue ?? '{}' }}">
+        <input type="hidden" name="answers[A.3]" id="table-a3-input" value="{{ $initialValue ?? '{}' }}">
 
         <div class="table-responsive">
-            <table class="table instrument-table mb-0" id="table-a11">
+            <table class="table instrument-table mb-0" id="table-a3">
                 <thead>
                     <tr>
                         <th style="width: 5%">No</th>
-                        <th style="width: 15%; white-space: normal;">Tahun Ajaran</th>
-                        <th style="width: 50%; white-space: normal;">Nama Ujian/Sertifikasi</th>
-                        <th style="width: 10%; white-space: normal;">Jumlah Peserta</th>
-                        <th style="width: 10%; white-space: normal;">Jumlah Lulus</th>
-                        <th style="width: 10%; white-space: normal;">Tingkat Kelulusan (%)</th>
-                        <th style="width: 10%; white-space: normal;">Lembaga Sertifikasi/Penyelenggara</th>
-                        <th style="width: 10%"></th>
+                        <th style="width: 10%; white-space: normal;">Tahun Ajaran</th>
+                        <th style="width: 13%; white-space: normal;">Jumlah Murid Awal (Kelas X/XI/XII)</th>
+                        <th style="width: 13%; white-space: normal;">Jumlah Murid Akhir</th>
+                        <th style="width: 13%; white-space: normal;">Jumlah Putus Sekolah</th>
+                        <th style="width: 13%; white-space: normal;">Jumlah Tidak Naik Kelas</th>
+                        <th style="width: 10%; white-space: normal;">% Putus Sekolah</th>
+                        <th style="width: 18%; white-space: normal;">Faktor Utama Penyebab Putus Sekolah</th>
+                        <th style="width: 5%"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,33 +58,37 @@
                                     value="{{ $rowData['year'] ?? '' }}">
                             </td>
                             <td>
-                                <input type="text" class="form-control form-control-sm table-input" data-key="label"
-                                    data-row="{{ $i }}"
-                                    placeholder="Nama Sertifikasi (Contoh: UKK, Sertifikasi Profesi, TOEIC, BNSP)"
-                                    value="{{ $rowData['label'] ?? '' }}">
+                                <input type="number" class="form-control form-control-sm table-input"
+                                    data-key="initial_students" data-row="{{ $i }}" placeholder="0"
+                                    min="0" value="{{ $rowData['initial_students'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="number" class="form-control form-control-sm table-input"
-                                    data-key="total_participants" data-row="{{ $i }}" placeholder="0"
-                                    min="0" value="{{ $rowData['total_participants'] ?? '' }}">
+                                    data-key="final_students" data-row="{{ $i }}" placeholder="0"
+                                    min="0" value="{{ $rowData['final_students'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="number" class="form-control form-control-sm table-input"
-                                    data-key="total_passed" data-row="{{ $i }}" placeholder="0"
-                                    min="0" value="{{ $rowData['total_passed'] ?? '' }}">
+                                    data-key="dropouts" data-row="{{ $i }}" placeholder="0" min="0"
+                                    value="{{ $rowData['dropouts'] ?? '' }}">
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm table-input"
+                                    data-key="failed_students" data-row="{{ $i }}" placeholder="0"
+                                    min="0" value="{{ $rowData['failed_students'] ?? '' }}">
                             </td>
                             <td>
                                 <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control table-input bg-light" data-key="pass_rate"
-                                        data-row="{{ $i }}" placeholder="0.00" readonly
-                                        value="{{ $rowData['pass_rate'] ?? '' }}">
+                                    <input type="text" class="form-control table-input bg-light"
+                                        data-key="dropout_percentage" data-row="{{ $i }}" placeholder="0.00"
+                                        readonly value="{{ $rowData['dropout_percentage'] ?? '' }}">
                                     <span class="input-group-text">%</span>
                                 </div>
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="organizer" data-row="{{ $i }}" placeholder="Masukkan lembaga"
-                                    value="{{ $rowData['organizer'] ?? '' }}">
+                                    data-key="main_factor" data-row="{{ $i }}"
+                                    placeholder="Masukkan faktor utama" value="{{ $rowData['main_factor'] ?? '' }}">
                             </td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-remove-row" title="Hapus baris">
@@ -98,7 +103,7 @@
 
         {{-- Add Row Button --}}
         <div class="p-3 text-center border-top">
-            <button type="button" class="btn btn-add-row" data-table-id="table-a11">
+            <button type="button" class="btn btn-add-row" data-table-id="table-a3">
                 <i class="bi bi-plus-circle me-2"></i>Tambah Item
             </button>
         </div>

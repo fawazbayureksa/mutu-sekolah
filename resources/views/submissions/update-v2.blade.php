@@ -14,7 +14,7 @@
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="text-center mb-5">
-                    <h2 class="fw-bold mb-2 text-primary">Update Data Submission V2</h2>
+                    <h2 class="fw-bold mb-2 text-primary">Update Data Submission</h2>
                     <p class="text-secondary small">Silakan perbarui data sekolah dan penilaian sesuai catatan verifikasi</p>
                 </div>
 
@@ -318,6 +318,24 @@
                             </div>
                         </div>
 
+                        {{-- A.1.2: Analisis Skema Sertifikasi dan Kesesuaian KKNI --}}
+                        <div class="indicator-group mb-4">
+                            <div class="indicator-item">
+                                <div class="mb-2">
+                                    <span class="indicator-code">A.1.2</span>
+                                </div>
+                                <p class="indicator-text mb-2">Analisis Skema Sertifikasi dan Kesesuaian KKNI</p>
+                                <small class="text-muted d-block mb-3">
+                                    <i class="bi bi-info-circle me-1"></i>Isi data skema sertifikasi dan kesesuaian dengan
+                                    KKNI
+                                </small>
+
+                                @include('instrument.partials.v2.table-a12', [
+                                    'existingData' => $answers['A.1.2'] ?? [],
+                                ])
+                            </div>
+                        </div>
+
                         {{-- A.2: Penelusuran Alumni (Tracer Study) --}}
                         <div class="indicator-group mb-4">
                             <h5 class="indicator-header mb-3">
@@ -337,6 +355,45 @@
 
                                 @include('instrument.partials.v2.table-a21', [
                                     'existingData' => $answers['A.2.1'] ?? [],
+                                ])
+                            </div>
+                        </div>
+
+                        {{-- A.3: Data Putus Sekolah dan Ketidaklulusan Kelas --}}
+                        <div class="indicator-group mb-4">
+                            <h5 class="indicator-header mb-3">
+                                <span class="badge bg-secondary me-2">A.3</span>
+                                Data Putus Sekolah dan Ketidaklulusan Kelas
+                            </h5>
+
+                            <div class="indicator-item">
+                                <p class="indicator-text mb-2">Data Putus Sekolah dan Ketidaklulusan Kelas</p>
+                                <small class="text-muted d-block mb-3">
+                                    <i class="bi bi-info-circle me-1"></i>Isi data putus sekolah dan ketidaklulusan kelas
+                                </small>
+
+                                @include('instrument.partials.v2.table-a3', [
+                                    'existingData' => $answers['A.3'] ?? [],
+                                ])
+                            </div>
+                        </div>
+
+                        {{-- A.4: Data Skor Rata-rata TKA Tahun 2025 --}}
+                        <div class="indicator-group mb-4">
+                            <h5 class="indicator-header mb-3">
+                                <span class="badge bg-secondary me-2">A.4</span>
+                                Data Skor Rata-rata TKA Tahun 2025
+                            </h5>
+
+                            <div class="indicator-item">
+                                <p class="indicator-text mb-2">Data Skor Rata-rata TKA Tahun 2025</p>
+                                <small class="text-muted d-block mb-3">
+                                    <i class="bi bi-info-circle me-1"></i>Isi data skor rata-rata TKA untuk mata pelajaran
+                                    wajib dan pilihan
+                                </small>
+
+                                @include('instrument.partials.v2.table-a4', [
+                                    'existingData' => $answers['A.4'] ?? [],
                                 ])
                             </div>
                         </div>
@@ -642,6 +699,7 @@
         }
 
         function calculateRowFields(row) {
+            // Calculate pass rate for table-a11
             const totalParticipants = row.querySelector('[data-key="total_participants"]');
             const totalPassed = row.querySelector('[data-key="total_passed"]');
             const passRate = row.querySelector('[data-key="pass_rate"]');
@@ -655,6 +713,46 @@
                 } else {
                     passRate.value = '0.00';
                 }
+            }
+
+            // Calculate dropout percentage for table-a3
+            const initialStudents = row.querySelector('[data-key="initial_students"]');
+            const dropouts = row.querySelector('[data-key="dropouts"]');
+            const dropoutPercentage = row.querySelector('[data-key="dropout_percentage"]');
+
+            if (initialStudents && dropouts && dropoutPercentage) {
+                const initial = parseFloat(initialStudents.value) || 0;
+                const dropped = parseFloat(dropouts.value) || 0;
+
+                if (initial > 0) {
+                    dropoutPercentage.value = ((dropped / initial) * 100).toFixed(2);
+                } else {
+                    dropoutPercentage.value = '0.00';
+                }
+            }
+
+            // Calculate TKA score difference for table-a4
+            const inputs = row.querySelectorAll('.table-input');
+            let schoolAvg = null;
+            let nationalAvg = null;
+            let differenceField = null;
+
+            inputs.forEach(input => {
+                const key = input.dataset.key;
+                if (key && key.endsWith('_school_avg')) {
+                    schoolAvg = input;
+                } else if (key && key.endsWith('_national_avg')) {
+                    nationalAvg = input;
+                } else if (key && key.endsWith('_difference')) {
+                    differenceField = input;
+                }
+            });
+
+            if (schoolAvg && nationalAvg && differenceField) {
+                const school = parseFloat(schoolAvg.value) || 0;
+                const national = parseFloat(nationalAvg.value) || 0;
+                const diff = school - national;
+                differenceField.value = diff.toFixed(2);
             }
         }
 
@@ -723,7 +821,11 @@
 
         function collectAllTableData() {
             console.log('collectAllTableData() called');
-            const tables = ['table-a11', 'table-a21', 'table-b11', 'table-b21', 'table-c11', 'table-c21', 'table-c31'];
+            const tables = ['table-a11', 'table-a12', 'table-a21', 'table-a3', 'table-a4', 'table-b11', 'table-b21',
+                'table-c11',
+                'table-c21',
+                'table-c31'
+            ];
 
             tables.forEach(tableId => {
                 const table = document.getElementById(tableId);
