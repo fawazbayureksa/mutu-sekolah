@@ -59,7 +59,7 @@ class SubmissionV2UpdateController extends Controller
 
         $expertiseData = config('constant.expertise', []);
         $respondentPositions = config('constant.respondent_positions', []);
-        $updateUrl = route('submissions-v2.update.show', $token);
+        $updateUrl = route('submissions-v2.update.store', $token);
 
         return view('submissions.update-v2', compact(
             'submission',
@@ -77,7 +77,8 @@ class SubmissionV2UpdateController extends Controller
             ->firstOrFail();
 
         if (! $submission->hasValidUpdateToken()) {
-            return back()->with('error', 'Token tidak valid atau sudah kedaluwarsa.');
+            return redirect()->route('submissions-v2.update.show', $token)
+                ->with('error', 'Token tidak valid atau sudah kedaluwarsa.');
         }
 
         $validator = Validator::make($request->all(), [
@@ -98,7 +99,8 @@ class SubmissionV2UpdateController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
+            return redirect()->route('submissions-v2.update.show', $token)
+                ->withErrors($validator)->withInput();
         }
 
         try {
@@ -169,11 +171,13 @@ class SubmissionV2UpdateController extends Controller
                 'update_token_used_at' => now(),
             ]);
 
-            return back()->with('success', 'Data sekolah berhasil diperbarui. Link update akan berlaku selama 24 jam.');
+            return redirect()->route('landing')
+                ->with('success', 'Data sekolah berhasil diperbarui. Link update akan berlaku selama 24 jam.');
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return back()->with('error', 'Terjadi kesalahan saat memperbarui data. Silakan coba lagi.');
+            return redirect()->route('submissions-v2.update.show', $token)
+                ->with('error', 'Terjadi kesalahan saat memperbarui data. Silakan coba lagi.');
         }
     }
 
