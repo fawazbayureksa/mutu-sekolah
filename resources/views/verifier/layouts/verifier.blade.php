@@ -32,19 +32,19 @@
                 </a>
             </li>
 
-            <li class="sidebar-menu-item">
+            {{-- <li class="sidebar-menu-item">
                 <a href="{{ route('verifier.submissions.index') }}"
                     class="sidebar-menu-link {{ request()->is('verifier/submissions') || (request()->is('verifier/submissions/*') && !request()->is('verifier/submissions-v2*')) ? 'active' : '' }}">
                     <i class="bi bi-file-earmark-text"></i>
                     <span>Pengajuan</span>
                 </a>
-            </li>
+            </li> --}}
 
             <li class="sidebar-menu-item">
                 <a href="{{ route('verifier.submissions-v2.index') }}"
                     class="sidebar-menu-link {{ request()->is('verifier/submissions-v2*') ? 'active' : '' }}">
                     <i class="bi bi-file-earmark-text-fill"></i>
-                    <span>Pengajuan V2</span>
+                    <span>Pengajuan</span>
                 </a>
             </li>
 
