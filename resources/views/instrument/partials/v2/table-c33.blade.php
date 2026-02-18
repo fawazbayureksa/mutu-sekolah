@@ -9,19 +9,6 @@
 
 {{-- Table C.3.3: Data Ketenagaan dan Beban Mengajar (Rasio Guru-Murid) --}}
 <div class="card table-card">
-    <div class="card-header">
-        <div class="d-flex align-items-center">
-            <div class="icon-box me-3"
-                style="width: 40px; height: 40px; background: #e7f1ff; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                <i class="bi bi-people text-primary"></i>
-            </div>
-            <div>
-                <h6 class="fw-bold mb-0 text-primary">C3.3 Data Ketenagaan dan Beban Mengajar (Rasio Guru-Murid)</h6>
-                <small class="text-muted">Isikan untuk setiap Kompetensi Keahlian (Konsentrasi) yang aktif</small>
-            </div>
-        </div>
-    </div>
-
     <div class="card-body p-0">
         @php
             $initialValue = old('answers[C.3.3]');

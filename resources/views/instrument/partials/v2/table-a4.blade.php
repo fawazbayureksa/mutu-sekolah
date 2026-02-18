@@ -8,19 +8,6 @@
 
 {{-- Table A.4: Data Skor Rata-rata TKA Tahun 2025 --}}
 <div class="card table-card">
-    <div class="card-header">
-        <div class="d-flex align-items-center">
-            <div class="icon-box me-3"
-                style="width: 40px; height: 40px; background: #e7f1ff; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                <i class="bi bi-table text-primary"></i>
-            </div>
-            <div>
-                <h6 class="fw-bold mb-0 text-primary">Data Skor Rata-rata TKA Tahun 2025</h6>
-                <small class="text-muted">Isikan nilai rata-rata mata pelajaran yang diujikan di sekolah dan sesuai
-                    dengan program/konsentrasi keahlian Murid (Kelulusan, Penilaian, TKI).</small>
-            </div>
-        </div>
-    </div>
     <div class="card-body p-0">
         @php
             $initialValue = old('answers.A.4');

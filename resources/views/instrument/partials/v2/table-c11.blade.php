@@ -9,19 +9,6 @@
 
 {{-- Table C.1.1: Kerjasama Industri (Dynamic Rows) --}}
 <div class="card table-card">
-    <div class="card-header">
-        <div class="d-flex align-items-center">
-            <div class="icon-box me-3"
-                style="width: 40px; height: 40px; background: #e7f1ff; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                <i class="bi bi-building text-primary"></i>
-            </div>
-            <div>
-                <h6 class="fw-bold mb-0 text-primary">C1. Kerjasama Industri</h6>
-                <small class="text-muted">Silahkan lengkapi data kerjasama dengan industri mitra</small>
-            </div>
-        </div>
-    </div>
-
     <div class="card-body p-0">
         @php
             $initialValue = old('answers.C.1.1');

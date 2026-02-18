@@ -9,19 +9,6 @@
 
 {{-- Table A.2.1: Penelusuran Alumni (Tracer Study) --}}
 <div class="card table-card">
-    <div class="card-header">
-        <div class="d-flex align-items-center">
-            <div class="icon-box me-3"
-                style="width: 40px; height: 40px; background: #e7f1ff; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                <i class="bi bi-table text-primary"></i>
-            </div>
-            <div>
-                <h6 class="fw-bold mb-0 text-primary">Input Data Tracer Study</h6>
-                <small class="text-muted">Silahkan lengkapi data penelusuran alumni</small>
-            </div>
-        </div>
-    </div>
-
     {{-- Header Input for Graduation Class --}}
     <div class="card-body border-bottom">
         <div class="header-input-group">

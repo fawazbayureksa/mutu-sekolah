@@ -297,12 +297,7 @@
                                 <div class="mb-2">
                                     <span class="indicator-code">A.1.1</span>
                                 </div>
-                                <p class="indicator-text mb-2">Data Kelulusan Uji Kompetensi dan Sertifikasi</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data kelulusan UKK dan sertifikasi profesi
-                                    untuk tahun terakhir
-                                </small>
-
+                                <small class="text-muted d-block mb-3">Rekapitulasi UKK dan Sertifikasi per Tahun</small>
                                 @include('instrument.partials.v2.table-a11')
                             </div>
                         </div>
