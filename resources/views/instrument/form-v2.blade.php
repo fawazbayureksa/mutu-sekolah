@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Isi Instrumen V2 - Penjaminan Mutu SMK Bidang KPTK')
+@section('title', 'Isi Instrumen - Penjaminan Mutu SMK Bidang KPTK')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/instrument-form-v2.css') }}">

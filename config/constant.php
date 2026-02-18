@@ -1,8 +1,9 @@
 <?php
+
 return [
     'user_role' => [
         'admin' => 'Admin',
-        'verifier' => 'Verifier'
+        'verifier' => 'Verifier',
     ],
 
     'respondent_positions' => [
@@ -22,10 +23,10 @@ return [
             'programs' => ['Bidang Keahlian Kemaritiman'],
             'concentrations' => [
                 'Bidang Keahlian Kemaritiman' => [
-                    'Nautika Kapal Penangkap Ikan',
-                    'Teknika Kapal Penangkap Ikan',
-                    'Nautika Kapal Niaga',
-                    'Teknika Kapal Niaga',
+                    'Nautika_Kapal_Penangkap_Ikan',
+                    'Teknika_Kapal_Penangkap_Ikan',
+                    'Nautika_Kapal_Niaga',
+                    'Teknika_Kapal_Niaga',
                 ],
             ],
         ],
@@ -33,10 +34,10 @@ return [
             'programs' => ['Bidang Keahlian Perikanan'],
             'concentrations' => [
                 'Bidang Keahlian Perikanan' => [
-                    'Agribisnis Ikan Hias',
-                    'Agribisnis Perikanan Payau dan Laut',
-                    'Agribisnis Perikanan Air Tawar',
-                    'Agribisnis Rumput Laut'
+                    'Agribisnis_Ikan_Hias',
+                    'Agribisnis_Perikanan_Payau_Dan_Laut',
+                    'Agribisnis_Perikanan_Air_Tawar',
+                    'Agribisnis_Rumput_Laut',
                 ],
             ],
         ],
@@ -44,12 +45,12 @@ return [
             'programs' => ['Bidang Teknologi Informasi'],
             'concentrations' => [
                 'Bidang Teknologi Informasi' => [
-                    'Rekayasa Perangkat Lunak',
-                    'Pengembangan GIM',
-                    'Sistem Informasi, Jaringan dan Aplikasi',
-                    'Teknik Komputer dan Jaringan',
-                    'Teknik Jaringan Akses Telekomunikasi',
-                    'Teknik Transmisi Telekomunikasi',
+                    'Rekayasa_Perangkat_Lunak',
+                    'Pengembangan_GIM',
+                    'Sistem_Informasi_Jaringan_Dan_Aplikasi',
+                    'Teknik_Komputer_Dan_Jaringan',
+                    'Teknik_Jaringan_Akses_Telekomunikasi',
+                    'Teknik_Transmisi_Telekomunikasi',
                 ],
             ],
         ],
