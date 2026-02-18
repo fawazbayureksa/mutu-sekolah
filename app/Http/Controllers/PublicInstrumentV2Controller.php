@@ -150,12 +150,18 @@ class PublicInstrumentV2Controller extends Controller
     {
         $sectionCodes = [
             'A.1.1',
+            'A.1.2',
             'A.2.1',
+            'A.3',
+            'A.4',
             'B.sapras',
+            'B.1.1',
+            'B.2.1',
             'C.1.1',
             'C.2.1',
             'C.3.1',
             'C.3.2',
+            'C.3.3',
         ];
 
         foreach ($sectionCodes as $code) {
@@ -183,17 +189,23 @@ class PublicInstrumentV2Controller extends Controller
 
     private function calculateCompletionPercentage(array $answers): float
     {
-        $totalSections = 7;
+        $totalSections = 13;
         $filledSections = 0;
 
         $sectionCodes = [
             'A.1.1',
+            'A.1.2',
             'A.2.1',
+            'A.3',
+            'A.4',
             'B.sapras',
+            'B.1.1',
+            'B.2.1',
             'C.1.1',
             'C.2.1',
             'C.3.1',
             'C.3.2',
+            'C.3.3',
         ];
 
         foreach ($sectionCodes as $code) {

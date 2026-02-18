@@ -54,4 +54,13 @@ return [
             ],
         ],
     ],
+
+    'jenis_pengembangan_kompetensi' => [
+        'Diklat',
+        'Sertifikasi Profesi',
+        'Magang Guru',
+        'Seminar/Workshop',
+        'TOT/Asesor',
+        'Studi Lanjut',
+    ],
 ];

@@ -3,9 +3,35 @@
     if (is_string($existingData)) {
         $existingData = json_decode($existingData, true) ?? [];
     }
-    $competencyGap = $existingData['competency_gap'] ?? [];
-    $industryAlignment = $existingData['industry_alignment'] ?? [];
-    $trainingPriority = $existingData['training_priority'] ?? [];
+    $rows = $existingData['rows'] ?? [];
+
+    $aspectRows = [
+        [
+            'aspect' => 'Persentase guru produktif bersertifikat kompetensi (BNSP/Industri)',
+            'placeholder' => '___% (Contoh: pengisian 12 dari 30 guru = 40%)',
+            'target' => '80% guru produktif tersertifikasi',
+        ],
+        [
+            'aspect' => 'Rata-rata jam pelatihan per guru per tahun',
+            'placeholder' => '___ jam/tahun',
+            'target' => 'Minimal 40 jam/tahun (setara 5-6 hari)',
+        ],
+        [
+            'aspect' => 'Keterlibatan dalam magang industri',
+            'placeholder' => '___ orang/guru',
+            'target' => 'Seluruh guru produktif pernah magang di industri',
+        ],
+        [
+            'aspect' => 'Frekuensi update teknologi/kompetensi',
+            'placeholder' => '___ kali dalam 3 tahun',
+            'target' => 'Minimal 2 kali dalam 3 tahun',
+        ],
+        [
+            'aspect' => 'Ketersediaan guru dengan sertifikat asesor BNSP',
+            'placeholder' => '___ orang',
+            'target' => 'Minimal 2 orang per kompetensi keahlian',
+        ],
+    ];
 @endphp
 
 {{-- Form C.3.2: Analisis Kebutuhan Pelatihan Guru ke Depan --}}
@@ -17,96 +43,60 @@
                 <i class="bi bi-clipboard-data text-primary"></i>
             </div>
             <div>
-                <h6 class="fw-bold mb-0 text-primary">Analisis Kebutuhan Pelatihan Guru ke Depan</h6>
-                <small class="text-muted">Diisi oleh Guru/Koordinator Program</small>
+                <h6 class="fw-bold mb-0 text-primary">C3.2 Analisis Kebutuhan Pelatihan Guru ke Depan</h6>
+                <small class="text-muted">Diisi oleh Guru/Wakasek Kurikulum/Kepsek</small>
             </div>
         </div>
     </div>
 
-    <div class="card-body" id="form-c32">
+    <div class="card-body p-0">
         @php
             $initialValue = old('answers.C.3.2');
             if (is_null($initialValue) && !empty($existingData)) {
                 $initialValue = json_encode($existingData);
             }
         @endphp
-        <input type="hidden" name="answers[C.3.2]" id="form-c32-input" value="{{ $initialValue ?? '{}' }}">
+        <input type="hidden" name="answers[C.3.2]" id="table-c32-input" value="{{ $initialValue ?? '{}' }}">
 
-        {{-- Section 1: Kesenjangan Kompetensi untuk Siswa --}}
-        <div class="form-section mb-4 pb-4 border-bottom">
-            <div class="d-flex mb-3">
-                <div class="section-number me-3">1</div>
-                <div class="flex-grow-1">
-                    <h6 class="fw-bold mb-1 text-dark">Kesenjangan Kompetensi untuk Siswa</h6>
-                    <p class="text-muted mb-0 fst-italic" style="font-size: 0.9rem;">
-                        Dari seluruh kompetensi teknis dalam kurikulum, satu keterampilan atau teknologi baru apa yang
-                        paling penting dikuasai siswa, tetapi Bapak/Ibu merasa butuh pembaruan/pengetahuan lebih untuk
-                        mengajarkannya?
-                    </p>
-                </div>
-            </div>
-
-            <div class="ps-5">
-                <div class="mb-3">
-                    <label class="form-label fw-medium text-dark">Jawaban:</label>
-                    <textarea class="form-control border-light bg-light-subtle" rows="3" data-section="competency_gap"
-                        data-field="answer" placeholder="Masukkan jawaban Anda">{{ $competencyGap['answer'] ?? '' }}</textarea>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-medium text-dark">Alasan/Akibat jika tidak dikuasai:</label>
-                    <textarea class="form-control border-light bg-light-subtle" rows="3" data-section="competency_gap"
-                        data-field="reason" placeholder="Jelaskan alasan atau akibatnya">{{ $competencyGap['reason'] ?? '' }}</textarea>
-                </div>
-            </div>
-        </div>
-
-        {{-- Section 2: Kesesuaian dengan Kebutuhan Industri --}}
-        <div class="form-section mb-4 pb-4 border-bottom">
-            <div class="d-flex mb-3">
-                <div class="section-number me-3">2</div>
-                <div class="flex-grow-1">
-                    <h6 class="fw-bold mb-1 text-dark">Kesesuaian dengan Kebutuhan Industri</h6>
-                    <p class="text-muted mb-0 fst-italic" style="font-size: 0.9rem;">
-                        Menurut penilaian atau masukan dari mitra industri, peningkatan keterampilan teknis apa pada
-                        guru yang paling berdampak langsung pada kesiapan kerja dan produktivitas lulusan?
-                    </p>
-                </div>
-            </div>
-
-            <div class="ps-5">
-                <div class="mb-3">
-                    <label class="form-label fw-medium text-dark">Jawaban:</label>
-                    <textarea class="form-control border-light bg-light-subtle" rows="3" data-section="industry_alignment"
-                        data-field="answer" placeholder="Masukkan jawaban Anda">{{ $industryAlignment['answer'] ?? '' }}</textarea>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-medium text-dark">Sumber masukan (jika ada):</label>
-                    <textarea class="form-control border-light bg-light-subtle" rows="2" data-section="industry_alignment"
-                        data-field="source" placeholder="Sebutkan sumber masukan">{{ $industryAlignment['source'] ?? '' }}</textarea>
-                </div>
-            </div>
-        </div>
-
-        {{-- Section 3: Prioritas Pelatihan --}}
-        <div class="form-section">
-            <div class="d-flex mb-3">
-                <div class="section-number me-3">3</div>
-                <div class="flex-grow-1">
-                    <h6 class="fw-bold mb-1 text-dark">Prioritas Pelatihan</h6>
-                    <p class="text-muted mb-0 fst-italic" style="font-size: 0.9rem;">
-                        Berdasarkan analisis di atas, pelatihan apa yang paling mendesak untuk diikuti oleh guru
-                        produktif di sekolah ini?
-                    </p>
-                </div>
-            </div>
-
-            <div class="ps-5">
-                <div class="mb-3">
-                    <label class="form-label fw-medium text-dark">Jawaban:</label>
-                    <textarea class="form-control border-light bg-light-subtle" rows="3" data-section="training_priority"
-                        data-field="answer" placeholder="Masukkan prioritas pelatihan">{{ $trainingPriority['answer'] ?? '' }}</textarea>
-                </div>
-            </div>
+        <div class="table-responsive">
+            <table class="table instrument-table table-sm-header mb-0" id="table-c32">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Aspek</th>
+                        <th>Kondisi Saat Ini</th>
+                        <th>Target Ideal</th>
+                        <th>Kesenjangan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($aspectRows as $index => $row)
+                        @php
+                            $rowData = $rows[$index] ?? [];
+                        @endphp
+                        <tr data-row="{{ $index }}">
+                            <td class="text-center row-number">{{ $index + 1 }}</td>
+                            <td>
+                                <span class="small">{{ $row['aspect'] }}</span>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm table-input"
+                                    data-key="current_condition" data-row="{{ $index }}"
+                                    placeholder="{{ $row['placeholder'] }}"
+                                    value="{{ $rowData['current_condition'] ?? '' }}">
+                            </td>
+                            <td>
+                                <span class="small text-muted">{{ $row['target'] }}</span>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm table-input" data-key="gap"
+                                    data-row="{{ $index }}" placeholder="Kesenjangan"
+                                    value="{{ $rowData['gap'] ?? '' }}">
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

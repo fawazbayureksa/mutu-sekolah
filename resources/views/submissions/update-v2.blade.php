@@ -545,6 +545,21 @@
                                     'existingData' => $answers['C.3.2'] ?? [],
                                 ])
                             </div>
+
+                            <div class="indicator-item">
+                                <div class="mb-2">
+                                    <span class="indicator-code">C.3.3</span>
+                                </div>
+                                <p class="indicator-text mb-2">Data Ketenagaan dan Beban Mengajar (Rasio Guru-Murid)</p>
+                                <small class="text-muted d-block mb-3">
+                                    <i class="bi bi-info-circle me-1"></i>Isikan untuk setiap Kompetensi Keahlian
+                                    (Konsentrasi) yang aktif
+                                </small>
+
+                                @include('instrument.partials.v2.table-c33', [
+                                    'existingData' => $answers['C.3.3'] ?? [],
+                                ])
+                            </div>
                         </div>
                     </div>
 
@@ -754,6 +769,23 @@
                 const diff = school - national;
                 differenceField.value = diff.toFixed(2);
             }
+
+            // Calculate teacher:student ratio for table-c33
+            const teacherCount = row.querySelector('[data-key="teacher_count"]');
+            const studentCount = row.querySelector('[data-key="student_count"]');
+            const ratioField = row.querySelector('[data-key="ratio"]');
+
+            if (teacherCount && studentCount && ratioField) {
+                const teachers = parseFloat(teacherCount.value) || 0;
+                const students = parseFloat(studentCount.value) || 0;
+
+                if (teachers > 0 && students > 0) {
+                    const ratio = Math.round(students / teachers);
+                    ratioField.value = '1:' + ratio;
+                } else {
+                    ratioField.value = '';
+                }
+            }
         }
 
         function collectTableData(table) {
@@ -824,7 +856,7 @@
             const tables = ['table-a11', 'table-a12', 'table-a21', 'table-a3', 'table-a4', 'table-b11', 'table-b21',
                 'table-c11',
                 'table-c21',
-                'table-c31'
+                'table-c31', 'table-c32', 'table-c33'
             ];
 
             tables.forEach(tableId => {
@@ -844,18 +876,6 @@
                 }
             });
 
-            const formC32 = document.getElementById('form-c32');
-            if (formC32) {
-                const hiddenInput = document.getElementById('form-c32-input');
-                if (hiddenInput) {
-                    const data = collectFormData('form-c32');
-                    console.log('Form C.3.2 data:', data);
-                    // Only update if there's data in the form
-                    if (Object.keys(data).length > 0) {
-                        hiddenInput.value = JSON.stringify(data);
-                    }
-                }
-            }
         }
 
         function loadRegencies(provinceCode) {
