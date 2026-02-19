@@ -26,7 +26,7 @@
                         <th style="width: 8%; white-space: normal;">Nama Program TEFA/Produk</th>
                         <th style="width: 7%; white-space: normal;">Mitra Industri (jika ada)</th>
                         <th style="width: 7%; white-space: normal;">Skala Operasi (Siswa/Guru/Tim Khusus)</th>
-                        <th style="width: 7%; white-space: normal;">Nama Toko (Reguler/Kolaborasi/ Penjualan)</th>
+                        <th style="width: 7%; white-space: normal;">Skema TeFa (Reguler/Kolaborasi/Pengimbasan)</th>
                         <th style="width: 10%; white-space: normal;">Pencapaian & Manfaat (Output, penjualan,
                             pengalaman)</th>
                         <th style="width: 9%; white-space: normal;">Sertifikasi Kompetensi (Siswa/Guru, BNSP/Industri)
@@ -66,10 +66,10 @@
                                 <textarea class="form-control form-control-sm table-input" data-key="operation_scale" data-row="{{ $i }}"
                                     rows="2" placeholder="Contoh: Siswa Kelas XI (18 orang) + Guru Pembimbing (2 orang)">{{ $rowData['operation_scale'] ?? '' }}</textarea>
                             </td>
-                            {{-- Nama Toko --}}
+                            {{-- Skema TeFa (Reguler/Kolaborasi/Pengimbasan) --}}
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="store_name" data-row="{{ $i }}" placeholder="Nama toko/outlet"
+                                    data-key="store_name" data-row="{{ $i }}" placeholder="Kolaborasi"
                                     value="{{ $rowData['store_name'] ?? '' }}">
                             </td>
                             {{-- Pencapaian & Manfaat --}}

@@ -23,6 +23,7 @@
                 <thead>
                     <tr>
                         <th>No</th>
+                        <th>Rasio Ideal (Guru:Murid)</th>
                         <th>Kompetensi Keahlian (Konsentrasi)</th>
                         <th>Jumlah Guru Produktif</th>
                         <th>Jumlah Total Murid (Kelas X, XI, XII)</th>
@@ -43,6 +44,11 @@
                                     data-key="concentration" data-row="{{ $i }}"
                                     placeholder="Nama konsentrasi keahlian"
                                     value="{{ $rowData['concentration'] ?? '' }}">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm table-input"
+                                    data-key="ideal_ratio" data-row="{{ $i }}"
+                                    value="1 : 15 (satu guru untuk 15 siswa)" readonly>
                             </td>
                             <td>
                                 <input type="number" class="form-control form-control-sm table-input"
