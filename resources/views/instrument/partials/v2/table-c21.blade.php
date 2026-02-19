@@ -33,11 +33,11 @@
                         </th>
                         <th style="width: 9%; white-space: normal;">Integrasi Kurikulum (PjBL/Capaian Pembelajaran)</th>
                         <th style="width: 7%; white-space: normal;">Pengembangan HaKI/Branding Produk</th>
-                        <th style="width: 8%; white-space: normal;">Evaluasi Mutu Produk (Standar/Mutu/ Sertifikasi)
+                        <th style="width: 8%; white-space: normal;">Evaluasi Mutu Produk (Standar Industri/Halal/ISO)
                         </th>
-                        <th style="width: 6%; white-space: normal;">Omzet/Surat Aktivitas (Tahunan/Bulanan)</th>
-                        <th style="width: 7%; white-space: normal;">Dampak/Tracer (alumni)</th>
-                        <th style="width: 7%; white-space: normal;">Kontribusi dari Industri</th>
+                        <th style="width: 6%; white-space: normal;">Omzet/Sustainability Keuangan (Rp/Bulan/Tahun)</th>
+                        <th style="width: 7%; white-space: normal;">Dampak Tracer Study (Penyerapan Kerja Lulusan)</th>
+                        <th style="width: 7%; white-space: normal;">Keterlibatan Alumni/Industri dalam Pengembangan</th>
                         <th style="width: 5%; white-space: normal;">Kendala</th>
                         <th style="width: 3%"></th>
                     </tr>
@@ -96,7 +96,7 @@
                             {{-- Evaluasi Mutu Produk --}}
                             <td>
                                 <textarea class="form-control form-control-sm table-input" data-key="quality_evaluation" data-row="{{ $i }}"
-                                    rows="3" placeholder="Standar BPOM & Sertifikat&#10;Mutu sesuai SKKNI&#10;Pengolahan: __% ke pesantren">{{ $rowData['quality_evaluation'] ?? '' }}</textarea>
+                                    rows="3" placeholder="Standar BPOM & Sertifikasi Halal MUI; Mutu sesuai SKKNI Pengolahan Hasil Perikanan">{{ $rowData['quality_evaluation'] ?? '' }}</textarea>
                             </td>
                             {{-- Omzet/Surat Aktivitas --}}
                             <td>

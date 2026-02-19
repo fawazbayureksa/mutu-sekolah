@@ -53,7 +53,7 @@ return [
     ],
 
     'jenis_pengembangan_kompetensi' => [
-        'Diklat',
+        'Pelatihan Teknis',
         'Sertifikasi Profesi',
         'Magang Guru',
         'Seminar/Workshop',
