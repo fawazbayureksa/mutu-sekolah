@@ -23,8 +23,8 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Rasio Ideal (Guru:Murid)</th>
                         <th>Kompetensi Keahlian (Konsentrasi)</th>
+                        <th>Rasio Ideal (Guru:Murid)</th>
                         <th>Jumlah Guru Produktif</th>
                         <th>Jumlah Total Murid (Kelas X, XI, XII)</th>
                         <th>Rasio Guru:Siswa</th>
@@ -36,6 +36,7 @@
                     @for ($i = 0; $i < $rowCount; $i++)
                         @php
                             $rowData = $rows[$i] ?? [];
+                            $idealRatioValue = $rowData['ideal_ratio'] ?? '1 : 15 (satu guru untuk 15 siswa)';
                         @endphp
                         <tr data-row="{{ $i }}">
                             <td class="text-center row-number">{{ $i + 1 }}</td>
@@ -46,9 +47,9 @@
                                     value="{{ $rowData['concentration'] ?? '' }}">
                             </td>
                             <td>
-                                <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="ideal_ratio" data-row="{{ $i }}"
-                                    value="1 : 15 (satu guru untuk 15 siswa)" readonly>
+                                <input type="text" class="form-control form-control-sm table-input bg-light"
+                                    data-key="ideal_ratio" data-row="{{ $i }}" value="{{ $idealRatioValue }}"
+                                    readonly>
                             </td>
                             <td>
                                 <input type="number" class="form-control form-control-sm table-input"
