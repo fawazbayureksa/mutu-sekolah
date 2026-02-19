@@ -129,7 +129,7 @@
                                 'type' => 'subject',
                                 'key' => 'bahasa_prancis',
                                 'label' => 'Bahasa Prancis',
-                                'national_avg' => 0,
+                                'national_avg' => 45.05,
                             ],
                         ];
                     @endphp
