@@ -11,11 +11,7 @@ return [
         'Wakil Kepala Sekolah',
         'Ketua Jurusan (Kajur) / Ketua Kompetensi Keahlian',
         'Kepala Bengkel / Kepala Laboratorium',
-        'Guru Normatif',
-        'Guru Adaptif',
-        'Guru Produktif',
-        'Kepala Subbagian Tata Usaha',
-        'Staf Administrasi',
+        'Guru Produktif'
     ],
 
     'expertise' => [

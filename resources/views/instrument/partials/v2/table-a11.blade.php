@@ -29,6 +29,7 @@
                         <th style="width: 10%; white-space: normal;">Jumlah Lulus</th>
                         <th style="width: 10%; white-space: normal;">Tingkat Kelulusan (%)</th>
                         <th style="width: 10%; white-space: normal;">Lembaga Sertifikasi/Penyelenggara</th>
+                        <th style="width: 10%; white-space: normal;">Keterangan</th>
                         <th style="width: 10%"></th>
                     </tr>
                 </thead>
@@ -72,6 +73,12 @@
                                 <input type="text" class="form-control form-control-sm table-input"
                                     data-key="organizer" data-row="{{ $i }}" placeholder="Masukkan lembaga"
                                     value="{{ $rowData['organizer'] ?? '' }}">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm table-input"
+                                    data-key="organizer" data-row="{{ $i }}"
+                                    placeholder="Skema Level II KKNI, 8 unit kompetensi"
+                                    value="{{ $rowData['description'] ?? '' }}">
                             </td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-remove-row" title="Hapus baris">
