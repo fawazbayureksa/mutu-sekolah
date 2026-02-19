@@ -74,9 +74,21 @@
                                 </div>
                             </td>
                             <td>
-                                <input type="text" class="form-control form-control-sm table-input"
+                                <select type="text"
+                                    class="form-control form-control-sm table-input main-factor-select"
                                     data-key="main_factor" data-row="{{ $i }}"
-                                    placeholder="Masukkan faktor utama" value="{{ $rowData['main_factor'] ?? '' }}">
+                                    onchange="toggleOtherInput(this)">
+                                    <option value="">-- Pilih Faktor Utama --</option>
+                                    <option value="Ekonomi">Ekonomi</option>
+                                    <option value="Bekerja/Menikah">Bekerja/Menikah</option>
+                                    <option value="Pindah">Pindah</option>
+                                    <option value="Lainnya">Lainnya (3 siswa berhenti untuk bekerja melaut)</option>
+                                </select>
+                                <input type="text"
+                                    class="form-control form-control-sm table-input main-factor-other mt-2"
+                                    data-key="main_factor_other" data-row="{{ $i }}"
+                                    placeholder="Jelaskan faktor lainnya" style="display: none;"
+                                    value="{{ $rowData['main_factor_other'] ?? '' }}">
                             </td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-remove-row" title="Hapus baris">
@@ -97,3 +109,27 @@
         </div>
     </div>
 </div>
+
+<script>
+    function toggleOtherInput(selectElement) {
+        const row = selectElement.closest('tr');
+        const otherInput = row.querySelector('.main-factor-other');
+
+        if (selectElement.value === 'Lainnya') {
+            otherInput.style.display = 'block';
+        } else {
+            otherInput.style.display = 'none';
+            otherInput.value = '';
+        }
+    }
+
+    // Initialize existing rows
+    document.addEventListener('DOMContentLoaded', function() {
+        const selects = document.querySelectorAll('.main-factor-select');
+        selects.forEach(function(select) {
+            if (select.value) {
+                toggleOtherInput(select);
+            }
+        });
+    });
+</script>
