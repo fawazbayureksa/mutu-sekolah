@@ -14,7 +14,7 @@
         [
             'aspect' => 'Rata-rata jam pelatihan per guru per tahun',
             'placeholder' => '___ jam/tahun',
-            'target' => 'Minimal 40 jam/tahun (setara 5-6 hari)',
+            'target' => 'Minimal 64 poin/tahun (setara 32 poin/semester))',
         ],
         [
             'aspect' => 'Keterlibatan dalam magang industri',
