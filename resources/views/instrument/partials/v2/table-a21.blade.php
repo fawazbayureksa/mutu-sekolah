@@ -1,29 +1,32 @@
+@php
+    $existingData = $existingData ?? [];
+    if (is_string($existingData)) {
+        $existingData = json_decode($existingData, true) ?? [];
+    }
+    $headerData = $existingData['header'] ?? [];
+    $rows = $existingData['rows'] ?? [];
+@endphp
+
 {{-- Table A.2.1: Penelusuran Alumni (Tracer Study) --}}
 <div class="card table-card">
-    <div class="card-header">
-        <div class="d-flex align-items-center">
-            <div class="icon-box me-3"
-                style="width: 40px; height: 40px; background: #e7f1ff; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                <i class="bi bi-table text-primary"></i>
-            </div>
-            <div>
-                <h6 class="fw-bold mb-0 text-primary">Input Data Tracer Study</h6>
-                <small class="text-muted">Silahkan lengkapi data penelusuran alumni</small>
-            </div>
-        </div>
-    </div>
-
     {{-- Header Input for Graduation Class --}}
     <div class="card-body border-bottom">
         <div class="header-input-group">
             <label class="form-label fw-semibold">Kelas Lulusan</label>
             <input type="text" class="form-control header-input" data-key="graduation_class"
-                placeholder="Contoh: 2024/2025" style="max-width: 300px;">
+                placeholder="Contoh: 2024/2025" style="max-width: 300px;"
+                value="{{ $headerData['graduation_class'] ?? '' }}">
         </div>
     </div>
 
     <div class="card-body p-0">
-        <input type="hidden" name="answers[A.2.1]" id="table-a21-input" value="{{ old('answers.A.2.1', '{}') }}">
+        @php
+            $initialValue = old('answers.A.2.1');
+            if (is_null($initialValue) && !empty($existingData)) {
+                $initialValue = json_encode($existingData);
+            }
+        @endphp
+        <input type="hidden" name="answers[A.2.1]" id="table-a21-input" value="{{ $initialValue ?? '{}' }}">
 
         <div class="table-responsive">
             <table class="table instrument-table mb-0" id="table-a21">
@@ -102,6 +105,9 @@
                         ];
                     @endphp
                     @foreach ($tracerRows as $index => $row)
+                        @php
+                            $rowData = $rows[$index] ?? [];
+                        @endphp
                         <tr data-row="{{ $index }}">
                             <td class="text-center row-number">{{ $index + 1 }}</td>
                             <td>{{ $row['label'] }}</td>
@@ -111,32 +117,36 @@
                                         <input type="number" class="form-control table-input"
                                             data-key="{{ $row['key'] }}_quantitative" data-row="{{ $index }}"
                                             placeholder="{{ $row['quantitative_placeholder'] }}" min="0"
-                                            max="100" step="0.01">
+                                            max="100" step="0.01"
+                                            value="{{ $rowData["{$row['key']}_quantitative"] ?? '' }}">
                                         <span class="input-group-text">%</span>
                                     </div>
                                 @elseif($row['quantitative_type'] === 'scale')
                                     <input type="number" class="form-control form-control-sm table-input"
                                         data-key="{{ $row['key'] }}_quantitative" data-row="{{ $index }}"
                                         placeholder="{{ $row['quantitative_placeholder'] }}" min="1"
-                                        max="5">
+                                        max="5" value="{{ $rowData["{$row['key']}_quantitative"] ?? '' }}">
                                 @elseif(isset($row['quantitative_unit']))
                                     <div class="input-group input-group-sm">
                                         <input type="number" class="form-control table-input"
                                             data-key="{{ $row['key'] }}_quantitative" data-row="{{ $index }}"
-                                            placeholder="{{ $row['quantitative_placeholder'] }}" min="0">
+                                            placeholder="{{ $row['quantitative_placeholder'] }}" min="0"
+                                            value="{{ $rowData["{$row['key']}_quantitative"] ?? '' }}">
                                         <span class="input-group-text">{{ $row['quantitative_unit'] }}</span>
                                     </div>
                                 @else
                                     <input type="number" class="form-control form-control-sm table-input"
                                         data-key="{{ $row['key'] }}_quantitative" data-row="{{ $index }}"
-                                        placeholder="{{ $row['quantitative_placeholder'] }}" min="0">
+                                        placeholder="{{ $row['quantitative_placeholder'] }}" min="0"
+                                        value="{{ $rowData["{$row['key']}_quantitative"] ?? '' }}">
                                 @endif
                             </td>
                             <td>
                                 @if ($row['has_qualitative'])
                                     <input type="text" class="form-control form-control-sm table-input"
                                         data-key="{{ $row['key'] }}_qualitative" data-row="{{ $index }}"
-                                        placeholder="{{ $row['qualitative_placeholder'] ?? '' }}">
+                                        placeholder="{{ $row['qualitative_placeholder'] ?? '' }}"
+                                        value="{{ $rowData["{$row['key']}_qualitative"] ?? '' }}">
                                 @else
                                     <span class="text-muted small">-</span>
                                 @endif

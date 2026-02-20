@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\InstrumentSubmissionV2;
 use App\Models\InstrumentSubmissionV2Detail;
+use App\Models\Province;
+use App\Models\Regency;
+use App\Models\School;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -11,29 +14,59 @@ use Illuminate\Support\Facades\Validator;
 
 class PublicInstrumentV2Controller extends Controller
 {
-    /**
-     * Display the v2 instrument form
-     */
     public function index()
     {
-        return view('instrument.form-v2');
+        $provinces = Province::orderBy('name')->get();
+        $respondentPositions = config('constant.respondent_positions');
+        $expertiseData = config('constant.expertise');
+
+        return view('instrument.form-v2', compact('provinces', 'respondentPositions', 'expertiseData'));
     }
 
-    /**
-     * Store a new submission
-     */
+    public function getRegencies($provinceCode)
+    {
+        $regencies = Regency::where('province_code', $provinceCode)
+            ->orderBy('name')
+            ->get(['code', 'name']);
+
+        return response()->json($regencies);
+    }
+
+    public function getSaprasData($concentration)
+    {
+        $saprasData = config('sapras_data');
+        $concentration = urldecode($concentration);
+
+        if (!isset($saprasData[$concentration])) {
+            return response()->json(['sections' => []], 200);
+        }
+
+        return response()->json($saprasData[$concentration]);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'school_name' => 'required|string|max:255',
             'npsn' => 'nullable|string|max:50',
             'address' => 'required|string',
+            'province_code' => 'required|string',
+            'regency_code' => 'required|string',
+            'school_status' => 'nullable|string|max:20',
+            'school_category' => 'nullable|string|max:100',
+            'program_duration' => 'nullable|string|max:50',
+            'school_accreditation' => 'nullable|string|max:50',
+            'expertise' => 'nullable|string|max:255',
+            'expertise_program' => 'nullable|string|max:255',
+            'expertise_concentration' => 'nullable|string|max:255',
             'respondent_name' => 'required|string|max:255',
             'respondent_position' => 'required|string|max:255',
             'answers' => 'required|array',
         ], [
             'school_name.required' => 'Nama sekolah wajib diisi',
             'address.required' => 'Alamat sekolah wajib diisi',
+            'province_code.required' => 'Provinsi wajib dipilih',
+            'regency_code.required' => 'Kabupaten/Kota wajib dipilih',
             'respondent_name.required' => 'Nama responden wajib diisi',
             'respondent_position.required' => 'Jabatan responden wajib diisi',
             'answers.required' => 'Data instrumen wajib diisi',
@@ -48,11 +81,33 @@ class PublicInstrumentV2Controller extends Controller
         try {
             DB::beginTransaction();
 
-            // Create the main submission
+            // Create or update School record
+            $school = School::updateOrCreate(
+                [
+                    'school_name' => $request->school_name,
+                    'npsn' => $request->npsn ?? null,
+                ],
+                [
+                    'address' => $request->address,
+                    'province_code' => $request->province_code,
+                    'regency_code' => $request->regency_code,
+                    'school_status' => $request->school_status,
+                    'school_category' => $request->school_category,
+                    'program_duration' => $request->program_duration,
+                    'school_accreditation' => $request->school_accreditation,
+                    'expertise' => $request->expertise,
+                    'expertise_program' => $request->expertise_program,
+                    'expertise_concentration' => $request->expertise_concentration,
+                ]
+            );
+
             $submission = InstrumentSubmissionV2::create([
+                'school_id' => $school->id,
                 'school_name' => $request->school_name,
-                'npsn' => $request->npsn,
+                'npsn' => $request->npsn ?? null,
                 'address' => $request->address,
+                'province_code' => $request->province_code,
+                'regency_code' => $request->regency_code,
                 'respondent_name' => $request->respondent_name,
                 'respondent_position' => $request->respondent_position,
                 'form_version' => '2.0',
@@ -63,10 +118,8 @@ class PublicInstrumentV2Controller extends Controller
                 'user_agent' => $request->userAgent(),
             ]);
 
-            // Store section details for analytics
             $this->storeSectionDetails($submission, $request->answers);
 
-            // Calculate completion percentage
             $submission->update([
                 'completion_percentage' => $this->calculateCompletionPercentage($request->answers),
             ]);
@@ -84,7 +137,7 @@ class PublicInstrumentV2Controller extends Controller
             DB::rollBack();
 
             Log::error('V2 Instrument submission error: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return back()
@@ -93,20 +146,22 @@ class PublicInstrumentV2Controller extends Controller
         }
     }
 
-    /**
-     * Store section details for granular analytics
-     */
     private function storeSectionDetails(InstrumentSubmissionV2 $submission, array $answers): void
     {
         $sectionCodes = [
             'A.1.1',
+            'A.1.2',
             'A.2.1',
+            'A.3',
+            'A.4',
+            'B.sapras',
             'B.1.1',
             'B.2.1',
             'C.1.1',
             'C.2.1',
             'C.3.1',
-            'C.3.2'
+            'C.3.2',
+            'C.3.3',
         ];
 
         foreach ($sectionCodes as $code) {
@@ -114,12 +169,10 @@ class PublicInstrumentV2Controller extends Controller
                 $data = $answers[$code];
                 $rowCount = 0;
 
-                // Count rows for table-type sections
                 if (is_array($data)) {
                     if (isset($data['rows']) && is_array($data['rows'])) {
                         $rowCount = count($data['rows']);
                     } elseif (is_array($data) && isset($data[0])) {
-                        // Direct array of rows
                         $rowCount = count($data);
                     }
                 }
@@ -134,27 +187,29 @@ class PublicInstrumentV2Controller extends Controller
         }
     }
 
-    /**
-     * Calculate completion percentage based on filled answers
-     */
     private function calculateCompletionPercentage(array $answers): float
     {
-        $totalSections = 8; // Total number of sections
+        $totalSections = 13;
         $filledSections = 0;
 
         $sectionCodes = [
             'A.1.1',
+            'A.1.2',
             'A.2.1',
+            'A.3',
+            'A.4',
+            'B.sapras',
             'B.1.1',
             'B.2.1',
             'C.1.1',
             'C.2.1',
             'C.3.1',
-            'C.3.2'
+            'C.3.2',
+            'C.3.3',
         ];
 
         foreach ($sectionCodes as $code) {
-            if (isset($answers[$code]) && !empty($answers[$code])) {
+            if (isset($answers[$code]) && ! empty($answers[$code])) {
                 $filledSections++;
             }
         }

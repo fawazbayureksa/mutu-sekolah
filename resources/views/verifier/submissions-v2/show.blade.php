@@ -10,7 +10,8 @@
                 <h1 class="h3 mb-1 text-gray-800">Detail Pengajuan V2</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="{{ route('verifier.submissions-v2.index') }}">Pengajuan V2</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('verifier.submissions-v2.index') }}">Pengajuan V2</a>
+                        </li>
                         <li class="breadcrumb-item active">Detail</li>
                     </ol>
                 </nav>
@@ -81,6 +82,33 @@
                                 <td class="fw-semibold text-muted">Alamat</td>
                                 <td>{{ $submission->address }}</td>
                             </tr>
+                            <tr>
+                                <td class="fw-semibold text-muted">Provinsi</td>
+                                <td>{{ $submission->school?->province?->name ?? ($submission->province?->name ?? '-') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-muted">Kabupaten/Kota</td>
+                                <td>{{ $submission->school?->regency?->name ?? ($submission->regency?->name ?? '-') }}</td>
+                            </tr>
+                            @if ($submission->school?->expertise)
+                                <tr>
+                                    <td class="fw-semibold text-muted">Bidang Keahlian</td>
+                                    <td>{{ $submission->school->expertise }}</td>
+                                </tr>
+                            @endif
+                            @if ($submission->school?->expertise_program)
+                                <tr>
+                                    <td class="fw-semibold text-muted">Program Keahlian</td>
+                                    <td>{{ $submission->school->expertise_program }}</td>
+                                </tr>
+                            @endif
+                            @if ($submission->school?->expertise_concentration)
+                                <tr>
+                                    <td class="fw-semibold text-muted">Konsentrasi Keahlian</td>
+                                    <td>{{ $submission->school->expertise_concentration }}</td>
+                                </tr>
+                            @endif
                         </table>
                     </div>
                 </div>
@@ -303,21 +331,50 @@
                                 'title' => 'Data Pelatihan dan Sertifikasi Guru',
                                 'data' => $answers['C.3.1'] ?? null,
                                 'columns' => [
-                                    ['key' => 'label', 'label' => 'Nama Guru'],
+                                    ['key' => 'teacher_name', 'label' => 'Nama Guru'],
                                     ['key' => 'subject', 'label' => 'Mata Pelajaran'],
-                                    ['key' => 'training_type', 'label' => 'Jenis Pelatihan'],
+                                    ['key' => 'competency_type', 'label' => 'Jenis Kompetensi'],
+                                    ['key' => 'training_title', 'label' => 'Judul Pelatihan'],
                                     ['key' => 'year', 'label' => 'Tahun'],
                                     ['key' => 'provider', 'label' => 'Penyedia'],
+                                    ['key' => 'duration', 'label' => 'Durasi'],
                                     ['key' => 'evidence', 'label' => 'Bukti'],
+                                    ['key' => 'remarks', 'label' => 'Keterangan'],
                                 ],
                                 'dynamicRows' => true,
                             ])
 
                             {{-- C.3.2 --}}
-                            @include('admin.submissions-v2.partials.section-form', [
+                            @include('admin.submissions-v2.partials.section-table', [
                                 'code' => 'C.3.2',
                                 'title' => 'Analisis Kebutuhan Pelatihan Guru ke Depan',
                                 'data' => $answers['C.3.2'] ?? null,
+                                'columns' => [
+                                    ['key' => 'current_condition', 'label' => 'Kondisi Saat Ini'],
+                                    ['key' => 'gap', 'label' => 'Kesenjangan'],
+                                ],
+                                'staticRows' => [
+                                    'Persentase guru produktif bersertifikat kompetensi (BNSP/Industri)',
+                                    'Rata-rata jam pelatihan per guru per tahun',
+                                    'Keterlibatan dalam magang industri',
+                                    'Frekuensi update teknologi/kompetensi',
+                                    'Ketersediaan guru dengan sertifikat asesor BNSP',
+                                ],
+                            ])
+
+                            {{-- C.3.3 --}}
+                            @include('admin.submissions-v2.partials.section-table', [
+                                'code' => 'C.3.3',
+                                'title' => 'Data Ketenagaan dan Beban Mengajar (Rasio Guru-Murid)',
+                                'data' => $answers['C.3.3'] ?? null,
+                                'columns' => [
+                                    ['key' => 'concentration', 'label' => 'Kompetensi Keahlian'],
+                                    ['key' => 'teacher_count', 'label' => 'Jumlah Guru Produktif'],
+                                    ['key' => 'student_count', 'label' => 'Jumlah Total Murid'],
+                                    ['key' => 'ratio', 'label' => 'Rasio Guru:Siswa'],
+                                    ['key' => 'remarks', 'label' => 'Keterangan'],
+                                ],
+                                'dynamicRows' => true,
                             ])
                         </div>
                     </div>
@@ -393,7 +450,8 @@
                         </div>
                         <div class="modal-body">
                             <p>Anda akan membuat link update untuk pengajuan dari
-                                <strong>{{ $submission->school_name }}</strong>.</p>
+                                <strong>{{ $submission->school_name }}</strong>.
+                            </p>
                             <div class="alert alert-info small">
                                 <i class="bi bi-info-circle me-1"></i>
                                 Link akan berlaku selama 24 jam dan hanya dapat digunakan sekali.

@@ -1,18 +1,21 @@
 @extends('layouts.app')
 
-@section('title', 'Isi Instrumen - Penjaminan Mutu SMK Bidang KPTK')
+@section('title', 'Update Data Submission - Penjaminan Mutu SMK Bidang KPTK')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/instrument-form-v2.css') }}">
 @endpush
 
 @section('content')
+    @php
+        $answers = $submission->answers ?? [];
+    @endphp
     <div class="container-fluid py-5" style="max-width: 1400px;">
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="text-center mb-5">
-                    <h2 class="fw-bold mb-2 text-primary">Instrumen Penjaminan Mutu</h2>
-                    <p class="text-secondary small">Lengkapi data sekolah dan penilaian di bawah ini dengan seksama</p>
+                    <h2 class="fw-bold mb-2 text-primary">Update Data Submission</h2>
+                    <p class="text-secondary small">Silakan perbarui data sekolah dan penilaian sesuai catatan verifikasi</p>
                 </div>
 
                 @if (session('success'))
@@ -41,16 +44,14 @@
                     </div>
                 @endif
 
-                <form action="{{ route('instrument.v2.submit') }}" method="POST" id="instrumentForm">
+                <form action="{{ $updateUrl }}" method="POST" id="instrumentForm">
                     @csrf
 
                     {{-- Section 1: Identitas Sekolah --}}
                     <div class="form-card mt-3">
                         <div class="section-title">
                             <i class="bi bi-building"></i>
-                            <strong>
-                                Identitas Sekolah
-                            </strong>
+                            <strong>Identitas Sekolah</strong>
                         </div>
 
                         <div class="row g-4">
@@ -58,15 +59,15 @@
                                 <label class="form-label">Nama Sekolah <span class="text-danger">*</span></label>
                                 <input type="text" name="school_name"
                                     class="form-control @error('school_name') is-invalid @enderror" required
-                                    value="{{ old('school_name') }}" placeholder="Nama sekolah">
+                                    value="{{ old('school_name', $submission->school_name) }}" placeholder="Nama sekolah">
                                 @error('school_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">NPSN</label>
-                                <input type="text" name="npsn" class="form-control" value="{{ old('npsn') }}"
-                                    placeholder="NPSN">
+                                <input type="text" name="npsn" class="form-control"
+                                    value="{{ old('npsn', $submission->npsn) }}" placeholder="NPSN">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Provinsi <span class="text-danger">*</span></label>
@@ -76,7 +77,7 @@
                                     <option value="">-- Pilih Provinsi --</option>
                                     @foreach ($provinces as $province)
                                         <option value="{{ $province->code }}"
-                                            {{ old('province_code') == $province->code ? 'selected' : '' }}>
+                                            {{ old('province_code', $submission->province_code) == $province->code ? 'selected' : '' }}>
                                             {{ $province->name }}
                                         </option>
                                     @endforeach
@@ -88,8 +89,16 @@
                             <div class="col-md-6">
                                 <label class="form-label">Kabupaten/Kota <span class="text-danger">*</span></label>
                                 <select name="regency_code" id="regencySelect"
-                                    class="form-select @error('regency_code') is-invalid @enderror" required disabled>
+                                    class="form-select @error('regency_code') is-invalid @enderror" required>
                                     <option value="">-- Pilih Kabupaten/Kota --</option>
+                                    @if ($regencies)
+                                        @foreach ($regencies as $regency)
+                                            <option value="{{ $regency->code }}"
+                                                {{ old('regency_code', $submission->regency_code) == $regency->code ? 'selected' : '' }}>
+                                                {{ $regency->name }}
+                                            </option>
+                                        @endforeach
+                                    @endif
                                 </select>
                                 @error('regency_code')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -98,7 +107,7 @@
                             <div class="col-md-12">
                                 <label class="form-label">Alamat <span class="text-danger">*</span></label>
                                 <textarea name="address" rows="3" class="form-control @error('address') is-invalid @enderror" required
-                                    placeholder="Masukkan alamat lengkap sekolah">{{ old('address') }}</textarea>
+                                    placeholder="Masukkan alamat lengkap sekolah">{{ old('address', $submission->address) }}</textarea>
                                 @error('address')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -109,13 +118,13 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="school_status"
                                             id="statusNegeri" value="Negeri"
-                                            {{ old('school_status') == 'Negeri' ? 'checked' : '' }}>
+                                            {{ old('school_status', $submission->school->school_status) == 'Negeri' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="statusNegeri">Negeri</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="school_status"
                                             id="statusSwasta" value="Swasta"
-                                            {{ old('school_status') == 'Swasta' ? 'checked' : '' }}>
+                                            {{ old('school_status', $submission->school->school_status) == 'Swasta' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="statusSwasta">Swasta</label>
                                     </div>
                                 </div>
@@ -129,13 +138,13 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="program_duration"
                                             id="duration3" value="3 Tahun"
-                                            {{ old('program_duration') == '3 Tahun' ? 'checked' : '' }}>
+                                            {{ old('program_duration', $submission->school->program_duration) == '3 Tahun' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="duration3">3 Tahun</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="program_duration"
                                             id="duration4" value="4 Tahun"
-                                            {{ old('program_duration') == '4 Tahun' ? 'checked' : '' }}>
+                                            {{ old('program_duration', $submission->school->program_duration) == '4 Tahun' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="duration4">4 Tahun</label>
                                     </div>
                                 </div>
@@ -149,20 +158,20 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="school_category"
                                             id="catReguler" value="SMK PK Reguler"
-                                            {{ old('school_category') == 'SMK PK Reguler' ? 'checked' : '' }}>
+                                            {{ old('school_category', $submission->school->school_category) == 'SMK PK Reguler' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="catReguler">SMK PK Reguler</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="school_category"
                                             id="catPenguatan" value="SMK PK Penguatan Pembelajaran Mendalam"
-                                            {{ old('school_category') == 'SMK PK Penguatan Pembelajaran Mendalam' ? 'checked' : '' }}>
+                                            {{ old('school_category', $submission->school->school_category) == 'SMK PK Penguatan Pembelajaran Mendalam' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="catPenguatan">SMK PK Penguatan Pembelajaran
                                             Mendalam</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="school_category"
                                             id="catModel" value="SMK Model"
-                                            {{ old('school_category') == 'SMK Model' ? 'checked' : '' }}>
+                                            {{ old('school_category', $submission->school->school_category) == 'SMK Model' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="catModel">SMK Model</label>
                                     </div>
                                 </div>
@@ -176,25 +185,25 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="school_accreditation"
                                             id="accA" value="A"
-                                            {{ old('school_accreditation') == 'A' ? 'checked' : '' }}>
+                                            {{ old('school_accreditation', $submission->school->school_accreditation) == 'A' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="accA">A</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="school_accreditation"
                                             id="accB" value="B"
-                                            {{ old('school_accreditation') == 'B' ? 'checked' : '' }}>
+                                            {{ old('school_accreditation', $submission->school->school_accreditation) == 'B' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="accB">B</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="school_accreditation"
                                             id="accC" value="C"
-                                            {{ old('school_accreditation') == 'C' ? 'checked' : '' }}>
+                                            {{ old('school_accreditation', $submission->school->school_accreditation) == 'C' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="accC">C</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="school_accreditation"
                                             id="accTidak" value="Tidak Terakreditasi"
-                                            {{ old('school_accreditation') == 'Tidak Terakreditasi' ? 'checked' : '' }}>
+                                            {{ old('school_accreditation', $submission->school->school_accreditation) == 'Tidak Terakreditasi' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="accTidak">Tidak Terakreditasi</label>
                                     </div>
                                 </div>
@@ -208,9 +217,9 @@
                                     class="form-select @error('expertise') is-invalid @enderror"
                                     onchange="loadExpertisePrograms(this.value)">
                                     <option value="">-- Pilih Bidang Keahlian --</option>
-                                    @foreach (array_keys($expertiseData) as $expertise)
+                                    @foreach (array_keys($expertiseData ?? []) as $expertise)
                                         <option value="{{ $expertise }}"
-                                            {{ old('expertise') == $expertise ? 'selected' : '' }}>
+                                            {{ old('expertise', $submission->school->expertise) == $expertise ? 'selected' : '' }}>
                                             {{ $expertise == 'TIK' ? 'TIK (Teknologi Informasi dan Komunikasi)' : $expertise }}
                                         </option>
                                     @endforeach
@@ -222,8 +231,7 @@
                             <div class="col-md-4">
                                 <label class="form-label">Program Keahlian</label>
                                 <select name="expertise_program" id="expertiseProgramSelect"
-                                    class="form-select @error('expertise_program') is-invalid @enderror" disabled
-                                    onchange="loadExpertiseConcentrations(this.value)">
+                                    class="form-select @error('expertise_program') is-invalid @enderror">
                                     <option value="">-- Pilih Program Keahlian --</option>
                                 </select>
                                 @error('expertise_program')
@@ -233,7 +241,7 @@
                             <div class="col-md-4">
                                 <label class="form-label">Konsentrasi Keahlian</label>
                                 <select name="expertise_concentration" id="expertiseConcentrationSelect"
-                                    class="form-select @error('expertise_concentration') is-invalid @enderror" disabled
+                                    class="form-select @error('expertise_concentration') is-invalid @enderror"
                                     onchange="loadSaprasData(this.value)">
                                     <option value="">-- Pilih Konsentrasi Keahlian --</option>
                                 </select>
@@ -255,7 +263,8 @@
                                 <label class="form-label">Nama Responden <span class="text-danger">*</span></label>
                                 <input type="text" name="respondent_name"
                                     class="form-control @error('respondent_name') is-invalid @enderror" required
-                                    value="{{ old('respondent_name') }}" placeholder="Masukkan nama responden">
+                                    value="{{ old('respondent_name', $submission->respondent_name) }}"
+                                    placeholder="Masukkan nama responden">
                                 @error('respondent_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -265,9 +274,9 @@
                                 <select name="respondent_position"
                                     class="form-select @error('respondent_position') is-invalid @enderror" required>
                                     <option value="">-- Pilih Jabatan Responden --</option>
-                                    @foreach ($respondentPositions as $position)
+                                    @foreach ($respondentPositions ?? [] as $position)
                                         <option value="{{ $position }}"
-                                            {{ old('respondent_position') == $position ? 'selected' : '' }}>
+                                            {{ old('respondent_position', $submission->respondent_position) == $position ? 'selected' : '' }}>
                                             {{ $position }}
                                         </option>
                                     @endforeach
@@ -297,8 +306,15 @@
                                 <div class="mb-2">
                                     <span class="indicator-code">A.1.1</span>
                                 </div>
-                                <small class="text-muted d-block mb-3">Rekapitulasi UKK dan Sertifikasi per Tahun</small>
-                                @include('instrument.partials.v2.table-a11')
+                                <p class="indicator-text mb-2">Data Kelulusan Uji Kompetensi dan Sertifikasi</p>
+                                <small class="text-muted d-block mb-3">
+                                    <i class="bi bi-info-circle me-1"></i>Isi data kelulusan UKK dan sertifikasi profesi
+                                    untuk tahun terakhir
+                                </small>
+
+                                @include('instrument.partials.v2.table-a11', [
+                                    'existingData' => $answers['A.1.1'] ?? [],
+                                ])
                             </div>
                         </div>
 
@@ -314,7 +330,9 @@
                                     KKNI
                                 </small>
 
-                                @include('instrument.partials.v2.table-a12')
+                                @include('instrument.partials.v2.table-a12', [
+                                    'existingData' => $answers['A.1.2'] ?? [],
+                                ])
                             </div>
                         </div>
 
@@ -331,11 +349,13 @@
                                 </div>
                                 <p class="indicator-text mb-2">Penelusuran Alumni (Tracer Study)</p>
                                 <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isikan berdasarkan Program/Konsentrasi Keahlian
-                                    di Dapodik/Penelusuran Lulusan
+                                    <i class="bi bi-info-circle me-1"></i>Isi data penelusuran alumni berdasarkan tracer
+                                    study untuk kelas lulusan tertentu
                                 </small>
 
-                                @include('instrument.partials.v2.table-a21')
+                                @include('instrument.partials.v2.table-a21', [
+                                    'existingData' => $answers['A.2.1'] ?? [],
+                                ])
                             </div>
                         </div>
 
@@ -352,7 +372,9 @@
                                     <i class="bi bi-info-circle me-1"></i>Isi data putus sekolah dan ketidaklulusan kelas
                                 </small>
 
-                                @include('instrument.partials.v2.table-a3')
+                                @include('instrument.partials.v2.table-a3', [
+                                    'existingData' => $answers['A.3'] ?? [],
+                                ])
                             </div>
                         </div>
 
@@ -366,11 +388,13 @@
                             <div class="indicator-item">
                                 <p class="indicator-text mb-2">Data Skor Rata-rata TKA Tahun 2025</p>
                                 <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isikan nilai rata-rata mata pelajaran yang
-                                    diujikan di sekolah dan sesuai dengan program/konsentrasi keahlian Murid (Kelautan,
-                                    Perikanan, TIK).
+                                    <i class="bi bi-info-circle me-1"></i>Isi data skor rata-rata TKA untuk mata pelajaran
+                                    wajib dan pilihan
                                 </small>
-                                @include('instrument.partials.v2.table-a4')
+
+                                @include('instrument.partials.v2.table-a4', [
+                                    'existingData' => $answers['A.4'] ?? [],
+                                ])
                             </div>
                         </div>
                     </div>
@@ -382,26 +406,52 @@
                             <strong>B - Data Sarana Prasarana (Sapras)</strong>
                         </div>
 
-                        {{-- Hidden input to store all sapras data --}}
-                        <input type="hidden" name="answers[B.sapras]" id="sapras-data-input" value="{}">
+                        {{-- B.1: Inventarisasi dan Kesesuaian dengan Standar Industri --}}
+                        <div class="indicator-group mb-4">
+                            <h5 class="indicator-header mb-3">
+                                <span class="badge bg-secondary me-2">B.1</span>
+                                Inventarisasi dan Kesesuaian dengan Standar Industri
+                            </h5>
 
-                        {{-- Placeholder when no concentration is selected --}}
-                        <div id="sapras-placeholder" class="text-center py-5">
-                            <i class="bi bi-building-gear" style="font-size: 3rem; color: #dee2e6;"></i>
-                            <p class="text-muted mt-3 mb-0">Pilih <strong>Konsentrasi Keahlian</strong> pada bagian Data
-                                Sekolah di atas untuk menampilkan tabel Sarana Prasarana.</p>
-                        </div>
+                            <div class="indicator-item">
+                                <div class="mb-2">
+                                    <span class="indicator-code">B.1.1</span>
+                                    <span class="badge bg-info ms-2">Dynamic Rows</span>
+                                </div>
+                                <p class="indicator-text mb-2">Inventarisasi dan Kesesuaian dengan Standar Industri</p>
+                                <small class="text-muted d-block mb-3">
+                                    <i class="bi bi-info-circle me-1"></i>Isi data inventaris perangkat bengkel/lab dan
+                                    bandingkan dengan standar industri
+                                </small>
 
-                        {{-- Loading indicator --}}
-                        <div id="sapras-loading" class="text-center py-5" style="display: none;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                                @include('instrument.partials.v2.table-b11', [
+                                    'existingData' => $answers['B.1.1'] ?? [],
+                                ])
                             </div>
-                            <p class="text-muted mt-3 mb-0">Memuat data sarana prasarana...</p>
                         </div>
 
-                        {{-- Dynamic sapras container --}}
-                        <div id="sapras-container" style="display: none;"></div>
+                        {{-- B.2: Penilaian Kesiapan Fasilitas (Checklist) --}}
+                        <div class="indicator-group mb-4">
+                            <h5 class="indicator-header mb-3">
+                                <span class="badge bg-secondary me-2">B.2</span>
+                                Penilaian Kesiapan Fasilitas (Checklist)
+                            </h5>
+
+                            <div class="indicator-item">
+                                <div class="mb-2">
+                                    <span class="indicator-code">B.2.1</span>
+                                </div>
+                                <p class="indicator-text mb-2">Penilaian Kesiapan Fasilitas (Checklist)</p>
+                                <small class="text-muted d-block mb-3">
+                                    <i class="bi bi-info-circle me-1"></i>Isi checklist penilaian kesiapan fasilitas
+                                    bengkel/lab
+                                </small>
+
+                                @include('instrument.partials.v2.checklist-b21', [
+                                    'existingData' => $answers['B.2.1'] ?? [],
+                                ])
+                            </div>
+                        </div>
                     </div>
 
                     {{-- ASPECT C: Data Tata Kelola --}}
@@ -428,7 +478,9 @@
                                     <i class="bi bi-info-circle me-1"></i>Isi data kerjasama dengan industri mitra
                                 </small>
 
-                                @include('instrument.partials.v2.table-c11')
+                                @include('instrument.partials.v2.table-c11', [
+                                    'existingData' => $answers['C.1.1'] ?? [],
+                                ])
                             </div>
                         </div>
 
@@ -450,7 +502,9 @@
                                     Produksi Sekolah
                                 </small>
 
-                                @include('instrument.partials.v2.table-c21')
+                                @include('instrument.partials.v2.table-c21', [
+                                    'existingData' => $answers['C.2.1'] ?? [],
+                                ])
                             </div>
                         </div>
 
@@ -472,7 +526,9 @@
                                     diikuti oleh guru
                                 </small>
 
-                                @include('instrument.partials.v2.table-c31')
+                                @include('instrument.partials.v2.table-c31', [
+                                    'existingData' => $answers['C.3.1'] ?? [],
+                                ])
                             </div>
 
                             <div class="indicator-item">
@@ -484,7 +540,9 @@
                                     <i class="bi bi-info-circle me-1"></i>(Diisi oleh Guru/Wakasek Kurikulum/Kepsek)
                                 </small>
 
-                                @include('instrument.partials.v2.form-c32')
+                                @include('instrument.partials.v2.form-c32', [
+                                    'existingData' => $answers['C.3.2'] ?? [],
+                                ])
                             </div>
 
                             <div class="indicator-item">
@@ -497,7 +555,9 @@
                                     (Konsentrasi) yang aktif
                                 </small>
 
-                                @include('instrument.partials.v2.table-c33')
+                                @include('instrument.partials.v2.table-c33', [
+                                    'existingData' => $answers['C.3.3'] ?? [],
+                                ])
                             </div>
                         </div>
                     </div>
@@ -506,7 +566,7 @@
                     <div class="d-grid gap-3 col-lg-6 mx-auto mt-5 mb-5">
                         <button type="submit" class="btn btn-primary btn-lg shadow rounded-pill py-3 fw-bold"
                             style="font-size: 1rem;">
-                            <i class="bi bi-send-fill me-2"></i> Kirim Data Instrumen
+                            <i class="bi bi-send-fill me-2"></i> Perbarui Data Sekolah
                         </button>
                         <a href="{{ route('landing') }}" class="btn btn-outline-secondary rounded-pill border-0">
                             <i class="bi bi-arrow-left me-2"></i>Kembali ke Halaman Utama
@@ -520,25 +580,24 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeDynamicTables();
-
-            document.getElementById('instrumentForm').addEventListener('submit', function(e) {
-                collectAllTableData();
-
-                if (!confirm('Apakah Anda yakin data yang diisi sudah benar?')) {
-                    e.preventDefault();
-                }
-            });
-        });
-
+        // Define all functions first (to avoid hoisting issues)
         function initializeDynamicTables() {
-            document.querySelectorAll('.btn-add-row').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    addTableRow(this.dataset.tableId);
+            console.log('initializeDynamicTables() called');
+            try {
+                var addButtons = document.querySelectorAll('.btn-add-row');
+                console.log('Found add buttons:', addButtons.length);
+                addButtons.forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        addTableRow(btn.dataset.tableId);
+                    });
                 });
-            });
+            } catch (e) {
+                console.error('Error in initializeDynamicTables:', e);
+            }
+        }
 
+        function initializeTableEventListeners() {
+            console.log('initializeTableEventListeners() called');
             document.addEventListener('click', function(e) {
                 if (e.target.closest('.btn-remove-row')) {
                     const btn = e.target.closest('.btn-remove-row');
@@ -562,6 +621,47 @@
                     }
                 }
             });
+        }
+
+        function restoreExistingData() {
+            // Restore form C.3.2 data if it exists in old() input
+            const formC32Input = document.getElementById('form-c32-input');
+            if (formC32Input && formC32Input.value) {
+                try {
+                    const data = JSON.parse(formC32Input.value);
+                    if (data) {
+                        // Restore competency_gap fields
+                        if (data.competency_gap) {
+                            const answerField = document.querySelector(
+                                '[data-section="competency_gap"][data-field="answer"]');
+                            const reasonField = document.querySelector(
+                                '[data-section="competency_gap"][data-field="reason"]');
+                            if (answerField && data.competency_gap.answer) answerField.value = data.competency_gap.answer;
+                            if (reasonField && data.competency_gap.reason) reasonField.value = data.competency_gap.reason;
+                        }
+                        // Restore industry_alignment fields
+                        if (data.industry_alignment) {
+                            const answerField = document.querySelector(
+                                '[data-section="industry_alignment"][data-field="answer"]');
+                            const sourceField = document.querySelector(
+                                '[data-section="industry_alignment"][data-field="source"]');
+                            if (answerField && data.industry_alignment.answer) answerField.value = data.industry_alignment
+                                .answer;
+                            if (sourceField && data.industry_alignment.source) sourceField.value = data.industry_alignment
+                                .source;
+                        }
+                        // Restore training_priority fields
+                        if (data.training_priority) {
+                            const answerField = document.querySelector(
+                                '[data-section="training_priority"][data-field="answer"]');
+                            if (answerField && data.training_priority.answer) answerField.value = data.training_priority
+                                .answer;
+                        }
+                    }
+                } catch (e) {
+                    console.log('No existing data to restore for form-c32');
+                }
+            }
         }
 
         function addTableRow(tableId) {
@@ -687,27 +787,6 @@
             }
         }
 
-        function collectAllTableData() {
-            const tables = ['table-a11', 'table-a12', 'table-a21', 'table-a3', 'table-a4', 'table-c11', 'table-c21',
-                'table-c31', 'table-c32', 'table-c33'
-            ];
-
-            tables.forEach(tableId => {
-                const table = document.getElementById(tableId);
-                if (table) {
-                    const hiddenInput = document.getElementById(tableId + '-input');
-                    if (hiddenInput) {
-                        const data = collectTableData(table);
-                        hiddenInput.value = JSON.stringify(data);
-                    }
-                }
-            });
-
-            // Collect dynamic sapras data
-            collectSaprasData();
-
-        }
-
         function collectTableData(table) {
             const data = {
                 header: {},
@@ -771,6 +850,33 @@
             return data;
         }
 
+        function collectAllTableData() {
+            console.log('collectAllTableData() called');
+            const tables = ['table-a11', 'table-a12', 'table-a21', 'table-a3', 'table-a4', 'table-b11', 'table-b21',
+                'table-c11',
+                'table-c21',
+                'table-c31', 'table-c32', 'table-c33'
+            ];
+
+            tables.forEach(tableId => {
+                const table = document.getElementById(tableId);
+                if (table) {
+                    const hiddenInput = document.getElementById(tableId + '-input');
+                    if (hiddenInput) {
+                        const data = collectTableData(table);
+                        console.log(`Table ${tableId} data:`, data);
+                        // Only update if there's data in the table
+                        if (data.rows.length > 0 || Object.keys(data.header).length > 0) {
+                            hiddenInput.value = JSON.stringify(data);
+                        }
+                    }
+                } else {
+                    console.warn(`Table ${tableId} not found`);
+                }
+            });
+
+        }
+
         function loadRegencies(provinceCode) {
             const regencySelect = document.getElementById('regencySelect');
 
@@ -798,6 +904,14 @@
                         regencySelect.appendChild(option);
                     });
                     regencySelect.disabled = false;
+
+                    // Restore selected regency
+                    @if ($submission->regency_code)
+                        const savedRegencyCode = '{{ $submission->regency_code }}';
+                        if (savedRegencyCode) {
+                            regencySelect.value = savedRegencyCode;
+                        }
+                    @endif
                 })
                 .catch(error => {
                     console.error('Error loading regencies:', error);
@@ -807,7 +921,7 @@
         }
 
         // Expertise cascading dropdowns - loaded from config
-        const expertiseData = @json($expertiseData);
+        const expertiseData = @json($expertiseData ?? []);
 
         function loadExpertisePrograms(expertise) {
             const programSelect = document.getElementById('expertiseProgramSelect');
@@ -860,58 +974,8 @@
                     concentrationSelect.appendChild(option);
                 });
                 concentrationSelect.disabled = false;
-
-                // Reset sapras when program changes
-                resetSaprasContainer();
             }
         }
-
-        // Page load - restore old values
-        document.addEventListener('DOMContentLoaded', function() {
-            // Restore province and regency if old values exist
-            const oldProvinceCode = "{{ old('province_code') }}";
-            const oldRegencyCode = "{{ old('regency_code') }}";
-
-            if (oldProvinceCode) {
-                // Load regencies for the old province
-                loadRegencies(oldProvinceCode);
-
-                // After regencies are loaded, select the old regency
-                if (oldRegencyCode) {
-                    setTimeout(() => {
-                        const regencySelect = document.getElementById('regencySelect');
-                        regencySelect.value = oldRegencyCode;
-                    }, 500); // Wait for API call to complete
-                }
-            }
-
-            // Restore expertise fields if old values exist
-            const expertiseSelect = document.getElementById('expertiseSelect');
-            const programSelect = document.getElementById('expertiseProgramSelect');
-
-            if (expertiseSelect.value) {
-                loadExpertisePrograms(expertiseSelect.value);
-
-                // If there's an old program value, restore it
-                const oldProgram = "{{ old('expertise_program') }}";
-                if (oldProgram) {
-                    setTimeout(() => {
-                        programSelect.value = oldProgram;
-                        loadExpertiseConcentrations(oldProgram);
-
-                        // If there's an old concentration value, restore it
-                        const oldConcentration = "{{ old('expertise_concentration') }}";
-                        if (oldConcentration) {
-                            setTimeout(() => {
-                                document.getElementById('expertiseConcentrationSelect')
-                                    .value =
-                                    oldConcentration;
-                            }, 100);
-                        }
-                    }, 100);
-                }
-            }
-        });
 
         // ===== SAPRAS DYNAMIC TABLES =====
 
@@ -992,9 +1056,6 @@
                     case 'equipment_no_spec':
                         tableHtml = renderEquipmentNoSpecTable(section, sectionNum);
                         break;
-                    case 'equipment_gim':
-                        tableHtml = renderEquipmentGimTable(section, sectionNum);
-                        break;
                     case 'k3':
                         tableHtml = renderK3Table(section, sectionNum);
                         break;
@@ -1047,12 +1108,7 @@
                                 <option value="Sebagian">Sebagian</option>
                             </select>
                         </td>
-                        <td>
-                            <input type="text" class="form-control form-control-sm table-input sapras-input" data-key="document" placeholder="File Link url">
-                        </td>
-                        <td>
-                            <input type="text" class="form-control form-control-sm table-input sapras-input" data-key="remarks" placeholder="Keterangan">
-                        </td>
+                        <td><input type="text" class="form-control form-control-sm table-input sapras-input" data-key="remarks" placeholder="Keterangan"></td>
                     </tr>`;
             });
 
@@ -1067,9 +1123,8 @@
                                 <th style="width:10%">Jumlah Standar</th>
                                 <th style="width:10%">Jumlah Tersedia</th>
                                 <th style="width:10%">Kondisi</th>
-                                <th style="width:12%">Kesesuaian Standar Industri</th>
-                                <th style="width:12%">Dokumen Pendukung</th>
-                                <th style="width:18%">Keterangan</th>
+                                <th style="width:14%">Kesesuaian Standar Industri</th>
+                                <th style="width:16%">Keterangan</th>
                             </tr>
                         </thead>
                         <tbody>${rows}</tbody>
@@ -1140,53 +1195,6 @@
                                 <option value="">Pilih</option>
                                 <option value="Baik">Baik</option>
                                 <option value="Rusak">Rusak</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-select form-select-sm table-input sapras-input" data-key="industry_standard">
-                                <option value="">Pilih</option>
-                                <option value="Ya">Ya</option>
-                                <option value="Tidak">Tidak</option>
-                                <option value="Sebagian">Sebagian</option>
-                            </select>
-                        </td>
-                        <td><input type="text" class="form-control form-control-sm table-input sapras-input" data-key="remarks" placeholder="Keterangan"></td>
-                    </tr>`;
-            });
-
-            return `
-                <div class="table-responsive">
-                    <table class="table instrument-table mb-0" id="sapras-table-${sectionNum}">
-                        <thead>
-                            <tr>
-                                <th style="width:4%">No</th>
-                                <th style="width:26%">Nama Peralatan</th>
-                                <th style="width:12%">Jumlah Standar</th>
-                                <th style="width:12%">Jumlah Tersedia</th>
-                                <th style="width:12%">Kondisi</th>
-                                <th style="width:14%">Kesesuaian Standar Industri</th>
-                                <th style="width:20%">Keterangan</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>`;
-        }
-
-        function renderEquipmentGimTable(section, sectionNum) {
-            let rows = '';
-            section.items.forEach((item, i) => {
-                rows += `
-                    <tr data-section="${sectionNum}" data-row="${i}">
-                        <td class="text-center">${i + 1}</td>
-                        <td><strong>${item.name}</strong></td>
-                        <td class="text-center"><span class="badge bg-light text-dark">${item.standard_qty}</span></td>
-                        <td><input type="number" class="form-control form-control-sm table-input sapras-input" data-key="qty_available" placeholder="0" min="0"></td>
-                        <td>
-                            <select class="form-select form-select-sm table-input sapras-input" data-key="condition">
-                                <option value="">Pilih</option>
-                                <option value="Trial">Trial</option>
-                                <option value="License">License</option>
                             </select>
                         </td>
                         <td>
@@ -1400,5 +1408,55 @@
 
             hiddenInput.value = JSON.stringify(saprasData);
         }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOMContentLoaded - Initializing...');
+            initializeDynamicTables();
+            initializeTableEventListeners();
+            restoreExistingData();
+            collectAllTableData();
+
+            const form = document.getElementById('instrumentForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    console.log('Form submit - collecting table data...');
+                    collectAllTableData();
+                    collectSaprasData(); // Collect Sapras data before submission
+
+                    if (!confirm('Apakah Anda yakin data yang diisi sudah benar?')) {
+                        e.preventDefault();
+                    }
+                });
+            } else {
+                console.error('Form element not found!');
+            }
+            // Restore expertise fields if submission has data
+            @if ($submission->school->expertise)
+                const expertiseSelect = document.getElementById('expertiseSelect');
+                expertiseSelect.value = '{{ $submission->school->expertise }}';
+                loadExpertisePrograms(expertiseSelect.value);
+
+                @if ($submission->school->expertise_program)
+                    setTimeout(() => {
+                        const programSelect = document.getElementById('expertiseProgramSelect');
+                        programSelect.value = '{{ $submission->school->expertise_program }}';
+                        loadExpertiseConcentrations(programSelect.value);
+
+                        @if ($submission->school->expertise_concentration)
+                            setTimeout(() => {
+                                const concentrationSelect = document.getElementById(
+                                    'expertiseConcentrationSelect');
+                                concentrationSelect.value =
+                                    '{{ $submission->school->expertise_concentration }}';
+                                // Auto-load Sapras data for existing concentration
+                                loadSaprasData(
+                                    '{{ $submission->school->expertise_concentration }}');
+                            }, 100);
+                        @endif
+                    }, 100);
+                @endif
+            @endif
+        });
     </script>
 @endpush

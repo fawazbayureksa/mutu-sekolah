@@ -10,11 +10,11 @@
                 <h1 class="h3 mb-1 text-gray-800">Data Pengajuan V2</h1>
                 <p class="text-muted mb-0">Pengelolaan data pengajuan instrumen versi 2</p>
             </div>
-            <div>
+            {{-- <div>
                 <a href="{{ route('admin.submissions-v2.export') }}" class="btn btn-outline-success">
                     <i class="bi bi-download me-1"></i> Export
                 </a>
-            </div>
+            </div> --}}
         </div>
 
         {{-- Statistics Cards --}}

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Province;
+use App\Models\Regency;
 
 class InstrumentSubmissionV2 extends Model
 {
@@ -14,15 +16,22 @@ class InstrumentSubmissionV2 extends Model
     protected $table = 'instrument_submissions_v2';
 
     const STATUS_DRAFT = 'draft';
+
     const STATUS_SUBMITTED = 'submitted';
+
     const STATUS_VERIFIED = 'verified';
+
     const STATUS_VALIDATED = 'validated';
+
     const STATUS_REJECTED = 'rejected';
 
     protected $fillable = [
+        'school_id',
         'school_name',
         'npsn',
         'address',
+        'province_code',
+        'regency_code',
         'respondent_name',
         'respondent_position',
         'form_version',
@@ -56,6 +65,30 @@ class InstrumentSubmissionV2 extends Model
         'max_possible_score' => 'decimal:2',
         'completion_percentage' => 'decimal:2',
     ];
+
+    /**
+     * Get the school for this submission
+     */
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo(School::class, 'school_id');
+    }
+
+    /**
+     * Get the province for this submission
+     */
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(Province::class, 'province_code', 'code');
+    }
+
+    /**
+     * Get the regency for this submission
+     */
+    public function regency(): BelongsTo
+    {
+        return $this->belongsTo(Regency::class, 'regency_code', 'code');
+    }
 
     /**
      * Get the details/sections for this submission
@@ -119,7 +152,7 @@ class InstrumentSubmissionV2 extends Model
     public function hasValidUpdateToken(): bool
     {
         return $this->update_token
-            && !$this->update_token_used_at
+            && ! $this->update_token_used_at
             && $this->update_token_expires_at
             && $this->update_token_expires_at->isFuture();
     }

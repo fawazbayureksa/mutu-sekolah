@@ -19,6 +19,7 @@ class SubmissionUpdateController extends Controller
 
     public function show(Request $request, string $token)
     {
+
         $submission = Submission::where('update_token', $token)->firstOrFail();
 
         if (!$submission->isUpdateTokenValid()) {
@@ -31,7 +32,7 @@ class SubmissionUpdateController extends Controller
         // Get the instrument with hierarchy
         $instrument = $this->service->getInstrumentWithHierarchy($submission->instrument->code)
             ?? $this->service->getInstrument($submission->instrument->code);
-        
+
         if (!$instrument) {
             abort(404, 'Instrumen tidak ditemukan');
         }
@@ -210,4 +211,3 @@ class SubmissionUpdateController extends Controller
         return is_numeric($answer) ? (float) $answer : 0;
     }
 }
-

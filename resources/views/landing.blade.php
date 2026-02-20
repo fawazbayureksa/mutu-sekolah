@@ -2,7 +2,107 @@
 
 @section('title', 'Penjaminan Mutu SMK Bidang KPTK - BPPMPV')
 
+@push('styles')
+    <style>
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .custom-toast {
+            min-width: 350px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            animation: slideInRight 0.3s ease-out;
+            overflow: hidden;
+        }
+
+        .custom-toast.hiding {
+            animation: slideOutRight 0.3s ease-in;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        .toast-header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+        }
+
+        .toast-header .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.8;
+        }
+
+        .toast-header .btn-close:hover {
+            opacity: 1;
+        }
+
+        .toast-body {
+            padding: 16px;
+            color: #374151;
+            font-size: 0.95rem;
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            animation: progressBar 5s linear;
+        }
+
+        @keyframes progressBar {
+            from {
+                width: 100%;
+            }
+
+            to {
+                width: 0%;
+            }
+        }
+    </style>
+@endpush
+
 @section('content')
+    {{-- Toast Container --}}
+    <div class="toast-container" id="toastContainer"></div>
     <section id="hero" class="hero-section">
         <div class="container">
             <div class="row align-items-center min-vh-100">
@@ -12,7 +112,7 @@
                         <p class="lead mb-5 text-white-50">Upaya sistematis BPPMPV dalam memastikan mutu pendidikan vokasi
                             bidang Kelautan, Perikanan, dan TIK</p>
                         <div class="d-flex gap-3 justify-content-center">
-                            <a href="{{ route('instrument.form') }}" class="btn btn-primary btn-lg px-5 py-3">
+                            <a href="{{ route('instrument.v2.form') }}" class="btn btn-primary btn-lg px-5 py-3">
                                 <i class="bi bi-play-circle me-2"></i>Isi Instrumen
                             </a>
                             @guest
@@ -200,3 +300,55 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('success'))
+                showToast('{{ session('success') }}');
+            @endif
+        });
+
+        function showToast(message) {
+            const toastContainer = document.getElementById('toastContainer');
+
+            // Create toast element
+            const toastEl = document.createElement('div');
+            toastEl.className = 'custom-toast';
+            toastEl.innerHTML = `
+                <div class="toast-header">
+                    <div class="toast-icon">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <strong class="me-auto">Berhasil</strong>
+                    <button type="button" class="btn-close" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <div class="toast-progress"></div>
+            `;
+
+            // Add to container
+            toastContainer.appendChild(toastEl);
+
+            // Close button handler
+            const closeBtn = toastEl.querySelector('.btn-close');
+            closeBtn.addEventListener('click', function() {
+                hideToast(toastEl);
+            });
+
+            // Auto dismiss after 5 seconds
+            setTimeout(function() {
+                hideToast(toastEl);
+            }, 5000);
+        }
+
+        function hideToast(toastEl) {
+            toastEl.classList.add('hiding');
+            setTimeout(function() {
+                toastEl.remove();
+            }, 300);
+        }
+    </script>
+@endpush
