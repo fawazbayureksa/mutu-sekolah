@@ -23,7 +23,7 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Kompetensi Keahlian (Konsentrasi)</th>
+                        <th>Kompetensi/Konsentrasi Keahlian</th>
                         <th>Rasio Ideal (Guru:Murid)</th>
                         <th>Jumlah Guru Produktif</th>
                         <th>Jumlah Total Murid (Kelas X, XI, XII)</th>

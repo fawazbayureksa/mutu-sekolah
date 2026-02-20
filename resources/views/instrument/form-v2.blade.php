@@ -331,8 +331,8 @@
                                 </div>
                                 <p class="indicator-text mb-2">Penelusuran Alumni (Tracer Study)</p>
                                 <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data penelusuran alumni berdasarkan tracer
-                                    study untuk kelas lulusan tertentu
+                                    <i class="bi bi-info-circle me-1"></i>Isikan berdasarkan Program/Konsentrasi Keahlian
+                                    di Dapodik/Penelusuran Lulusan
                                 </small>
 
                                 @include('instrument.partials.v2.table-a21')
@@ -366,10 +366,10 @@
                             <div class="indicator-item">
                                 <p class="indicator-text mb-2">Data Skor Rata-rata TKA Tahun 2025</p>
                                 <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data skor rata-rata TKA untuk mata pelajaran
-                                    wajib dan pilihan
+                                    <i class="bi bi-info-circle me-1"></i>Isikan nilai rata-rata mata pelajaran yang
+                                    diujikan di sekolah dan sesuai dengan program/konsentrasi keahlian Murid (Kelautan,
+                                    Perikanan, TIK).
                                 </small>
-
                                 @include('instrument.partials.v2.table-a4')
                             </div>
                         </div>
@@ -481,8 +481,7 @@
                                 </div>
                                 <p class="indicator-text mb-2">Analisis Kebutuhan Pelatihan Guru ke Depan</p>
                                 <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Diisi oleh Guru/Koordinator Program untuk
-                                    menganalisis kebutuhan pelatihan
+                                    <i class="bi bi-info-circle me-1"></i>(Diisi oleh Guru/Wakasek Kurikulum/Kepsek)
                                 </small>
 
                                 @include('instrument.partials.v2.form-c32')
@@ -993,6 +992,9 @@
                     case 'equipment_no_spec':
                         tableHtml = renderEquipmentNoSpecTable(section, sectionNum);
                         break;
+                    case 'equipment_gim':
+                        tableHtml = renderEquipmentGimTable(section, sectionNum);
+                        break;
                     case 'k3':
                         tableHtml = renderK3Table(section, sectionNum);
                         break;
@@ -1045,7 +1047,12 @@
                                 <option value="Sebagian">Sebagian</option>
                             </select>
                         </td>
-                        <td><input type="text" class="form-control form-control-sm table-input sapras-input" data-key="remarks" placeholder="Keterangan"></td>
+                        <td>
+                            <input type="text" class="form-control form-control-sm table-input sapras-input" data-key="document" placeholder="File Link url">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control form-control-sm table-input sapras-input" data-key="remarks" placeholder="Keterangan">
+                        </td>
                     </tr>`;
             });
 
@@ -1061,6 +1068,7 @@
                                 <th style="width:10%">Jumlah Tersedia</th>
                                 <th style="width:10%">Kondisi</th>
                                 <th style="width:12%">Kesesuaian Standar Industri</th>
+                                <th style="width:12%">Dokumen Pendukung</th>
                                 <th style="width:18%">Keterangan</th>
                             </tr>
                         </thead>
@@ -1132,6 +1140,53 @@
                                 <option value="">Pilih</option>
                                 <option value="Baik">Baik</option>
                                 <option value="Rusak">Rusak</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm table-input sapras-input" data-key="industry_standard">
+                                <option value="">Pilih</option>
+                                <option value="Ya">Ya</option>
+                                <option value="Tidak">Tidak</option>
+                                <option value="Sebagian">Sebagian</option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="form-control form-control-sm table-input sapras-input" data-key="remarks" placeholder="Keterangan"></td>
+                    </tr>`;
+            });
+
+            return `
+                <div class="table-responsive">
+                    <table class="table instrument-table mb-0" id="sapras-table-${sectionNum}">
+                        <thead>
+                            <tr>
+                                <th style="width:4%">No</th>
+                                <th style="width:26%">Nama Peralatan</th>
+                                <th style="width:12%">Jumlah Standar</th>
+                                <th style="width:12%">Jumlah Tersedia</th>
+                                <th style="width:12%">Kondisi</th>
+                                <th style="width:14%">Kesesuaian Standar Industri</th>
+                                <th style="width:20%">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>`;
+        }
+
+        function renderEquipmentGimTable(section, sectionNum) {
+            let rows = '';
+            section.items.forEach((item, i) => {
+                rows += `
+                    <tr data-section="${sectionNum}" data-row="${i}">
+                        <td class="text-center">${i + 1}</td>
+                        <td><strong>${item.name}</strong></td>
+                        <td class="text-center"><span class="badge bg-light text-dark">${item.standard_qty}</span></td>
+                        <td><input type="number" class="form-control form-control-sm table-input sapras-input" data-key="qty_available" placeholder="0" min="0"></td>
+                        <td>
+                            <select class="form-select form-select-sm table-input sapras-input" data-key="condition">
+                                <option value="">Pilih</option>
+                                <option value="Trial">Trial</option>
+                                <option value="License">License</option>
                             </select>
                         </td>
                         <td>

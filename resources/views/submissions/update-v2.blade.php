@@ -537,8 +537,7 @@
                                 </div>
                                 <p class="indicator-text mb-2">Analisis Kebutuhan Pelatihan Guru ke Depan</p>
                                 <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Diisi oleh Guru/Koordinator Program untuk
-                                    menganalisis kebutuhan pelatihan
+                                    <i class="bi bi-info-circle me-1"></i>(Diisi oleh Guru/Wakasek Kurikulum/Kepsek)
                                 </small>
 
                                 @include('instrument.partials.v2.form-c32', [
