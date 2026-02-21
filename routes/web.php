@@ -31,7 +31,8 @@ Route::get('/instrumen/v2', [PublicInstrumentV2Controller::class, 'index'])
     ->name('instrument.v2.form');
 
 Route::post('/instrumen/v2', [PublicInstrumentV2Controller::class, 'store'])
-    ->name('instrument.v2.submit');
+    ->name('instrument.v2.submit')
+    ->middleware('throttle:5,1'); // Limit to 5 requests per minute per IP
 
 Route::get('/api/regencies/{provinceCode}', [PublicInstrumentV2Controller::class, 'getRegencies'])
     ->name('api.regencies');
