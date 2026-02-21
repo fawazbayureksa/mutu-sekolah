@@ -265,3 +265,183 @@ body {
 .note-box i {
     color: #856404;
 }
+
+/* ===== Wizard Progress Bar ===== */
+
+.wizard-progress {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    padding: 1.5rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.wizard-progress-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+}
+
+.wizard-step-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+}
+
+.wizard-step-indicator.active .step-circle {
+    background: #0d6efd;
+    color: #fff;
+    border-color: rgba(13, 110, 253, 0.3);
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15);
+}
+
+.wizard-step-indicator.completed .step-circle {
+    background: #198754;
+    color: #fff;
+    border-color: rgba(25, 135, 84, 0.3);
+}
+
+.wizard-step-indicator.completed .step-circle::after {
+    content: "✓";
+    font-size: 1.1rem;
+}
+
+.wizard-step-indicator.completed .step-circle {
+    font-size: 0;
+}
+
+.step-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #adb5bd;
+    margin-top: 0.5rem;
+    text-align: center;
+    max-width: 90px;
+    line-height: 1.2;
+    transition: color 0.3s ease;
+}
+
+.wizard-step-indicator.active .step-label,
+.wizard-step-indicator.completed .step-label {
+    color: #343a40;
+}
+
+.step-connector {
+    flex: 1;
+    height: 3px;
+    background: #e9ecef;
+    margin: 0 0.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 2px;
+    transition: background 0.3s ease;
+    min-width: 20px;
+}
+
+.step-connector.completed {
+    background: #198754;
+}
+
+/* ===== Wizard Step Transitions ===== */
+
+.wizard-step {
+    animation: wizardFadeIn 0.35s ease-out;
+}
+
+@keyframes wizardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Wizard Navigation Bar ===== */
+
+.wizard-nav {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    border-top: 1px solid #e9ecef;
+    padding: 1rem 0;
+    margin: 2rem -2.5rem -2.5rem -2.5rem;
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
+    z-index: 99;
+}
+
+.wizard-nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.wizard-step-counter {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6c757d;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 768px) {
+    .wizard-progress {
+        padding: 1rem;
+    }
+
+    .step-label {
+        font-size: 0.6rem;
+        max-width: 60px;
+    }
+
+    .step-circle {
+        width: 32px;
+        height: 32px;
+        font-size: 0.75rem;
+    }
+
+    .step-connector {
+        margin: 0 0.25rem;
+        min-width: 10px;
+    }
+
+    .wizard-nav {
+        margin: 1rem 0 0 0;
+        border-radius: 0;
+        position: fixed;
+        left: 0;
+        right: 0;
+    }
+
+    .wizard-nav-inner {
+        padding: 0 1rem;
+    }
+}

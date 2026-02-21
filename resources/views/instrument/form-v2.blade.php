@@ -41,441 +41,503 @@
                     </div>
                 @endif
 
+                {{-- Wizard Progress Bar --}}
+                <div class="wizard-progress mb-4">
+                    <div class="wizard-progress-inner">
+                        <div class="wizard-step-indicator active" data-target="1">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">Identitas Sekolah</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        <div class="wizard-step-indicator" data-target="2">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Data Responden</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        <div class="wizard-step-indicator" data-target="3">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Standar Peserta Didik</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        <div class="wizard-step-indicator" data-target="4">
+                            <div class="step-circle">4</div>
+                            <div class="step-label">Sarana Prasarana</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        <div class="wizard-step-indicator" data-target="5">
+                            <div class="step-circle">5</div>
+                            <div class="step-label">Tata Kelola</div>
+                        </div>
+                    </div>
+                </div>
+
                 <form action="{{ route('instrument.v2.submit') }}" method="POST" id="instrumentForm">
                     @csrf
 
-                    {{-- Section 1: Identitas Sekolah --}}
-                    <div class="form-card mt-3">
-                        <div class="section-title">
-                            <i class="bi bi-building"></i>
-                            <strong>
-                                Identitas Sekolah
-                            </strong>
-                        </div>
+                    {{-- Step 1: Identitas Sekolah --}}
+                    <div class="wizard-step" data-step="1">
+                        <div class="form-card mt-3">
+                            <div class="section-title">
+                                <i class="bi bi-building"></i>
+                                <strong>
+                                    Identitas Sekolah
+                                </strong>
+                            </div>
 
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <label class="form-label">Nama Sekolah <span class="text-danger">*</span></label>
-                                <input type="text" name="school_name"
-                                    class="form-control @error('school_name') is-invalid @enderror" required
-                                    value="{{ old('school_name') }}" placeholder="Nama sekolah">
-                                @error('school_name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">NPSN</label>
-                                <input type="text" name="npsn" class="form-control" value="{{ old('npsn') }}"
-                                    placeholder="NPSN">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Provinsi <span class="text-danger">*</span></label>
-                                <select name="province_code" id="provinceSelect"
-                                    class="form-select @error('province_code') is-invalid @enderror" required
-                                    onchange="loadRegencies(this.value)">
-                                    <option value="">-- Pilih Provinsi --</option>
-                                    @foreach ($provinces as $province)
-                                        <option value="{{ $province->code }}"
-                                            {{ old('province_code') == $province->code ? 'selected' : '' }}>
-                                            {{ $province->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('province_code')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Kabupaten/Kota <span class="text-danger">*</span></label>
-                                <select name="regency_code" id="regencySelect"
-                                    class="form-select @error('regency_code') is-invalid @enderror" required disabled>
-                                    <option value="">-- Pilih Kabupaten/Kota --</option>
-                                </select>
-                                @error('regency_code')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Alamat <span class="text-danger">*</span></label>
-                                <textarea name="address" rows="3" class="form-control @error('address') is-invalid @enderror" required
-                                    placeholder="Masukkan alamat lengkap sekolah">{{ old('address') }}</textarea>
-                                @error('address')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Status Sekolah</label>
-                                <div class="mt-2">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_status"
-                                            id="statusNegeri" value="Negeri"
-                                            {{ old('school_status') == 'Negeri' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="statusNegeri">Negeri</label>
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nama Sekolah <span class="text-danger">*</span></label>
+                                    <input type="text" name="school_name"
+                                        class="form-control @error('school_name') is-invalid @enderror" required
+                                        value="{{ old('school_name') }}" placeholder="Nama sekolah">
+                                    @error('school_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">NPSN</label>
+                                    <input type="text" name="npsn" class="form-control" value="{{ old('npsn') }}"
+                                        placeholder="NPSN">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Provinsi <span class="text-danger">*</span></label>
+                                    <select name="province_code" id="provinceSelect"
+                                        class="form-select @error('province_code') is-invalid @enderror" required
+                                        onchange="loadRegencies(this.value)">
+                                        <option value="">-- Pilih Provinsi --</option>
+                                        @foreach ($provinces as $province)
+                                            <option value="{{ $province->code }}"
+                                                {{ old('province_code') == $province->code ? 'selected' : '' }}>
+                                                {{ $province->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('province_code')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Kabupaten/Kota <span class="text-danger">*</span></label>
+                                    <select name="regency_code" id="regencySelect"
+                                        class="form-select @error('regency_code') is-invalid @enderror" required disabled>
+                                        <option value="">-- Pilih Kabupaten/Kota --</option>
+                                    </select>
+                                    @error('regency_code')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Alamat <span class="text-danger">*</span></label>
+                                    <textarea name="address" rows="3" class="form-control @error('address') is-invalid @enderror" required
+                                        placeholder="Masukkan alamat lengkap sekolah">{{ old('address') }}</textarea>
+                                    @error('address')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Status Sekolah</label>
+                                    <div class="mt-2">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="school_status"
+                                                id="statusNegeri" value="Negeri"
+                                                {{ old('school_status') == 'Negeri' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="statusNegeri">Negeri</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="school_status"
+                                                id="statusSwasta" value="Swasta"
+                                                {{ old('school_status') == 'Swasta' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="statusSwasta">Swasta</label>
+                                        </div>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_status"
-                                            id="statusSwasta" value="Swasta"
-                                            {{ old('school_status') == 'Swasta' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="statusSwasta">Swasta</label>
+                                    @error('school_status')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Durasi Program</label>
+                                    <div class="mt-2">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="program_duration"
+                                                id="duration3" value="3 Tahun"
+                                                {{ old('program_duration') == '3 Tahun' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="duration3">3 Tahun</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="program_duration"
+                                                id="duration4" value="4 Tahun"
+                                                {{ old('program_duration') == '4 Tahun' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="duration4">4 Tahun</label>
+                                        </div>
                                     </div>
+                                    @error('program_duration')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('school_status')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Durasi Program</label>
-                                <div class="mt-2">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="program_duration"
-                                            id="duration3" value="3 Tahun"
-                                            {{ old('program_duration') == '3 Tahun' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="duration3">3 Tahun</label>
+                                <div class="col-md-12">
+                                    <label class="form-label">Kategori Sekolah</label>
+                                    <div class="mt-2">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="school_category"
+                                                id="catReguler" value="SMK PK Reguler"
+                                                {{ old('school_category') == 'SMK PK Reguler' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="catReguler">SMK PK Reguler</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="school_category"
+                                                id="catPenguatan" value="SMK PK Penguatan Pembelajaran Mendalam"
+                                                {{ old('school_category') == 'SMK PK Penguatan Pembelajaran Mendalam' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="catPenguatan">SMK PK Penguatan
+                                                Pembelajaran
+                                                Mendalam</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="school_category"
+                                                id="catModel" value="SMK Model"
+                                                {{ old('school_category') == 'SMK Model' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="catModel">SMK Model</label>
+                                        </div>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="program_duration"
-                                            id="duration4" value="4 Tahun"
-                                            {{ old('program_duration') == '4 Tahun' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="duration4">4 Tahun</label>
+                                    @error('school_category')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Akreditasi Sekolah</label>
+                                    <div class="mt-2">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="school_accreditation"
+                                                id="accA" value="A"
+                                                {{ old('school_accreditation') == 'A' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="accA">A</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="school_accreditation"
+                                                id="accB" value="B"
+                                                {{ old('school_accreditation') == 'B' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="accB">B</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="school_accreditation"
+                                                id="accC" value="C"
+                                                {{ old('school_accreditation') == 'C' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="accC">C</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="school_accreditation"
+                                                id="accTidak" value="Tidak Terakreditasi"
+                                                {{ old('school_accreditation') == 'Tidak Terakreditasi' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="accTidak">Tidak Terakreditasi</label>
+                                        </div>
                                     </div>
+                                    @error('school_accreditation')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('program_duration')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
                             </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Kategori Sekolah</label>
-                                <div class="mt-2">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_category"
-                                            id="catReguler" value="SMK PK Reguler"
-                                            {{ old('school_category') == 'SMK PK Reguler' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="catReguler">SMK PK Reguler</label>
+                        </div>
+                    </div> {{-- end wizard-step 1 --}}
+
+                    {{-- Step 2: Data Responden --}}
+                    <div class="wizard-step" data-step="2" style="display:none;">
+                        <div class="form-card mt-3">
+                            <div class="section-title">
+                                <i class="bi bi-person-badge"></i>
+                                <strong>Data Responden</strong>
+                            </div>
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nama Responden <span class="text-danger">*</span></label>
+                                    <input type="text" name="respondent_name"
+                                        class="form-control @error('respondent_name') is-invalid @enderror" required
+                                        value="{{ old('respondent_name') }}" placeholder="Masukkan nama responden">
+                                    @error('respondent_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Jabatan Responden <span class="text-danger">*</span></label>
+                                    <select name="respondent_position"
+                                        class="form-select @error('respondent_position') is-invalid @enderror" required>
+                                        <option value="">-- Pilih Jabatan Responden --</option>
+                                        @foreach ($respondentPositions as $position)
+                                            <option value="{{ $position }}"
+                                                {{ old('respondent_position') == $position ? 'selected' : '' }}>
+                                                {{ $position }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('respondent_position')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div> {{-- end wizard-step 2 --}}
+
+                    {{-- Step 3: ASPECT A - Standar Peserta Didik --}}
+                    <div class="wizard-step" data-step="3" style="display:none;">
+                        <div class="form-card mt-3">
+                            <div class="section-title">
+                                <i class="bi bi-journal-text"></i>
+                                <strong>A - Standar Peserta Didik (Kompetensi & Kesiapan Kerja)</strong>
+                            </div>
+
+                            {{-- A.1: Data Kompetensi (UKK & Sertifikasi) --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">A.1</span>
+                                    Data Kompetensi (UKK & Sertifikasi)
+                                </h5>
+
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">A.1.1</span>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_category"
-                                            id="catPenguatan" value="SMK PK Penguatan Pembelajaran Mendalam"
-                                            {{ old('school_category') == 'SMK PK Penguatan Pembelajaran Mendalam' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="catPenguatan">SMK PK Penguatan Pembelajaran
-                                            Mendalam</label>
+                                    <small class="text-muted d-block mb-3">Rekapitulasi UKK dan Sertifikasi per
+                                        Tahun</small>
+                                    @include('instrument.partials.v2.table-a11')
+                                </div>
+                            </div>
+
+                            {{-- A.1.2: Analisis Skema Sertifikasi dan Kesesuaian KKNI --}}
+                            <div class="indicator-group mb-4">
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">A.1.2</span>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_category"
-                                            id="catModel" value="SMK Model"
-                                            {{ old('school_category') == 'SMK Model' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="catModel">SMK Model</label>
+                                    <p class="indicator-text mb-2">Analisis Skema Sertifikasi dan Kesesuaian KKNI</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isi data skema sertifikasi dan kesesuaian
+                                        dengan
+                                        KKNI
+                                    </small>
+
+                                    @include('instrument.partials.v2.table-a12')
+                                </div>
+                            </div>
+
+                            {{-- A.2: Penelusuran Alumni (Tracer Study) --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">A.2</span>
+                                    Penelusuran Alumni (Tracer Study)
+                                </h5>
+
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">A.2.1</span>
                                     </div>
+                                    <p class="indicator-text mb-2">Penelusuran Alumni (Tracer Study)</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isikan berdasarkan Program/Konsentrasi
+                                        Keahlian
+                                        di Dapodik/Penelusuran Lulusan
+                                    </small>
+
+                                    @include('instrument.partials.v2.table-a21')
                                 </div>
-                                @error('school_category')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
                             </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Akreditasi Sekolah</label>
-                                <div class="mt-2">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_accreditation"
-                                            id="accA" value="A"
-                                            {{ old('school_accreditation') == 'A' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="accA">A</label>
+
+                            {{-- A.3: Data Putus Sekolah dan Ketidaklulusan Kelas --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">A.3</span>
+                                    Data Putus Sekolah dan Ketidaklulusan Kelas
+                                </h5>
+
+                                <div class="indicator-item">
+                                    <p class="indicator-text mb-2">Data Putus Sekolah dan Ketidaklulusan Kelas</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isi data putus sekolah dan ketidaklulusan
+                                        kelas
+                                    </small>
+
+                                    @include('instrument.partials.v2.table-a3')
+                                </div>
+                            </div>
+
+                            {{-- A.4: Data Skor Rata-rata TKA Tahun 2025 --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">A.4</span>
+                                    Data Skor Rata-rata TKA Tahun 2025
+                                </h5>
+
+                                <div class="indicator-item">
+                                    <p class="indicator-text mb-2">Data Skor Rata-rata TKA Tahun 2025</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isikan nilai rata-rata mata pelajaran yang
+                                        diujikan di sekolah dan sesuai dengan program/konsentrasi keahlian Murid (Kelautan,
+                                        Perikanan, TIK).
+                                    </small>
+                                    @include('instrument.partials.v2.table-a4')
+                                </div>
+                            </div>
+                        </div>
+                    </div> {{-- end wizard-step 3 --}}
+
+                    {{-- Step 4: ASPECT B - Data Sarana Prasarana --}}
+                    <div class="wizard-step" data-step="4" style="display:none;">
+                        <div class="form-card mt-3">
+                            <div class="section-title">
+                                <i class="bi bi-journal-text"></i>
+                                <strong>B - Data Sarana Prasarana (Sapras)</strong>
+                            </div>
+
+                            @include('instrument.partials.v2.consentration')
+
+                            {{-- Hidden input to store all sapras data --}}
+                            <input type="hidden" name="answers[B.sapras]" id="sapras-data-input" value="{}">
+
+                            {{-- Placeholder when no concentration is selected --}}
+                            <div id="sapras-placeholder" class="text-center py-5">
+                                <i class="bi bi-building-gear" style="font-size: 3rem; color: #dee2e6;"></i>
+                                <p class="text-muted mt-3 mb-0">Pilih <strong>Konsentrasi Keahlian</strong> pada bagian
+                                    Data
+                                    Sekolah di atas untuk menampilkan tabel Sarana Prasarana.</p>
+                            </div>
+
+                            {{-- Loading indicator --}}
+                            <div id="sapras-loading" class="text-center py-5" style="display: none;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="text-muted mt-3 mb-0">Memuat data sarana prasarana...</p>
+                            </div>
+
+                            {{-- Dynamic sapras container --}}
+                            <div id="sapras-container" style="display: none;"></div>
+                        </div>
+                    </div> {{-- end wizard-step 4 --}}
+
+                    {{-- Step 5: ASPECT C - Data Tata Kelola --}}
+                    <div class="wizard-step" data-step="5" style="display:none;">
+                        <div class="form-card mt-3">
+                            <div class="section-title">
+                                <i class="bi bi-journal-text"></i>
+                                <strong>C - Data Tata Kelola</strong>
+                            </div>
+
+                            {{-- C.1: Kerjasama Industri --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">C.1</span>
+                                    Kerjasama Industri
+                                </h5>
+
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">C.1.1</span>
+                                        <span class="badge bg-info ms-2">Dynamic Rows</span>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_accreditation"
-                                            id="accB" value="B"
-                                            {{ old('school_accreditation') == 'B' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="accB">B</label>
+                                    <p class="indicator-text mb-2">Kerjasama Industri</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isi data kerjasama dengan industri mitra
+                                    </small>
+
+                                    @include('instrument.partials.v2.table-c11')
+                                </div>
+                            </div>
+
+                            {{-- C.2: Teaching Factory (TEFA) --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">C.2</span>
+                                    Teaching Factory (TEFA) / Unit Produksi Sekolah
+                                </h5>
+
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">C.2.1</span>
+                                        <span class="badge bg-info ms-2">Dynamic Rows</span>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_accreditation"
-                                            id="accC" value="C"
-                                            {{ old('school_accreditation') == 'C' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="accC">C</label>
+                                    <p class="indicator-text mb-2">Teaching Factory (TEFA) / Unit Produksi Sekolah</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isi data program Teaching Factory atau Unit
+                                        Produksi Sekolah
+                                    </small>
+
+                                    @include('instrument.partials.v2.table-c21')
+                                </div>
+                            </div>
+
+                            {{-- C.3: Data Pelatihan dan Sertifikasi Guru --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">C.3</span>
+                                    Data Pelatihan dan Sertifikasi Guru/Guru Produktif
+                                </h5>
+
+                                <div class="indicator-item mb-3">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">C.3.1</span>
+                                        <span class="badge bg-info ms-2">Dynamic Rows</span>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_accreditation"
-                                            id="accTidak" value="Tidak Terakreditasi"
-                                            {{ old('school_accreditation') == 'Tidak Terakreditasi' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="accTidak">Tidak Terakreditasi</label>
+                                    <p class="indicator-text mb-2">Data Pelatihan dan Sertifikasi Guru yang Telah Diikuti
+                                    </p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isi data pelatihan dan sertifikasi yang telah
+                                        diikuti oleh guru
+                                    </small>
+
+                                    @include('instrument.partials.v2.table-c31')
+                                </div>
+
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">C.3.2</span>
                                     </div>
+                                    <p class="indicator-text mb-2">Analisis Kebutuhan Pelatihan Guru ke Depan</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>(Diisi oleh Guru/Wakasek Kurikulum/Kepsek)
+                                    </small>
+
+                                    @include('instrument.partials.v2.form-c32')
                                 </div>
-                                @error('school_accreditation')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
 
-                    {{-- Section 2: Data Responden --}}
-                    <div class="form-card mt-3">
-                        <div class="section-title">
-                            <i class="bi bi-person-badge"></i>
-                            <strong>Data Responden</strong>
-                        </div>
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <label class="form-label">Nama Responden <span class="text-danger">*</span></label>
-                                <input type="text" name="respondent_name"
-                                    class="form-control @error('respondent_name') is-invalid @enderror" required
-                                    value="{{ old('respondent_name') }}" placeholder="Masukkan nama responden">
-                                @error('respondent_name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Jabatan Responden <span class="text-danger">*</span></label>
-                                <select name="respondent_position"
-                                    class="form-select @error('respondent_position') is-invalid @enderror" required>
-                                    <option value="">-- Pilih Jabatan Responden --</option>
-                                    @foreach ($respondentPositions as $position)
-                                        <option value="{{ $position }}"
-                                            {{ old('respondent_position') == $position ? 'selected' : '' }}>
-                                            {{ $position }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('respondent_position')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">C.3.3</span>
+                                    </div>
+                                    <p class="indicator-text mb-2">Data Ketenagaan dan Beban Mengajar (Rasio Guru-Murid)
+                                    </p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isikan untuk setiap Kompetensi Keahlian
+                                        (Konsentrasi) yang aktif
+                                    </small>
 
-                    {{-- ASPECT A: Standar Peserta Didik --}}
-                    <div class="form-card mt-3">
-                        <div class="section-title">
-                            <i class="bi bi-journal-text"></i>
-                            <strong>A - Standar Peserta Didik (Kompetensi & Kesiapan Kerja)</strong>
-                        </div>
-
-                        {{-- A.1: Data Kompetensi (UKK & Sertifikasi) --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">A.1</span>
-                                Data Kompetensi (UKK & Sertifikasi)
-                            </h5>
-
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">A.1.1</span>
+                                    @include('instrument.partials.v2.table-c33')
                                 </div>
-                                <small class="text-muted d-block mb-3">Rekapitulasi UKK dan Sertifikasi per Tahun</small>
-                                @include('instrument.partials.v2.table-a11')
                             </div>
                         </div>
+                    </div> {{-- end wizard-step 5 --}}
 
-                        {{-- A.1.2: Analisis Skema Sertifikasi dan Kesesuaian KKNI --}}
-                        <div class="indicator-group mb-4">
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">A.1.2</span>
-                                </div>
-                                <p class="indicator-text mb-2">Analisis Skema Sertifikasi dan Kesesuaian KKNI</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data skema sertifikasi dan kesesuaian dengan
-                                    KKNI
-                                </small>
-
-                                @include('instrument.partials.v2.table-a12')
-                            </div>
+                    {{-- Wizard Navigation Bar --}}
+                    <div class="wizard-nav">
+                        <div class="wizard-nav-inner">
+                            <button type="button" class="btn btn-outline-secondary rounded-pill px-4" id="btnPrev"
+                                onclick="prevStep()" style="display:none;">
+                                <i class="bi bi-arrow-left me-2"></i>Sebelumnya
+                            </button>
+                            <div class="wizard-step-counter" id="stepCounter">Langkah 1 dari 5</div>
+                            <button type="button" class="btn btn-primary rounded-pill px-4" id="btnNext"
+                                onclick="nextStep()">
+                                Selanjutnya<i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                            <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold" id="btnSubmit"
+                                style="display:none;">
+                                <i class="bi bi-send-fill me-2"></i>Kirim Data Instrumen
+                            </button>
                         </div>
-
-                        {{-- A.2: Penelusuran Alumni (Tracer Study) --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">A.2</span>
-                                Penelusuran Alumni (Tracer Study)
-                            </h5>
-
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">A.2.1</span>
-                                </div>
-                                <p class="indicator-text mb-2">Penelusuran Alumni (Tracer Study)</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isikan berdasarkan Program/Konsentrasi Keahlian
-                                    di Dapodik/Penelusuran Lulusan
-                                </small>
-
-                                @include('instrument.partials.v2.table-a21')
-                            </div>
-                        </div>
-
-                        {{-- A.3: Data Putus Sekolah dan Ketidaklulusan Kelas --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">A.3</span>
-                                Data Putus Sekolah dan Ketidaklulusan Kelas
-                            </h5>
-
-                            <div class="indicator-item">
-                                <p class="indicator-text mb-2">Data Putus Sekolah dan Ketidaklulusan Kelas</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data putus sekolah dan ketidaklulusan kelas
-                                </small>
-
-                                @include('instrument.partials.v2.table-a3')
-                            </div>
-                        </div>
-
-                        {{-- A.4: Data Skor Rata-rata TKA Tahun 2025 --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">A.4</span>
-                                Data Skor Rata-rata TKA Tahun 2025
-                            </h5>
-
-                            <div class="indicator-item">
-                                <p class="indicator-text mb-2">Data Skor Rata-rata TKA Tahun 2025</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isikan nilai rata-rata mata pelajaran yang
-                                    diujikan di sekolah dan sesuai dengan program/konsentrasi keahlian Murid (Kelautan,
-                                    Perikanan, TIK).
-                                </small>
-                                @include('instrument.partials.v2.table-a4')
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- ASPECT B: Data Sarana Prasarana --}}
-                    <div class="form-card mt-3">
-                        <div class="section-title">
-                            <i class="bi bi-journal-text"></i>
-                            <strong>B - Data Sarana Prasarana (Sapras)</strong>
-                        </div>
-
-                        @include('instrument.partials.v2.consentration')
-
-                        {{-- Hidden input to store all sapras data --}}
-                        <input type="hidden" name="answers[B.sapras]" id="sapras-data-input" value="{}">
-
-                        {{-- Placeholder when no concentration is selected --}}
-                        <div id="sapras-placeholder" class="text-center py-5">
-                            <i class="bi bi-building-gear" style="font-size: 3rem; color: #dee2e6;"></i>
-                            <p class="text-muted mt-3 mb-0">Pilih <strong>Konsentrasi Keahlian</strong> pada bagian Data
-                                Sekolah di atas untuk menampilkan tabel Sarana Prasarana.</p>
-                        </div>
-
-                        {{-- Loading indicator --}}
-                        <div id="sapras-loading" class="text-center py-5" style="display: none;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="text-muted mt-3 mb-0">Memuat data sarana prasarana...</p>
-                        </div>
-
-                        {{-- Dynamic sapras container --}}
-                        <div id="sapras-container" style="display: none;"></div>
-                    </div>
-
-                    {{-- ASPECT C: Data Tata Kelola --}}
-                    <div class="form-card mt-3">
-                        <div class="section-title">
-                            <i class="bi bi-journal-text"></i>
-                            <strong>C - Data Tata Kelola</strong>
-                        </div>
-
-                        {{-- C.1: Kerjasama Industri --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">C.1</span>
-                                Kerjasama Industri
-                            </h5>
-
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">C.1.1</span>
-                                    <span class="badge bg-info ms-2">Dynamic Rows</span>
-                                </div>
-                                <p class="indicator-text mb-2">Kerjasama Industri</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data kerjasama dengan industri mitra
-                                </small>
-
-                                @include('instrument.partials.v2.table-c11')
-                            </div>
-                        </div>
-
-                        {{-- C.2: Teaching Factory (TEFA) --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">C.2</span>
-                                Teaching Factory (TEFA) / Unit Produksi Sekolah
-                            </h5>
-
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">C.2.1</span>
-                                    <span class="badge bg-info ms-2">Dynamic Rows</span>
-                                </div>
-                                <p class="indicator-text mb-2">Teaching Factory (TEFA) / Unit Produksi Sekolah</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data program Teaching Factory atau Unit
-                                    Produksi Sekolah
-                                </small>
-
-                                @include('instrument.partials.v2.table-c21')
-                            </div>
-                        </div>
-
-                        {{-- C.3: Data Pelatihan dan Sertifikasi Guru --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">C.3</span>
-                                Data Pelatihan dan Sertifikasi Guru/Guru Produktif
-                            </h5>
-
-                            <div class="indicator-item mb-3">
-                                <div class="mb-2">
-                                    <span class="indicator-code">C.3.1</span>
-                                    <span class="badge bg-info ms-2">Dynamic Rows</span>
-                                </div>
-                                <p class="indicator-text mb-2">Data Pelatihan dan Sertifikasi Guru yang Telah Diikuti</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data pelatihan dan sertifikasi yang telah
-                                    diikuti oleh guru
-                                </small>
-
-                                @include('instrument.partials.v2.table-c31')
-                            </div>
-
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">C.3.2</span>
-                                </div>
-                                <p class="indicator-text mb-2">Analisis Kebutuhan Pelatihan Guru ke Depan</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>(Diisi oleh Guru/Wakasek Kurikulum/Kepsek)
-                                </small>
-
-                                @include('instrument.partials.v2.form-c32')
-                            </div>
-
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">C.3.3</span>
-                                </div>
-                                <p class="indicator-text mb-2">Data Ketenagaan dan Beban Mengajar (Rasio Guru-Murid)</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isikan untuk setiap Kompetensi Keahlian
-                                    (Konsentrasi) yang aktif
-                                </small>
-
-                                @include('instrument.partials.v2.table-c33')
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Submit Button --}}
-                    <div class="d-grid gap-3 col-lg-6 mx-auto mt-5 mb-5">
-                        <button type="submit" class="btn btn-primary btn-lg shadow rounded-pill py-3 fw-bold"
-                            style="font-size: 1rem;">
-                            <i class="bi bi-send-fill me-2"></i> Kirim Data Instrumen
-                        </button>
-                        <a href="{{ route('landing') }}" class="btn btn-outline-secondary rounded-pill border-0">
-                            <i class="bi bi-arrow-left me-2"></i>Kembali ke Halaman Utama
-                        </a>
                     </div>
                 </form>
+
+                <div class="text-center mb-5 mt-3">
+                    <a href="{{ route('landing') }}" class="btn btn-outline-secondary rounded-pill border-0">
+                        <i class="bi bi-arrow-left me-2"></i>Kembali ke Halaman Utama
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -483,17 +545,303 @@
 
 @push('scripts')
     <script>
+        const STORAGE_KEY = 'instrument_form_v2_data';
+        const TOTAL_STEPS = 5;
+        let currentStep = 1;
+        let isRestoring = false;
+
         document.addEventListener('DOMContentLoaded', function() {
             initializeDynamicTables();
+            restoreFromLocalStorage();
+            setupAutoSave();
 
             document.getElementById('instrumentForm').addEventListener('submit', function(e) {
                 collectAllTableData();
 
                 if (!confirm('Apakah Anda yakin data yang diisi sudah benar?')) {
                     e.preventDefault();
+                } else {
+                    localStorage.removeItem(STORAGE_KEY);
                 }
             });
         });
+
+        // ===== WIZARD STEP NAVIGATION =====
+
+        function showStep(step) {
+            document.querySelectorAll('.wizard-step').forEach(el => {
+                el.style.display = 'none';
+            });
+            const target = document.querySelector(`.wizard-step[data-step="${step}"]`);
+            if (target) {
+                target.style.display = 'block';
+                // Re-trigger animation
+                target.style.animation = 'none';
+                target.offsetHeight; // reflow
+                target.style.animation = '';
+            }
+
+            currentStep = step;
+            updateProgressBar();
+            updateNavButtons();
+            saveToLocalStorage();
+
+            // Scroll to top of form
+            document.querySelector('.wizard-progress').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        function nextStep() {
+            // Validate required fields in current step
+            const currentStepEl = document.querySelector(`.wizard-step[data-step="${currentStep}"]`);
+            const requiredFields = currentStepEl.querySelectorAll('[required]');
+            let valid = true;
+
+            for (const field of requiredFields) {
+                if (!field.reportValidity()) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid && currentStep < TOTAL_STEPS) {
+                showStep(currentStep + 1);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                showStep(currentStep - 1);
+            }
+        }
+
+        function updateProgressBar() {
+            const indicators = document.querySelectorAll('.wizard-step-indicator');
+            const connectors = document.querySelectorAll('.step-connector');
+
+            indicators.forEach((ind, i) => {
+                const stepNum = i + 1;
+                ind.classList.remove('active', 'completed');
+                if (stepNum === currentStep) {
+                    ind.classList.add('active');
+                } else if (stepNum < currentStep) {
+                    ind.classList.add('completed');
+                }
+            });
+
+            connectors.forEach((conn, i) => {
+                conn.classList.toggle('completed', i + 1 < currentStep);
+            });
+
+            document.getElementById('stepCounter').textContent = `Langkah ${currentStep} dari ${TOTAL_STEPS}`;
+        }
+
+        function updateNavButtons() {
+            document.getElementById('btnPrev').style.display = currentStep > 1 ? 'inline-block' : 'none';
+            document.getElementById('btnNext').style.display = currentStep < TOTAL_STEPS ? 'inline-block' : 'none';
+            document.getElementById('btnSubmit').style.display = currentStep === TOTAL_STEPS ? 'inline-block' : 'none';
+        }
+
+        // ===== LOCAL STORAGE PERSISTENCE =====
+
+        function setupAutoSave() {
+            const form = document.getElementById('instrumentForm');
+            form.addEventListener('input', debounce(saveToLocalStorage, 500));
+            form.addEventListener('change', debounce(saveToLocalStorage, 300));
+        }
+
+        function debounce(fn, delay) {
+            let timer;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn.apply(this, args), delay);
+            };
+        }
+
+        function saveToLocalStorage() {
+            if (isRestoring) return;
+            try {
+                const form = document.getElementById('instrumentForm');
+                const data = {
+                    _currentStep: currentStep,
+                    _timestamp: Date.now(),
+                    fields: {},
+                    radios: {},
+                    sapras: {}
+                };
+
+                // Save all text/select/textarea inputs
+                form.querySelectorAll(
+                    'input:not([type="radio"]):not([type="hidden"]):not([type="checkbox"]), select, textarea').forEach(
+                    el => {
+                        const id = el.name || el.id || el.dataset.key;
+                        if (id) {
+                            const uniqueKey = buildFieldKey(el);
+                            data.fields[uniqueKey] = el.value;
+                        }
+                    });
+
+                // Save radio buttons
+                form.querySelectorAll('input[type="radio"]:checked').forEach(el => {
+                    data.radios[el.name] = el.value;
+                });
+
+                // Save dynamic table row counts
+                data.dynamicRowCounts = {};
+                ['table-a11', 'table-a12', 'table-a21', 'table-a3', 'table-c11', 'table-c21', 'table-c31', 'table-c33']
+                .forEach(tableId => {
+                    const table = document.getElementById(tableId);
+                    if (table) {
+                        data.dynamicRowCounts[tableId] = table.querySelectorAll('tbody tr').length;
+                    }
+                });
+
+                // Save sapras data if visible
+                const saprasContainer = document.getElementById('sapras-container');
+                if (saprasContainer && saprasContainer.style.display !== 'none') {
+                    data.sapras.visible = true;
+                    data.sapras.inputs = {};
+                    saprasContainer.querySelectorAll('.sapras-input').forEach((el, i) => {
+                        data.sapras.inputs[`sapras_${i}_${el.dataset.key}`] = el.value;
+                    });
+                }
+
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            } catch (e) {
+                console.warn('Failed to save to localStorage:', e);
+            }
+        }
+
+        function buildFieldKey(el) {
+            // Build unique key from name, or data attributes, or id
+            if (el.name) return 'name:' + el.name;
+            const row = el.closest('tr');
+            if (row && el.dataset.key) {
+                const table = el.closest('table');
+                const tableId = table ? table.id : 'unknown';
+                const rowIdx = Array.from(row.parentNode.children).indexOf(row);
+                return `table:${tableId}:${rowIdx}:${el.dataset.key}`;
+            }
+            if (el.id) return 'id:' + el.id;
+            return '';
+        }
+
+        function restoreFromLocalStorage() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return;
+
+                const data = JSON.parse(raw);
+                if (!data || !data.fields) return;
+
+                isRestoring = true;
+                const form = document.getElementById('instrumentForm');
+
+                // Restore text/select/textarea fields
+                form.querySelectorAll(
+                    'input:not([type="radio"]):not([type="hidden"]):not([type="checkbox"]), select, textarea').forEach(
+                    el => {
+                        const uniqueKey = buildFieldKey(el);
+                        if (uniqueKey && data.fields[uniqueKey] !== undefined) {
+                            el.value = data.fields[uniqueKey];
+                        }
+                    });
+
+                // Restore radio buttons
+                if (data.radios) {
+                    Object.entries(data.radios).forEach(([name, value]) => {
+                        const radio = form.querySelector(
+                            `input[type="radio"][name="${name}"][value="${CSS.escape(value)}"]`);
+                        if (radio) radio.checked = true;
+                    });
+                }
+
+                // Restore step
+                if (data._currentStep && data._currentStep >= 1 && data._currentStep <= TOTAL_STEPS) {
+                    showStep(data._currentStep);
+                }
+
+                // Restore province/regency chain (always, independent of expertise)
+                const provinceVal = data.fields['name:province_code'];
+                if (provinceVal) {
+                    document.getElementById('provinceSelect').value = provinceVal;
+                    loadRegencies(provinceVal);
+                    const regencyVal = data.fields['name:regency_code'];
+                    if (regencyVal) {
+                        setTimeout(() => {
+                            document.getElementById('regencySelect').value = regencyVal;
+                        }, 600);
+                    }
+                }
+
+                // Restore cascading dropdowns (expertise chain) needs time for DOM
+                const expertiseVal = data.fields['name:expertise'];
+                if (expertiseVal) {
+                    document.getElementById('expertiseSelect').value = expertiseVal;
+                    loadExpertisePrograms(expertiseVal);
+
+                    const programVal = data.fields['name:expertise_program'];
+                    if (programVal) {
+                        setTimeout(() => {
+                            document.getElementById('expertiseProgramSelect').value = programVal;
+                            loadExpertiseConcentrations(programVal);
+
+                            const concVal = data.fields['name:expertise_concentration'];
+                            if (concVal) {
+                                setTimeout(() => {
+                                    const concSelect = document.getElementById(
+                                        'expertiseConcentrationSelect');
+                                    concSelect.value = concVal;
+
+                                    // Only load sapras if the value was actually set in the dropdown
+                                    if (concSelect.value === concVal) {
+                                        loadSaprasData(concVal);
+
+                                        // Restore sapras inputs after data loads
+                                        if (data.sapras && data.sapras.visible && data.sapras.inputs) {
+                                            setTimeout(() => {
+                                                const saprasContainer = document.getElementById(
+                                                    'sapras-container');
+                                                if (saprasContainer) {
+                                                    saprasContainer.querySelectorAll(
+                                                            '.sapras-input')
+                                                        .forEach((el, i) => {
+                                                            const key =
+                                                                `sapras_${i}_${el.dataset.key}`;
+                                                            if (data.sapras.inputs[key] !==
+                                                                undefined) {
+                                                                el.value = data.sapras.inputs[
+                                                                    key];
+                                                            }
+                                                        });
+                                                }
+                                                isRestoring = false;
+                                            }, 1500);
+                                        } else {
+                                            isRestoring = false;
+                                        }
+                                    } else {
+                                        isRestoring = false;
+                                    }
+                                }, 200);
+                            } else {
+                                isRestoring = false;
+                            }
+                        }, 200);
+                    } else {
+                        isRestoring = false;
+                    }
+                } else {
+                    isRestoring = false;
+                }
+
+            } catch (e) {
+                console.warn('Failed to restore from localStorage:', e);
+                isRestoring = false;
+            }
+        }
 
         function initializeDynamicTables() {
             document.querySelectorAll('.btn-add-row').forEach(btn => {
@@ -829,52 +1177,6 @@
             }
         }
 
-        // Page load - restore old values
-        document.addEventListener('DOMContentLoaded', function() {
-            // Restore province and regency if old values exist
-            const oldProvinceCode = "{{ old('province_code') }}";
-            const oldRegencyCode = "{{ old('regency_code') }}";
-
-            if (oldProvinceCode) {
-                // Load regencies for the old province
-                loadRegencies(oldProvinceCode);
-
-                // After regencies are loaded, select the old regency
-                if (oldRegencyCode) {
-                    setTimeout(() => {
-                        const regencySelect = document.getElementById('regencySelect');
-                        regencySelect.value = oldRegencyCode;
-                    }, 500); // Wait for API call to complete
-                }
-            }
-
-            // Restore expertise fields if old values exist
-            const expertiseSelect = document.getElementById('expertiseSelect');
-            const programSelect = document.getElementById('expertiseProgramSelect');
-
-            if (expertiseSelect.value) {
-                loadExpertisePrograms(expertiseSelect.value);
-
-                // If there's an old program value, restore it
-                const oldProgram = "{{ old('expertise_program') }}";
-                if (oldProgram) {
-                    setTimeout(() => {
-                        programSelect.value = oldProgram;
-                        loadExpertiseConcentrations(oldProgram);
-
-                        // If there's an old concentration value, restore it
-                        const oldConcentration = "{{ old('expertise_concentration') }}";
-                        if (oldConcentration) {
-                            setTimeout(() => {
-                                document.getElementById('expertiseConcentrationSelect')
-                                    .value =
-                                    oldConcentration;
-                            }, 100);
-                        }
-                    }, 100);
-                }
-            }
-        });
 
         // ===== SAPRAS DYNAMIC TABLES =====
 
