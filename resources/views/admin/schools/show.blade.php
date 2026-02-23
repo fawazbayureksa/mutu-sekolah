@@ -172,7 +172,7 @@
                 <div class="card shadow">
                     <div class="card-header py-3 d-flex align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary">
-                            <i class="bi bi-file-text me-2"></i>Riwayat Pengajuan V2
+                            <i class="bi bi-file-text me-2"></i>Riwayat Pengajuan
                         </h6>
                         <a href="{{ route('admin.submissions-v2.index', ['school' => $school->id]) }}"
                             class="btn btn-sm btn-outline-primary">

@@ -1,16 +1,16 @@
 @extends('verifier.layouts.verifier')
 
-@section('title', 'Detail Pengajuan V2')
+@section('title', 'Detail Pengajuan')
 
 @section('content')
     <div class="container-fluid">
         {{-- Header --}}
         <div class="d-flex align-items-center justify-content-between mb-4">
             <div>
-                <h1 class="h3 mb-1 text-gray-800">Detail Pengajuan V2</h1>
+                <h1 class="h3 mb-1 text-gray-800">Detail Pengajuan</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="{{ route('verifier.submissions-v2.index') }}">Pengajuan V2</a>
+                        <li class="breadcrumb-item"><a href="{{ route('verifier.submissions-v2.index') }}">Pengajuan</a>
                         </li>
                         <li class="breadcrumb-item active">Detail</li>
                     </ol>
