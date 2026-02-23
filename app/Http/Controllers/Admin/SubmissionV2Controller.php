@@ -35,7 +35,6 @@ class SubmissionV2Controller extends Controller
     public function show(Request $request, InstrumentSubmissionV2 $submission): View
     {
         $submission->load(['details', 'verifier', 'validator', 'school', 'province', 'regency']);
-
         $viewPrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
 
         return view("{$viewPrefix}.submissions-v2.show", compact('submission'));
