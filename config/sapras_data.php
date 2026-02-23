@@ -1742,7 +1742,7 @@ return [
             // 9. KELENGKAPAN UTILITAS DAN BANGUNAN
             [
                 'title' => 'Kelengkapan Utilitas dan Bangunan',
-                'type' => 'utility',
+                'type' => 'equipment_checklist',
                 'items' => [
                     ['name' => 'Pompa Air', 'spec' => 'Ada dan berfungsi'],
                     ['name' => 'Tangki Air', 'spec' => 'Min. 2 x 1.000 liter'],
@@ -1768,6 +1768,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
