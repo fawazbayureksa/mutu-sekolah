@@ -704,7 +704,8 @@
                     data.sapras.visible = true;
                     data.sapras.inputs = {};
                     saprasContainer.querySelectorAll('.sapras-input').forEach((el, i) => {
-                        data.sapras.inputs[`sapras_${i}_${el.dataset.key}`] = el.value;
+                        const val = el.type === 'checkbox' ? (el.checked ? 'Ya' : 'Tidak') : el.value;
+                        data.sapras.inputs[`sapras_${i}_${el.dataset.key}`] = val;
                     });
                 }
 
@@ -812,8 +813,15 @@
                                                                 `sapras_${i}_${el.dataset.key}`;
                                                             if (data.sapras.inputs[key] !==
                                                                 undefined) {
-                                                                el.value = data.sapras.inputs[
-                                                                    key];
+                                                                if (el.type === 'checkbox') {
+                                                                    el.checked = data.sapras
+                                                                        .inputs[key] === 'Ya';
+                                                                    updateChecklistLabel(el);
+                                                                } else {
+                                                                    el.value = data.sapras
+                                                                        .inputs[
+                                                                            key];
+                                                                }
                                                             }
                                                         });
                                                 }
@@ -1260,6 +1268,9 @@
                     case 'equipment_gim':
                         tableHtml = renderEquipmentGimTable(section, sectionNum);
                         break;
+                    case 'equipment_checklist':
+                        tableHtml = renderEquipmentChecklistTable(section, sectionNum);
+                        break;
                     case 'k3':
                         tableHtml = renderK3Table(section, sectionNum);
                         break;
@@ -1615,6 +1626,61 @@
                 </div>`;
         }
 
+        // ===== equipment_checklist: No | Komponen | Standar Minimal | Checklist (Ya/Tidak) | Jumlah Tersedia | Keterangan =====
+        function renderEquipmentChecklistTable(section, sectionNum) {
+            let rows = '';
+            section.items.forEach((item, i) => {
+                const inputId = `checklist_${sectionNum}_${i}`;
+                rows += `
+                    <tr data-section="${sectionNum}" data-row="${i}">
+                        <td class="text-center">${i + 1}</td>
+                        <td><strong>${item.name}</strong></td>
+                        <td><small class="text-muted">${item.spec || '-'}</small></td>
+                        <td class="text-center">
+                            <div class="checklist-toggle">
+                                <input type="checkbox" class="checklist-cb sapras-input"
+                                    id="${inputId}"
+                                    data-key="checklist"
+                                    onchange="updateChecklistLabel(this)">
+                                <label for="${inputId}" class="checklist-label" data-checked-label="✓ Ya" data-unchecked-label="✗ Tidak">
+                                    ✗ Tidak
+                                </label>
+                            </div>
+                        </td>
+                        <td><input type="number" class="form-control form-control-sm table-input sapras-input" data-key="qty_available" placeholder="0" min="0"></td>
+                        <td><input type="text" class="form-control form-control-sm table-input sapras-input" data-key="remarks" placeholder="Keterangan"></td>
+                    </tr>`;
+            });
+
+            return `
+                <div class="table-responsive">
+                    <table class="table instrument-table mb-0" id="sapras-table-${sectionNum}">
+                        <thead>
+                            <tr>
+                                <th style="width:4%">No</th>
+                                <th style="width:26%">Komponen</th>
+                                <th style="width:26%">Standar Minimal</th>
+                                <th style="width:14%" class="text-center">Checklist (Ya/Tidak)</th>
+                                <th style="width:12%">Jumlah Tersedia</th>
+                                <th style="width:18%">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>`;
+        }
+
+        function updateChecklistLabel(checkbox) {
+            const label = checkbox.nextElementSibling;
+            if (checkbox.checked) {
+                label.textContent = label.dataset.checkedLabel;
+                label.classList.add('checked');
+            } else {
+                label.textContent = label.dataset.uncheckedLabel;
+                label.classList.remove('checked');
+            }
+        }
+
         function collectSaprasData() {
             const container = document.getElementById('sapras-container');
             const hiddenInput = document.getElementById('sapras-data-input');
@@ -1651,7 +1717,11 @@
                     row.querySelectorAll('.sapras-input').forEach(input => {
                         const key = input.dataset.key;
                         if (key) {
-                            rowData[key] = input.value;
+                            if (input.type === 'checkbox') {
+                                rowData[key] = input.checked ? 'Ya' : 'Tidak';
+                            } else {
+                                rowData[key] = input.value;
+                            }
                         }
                     });
 

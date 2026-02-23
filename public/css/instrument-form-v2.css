@@ -445,3 +445,49 @@ body {
         padding: 0 1rem;
     }
 }
+
+/* ===== Checklist Toggle (equipment_checklist type) ===== */
+
+.checklist-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hide the native checkbox */
+.checklist-cb {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.checklist-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    padding: 0.3rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    border: 2px solid #dee2e6;
+    background: #f8f9fa;
+    color: #6c757d;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.checklist-label:hover {
+    border-color: #adb5bd;
+    background: #e9ecef;
+}
+
+.checklist-label.checked {
+    background: #d1fae5;
+    border-color: #10b981;
+    color: #065f46;
+}
