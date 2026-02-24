@@ -202,6 +202,9 @@
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="col-md-12">
+                                @include('instrument.partials.v2.consentration')
+                            </div>
                         </div>
                     </div>
 
@@ -342,8 +345,6 @@
                             <i class="bi bi-journal-text"></i>
                             <strong>B - Data Sarana Prasarana (Sapras)</strong>
                         </div>
-
-                        @include('instrument.partials.v2.consentration')
 
                         {{-- Hidden input to store all sapras data --}}
                         <input type="hidden" name="answers[B.sapras]" id="sapras-data-input" value="{}">
