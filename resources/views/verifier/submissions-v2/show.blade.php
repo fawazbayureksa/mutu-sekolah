@@ -1,16 +1,16 @@
 @extends('verifier.layouts.verifier')
 
-@section('title', 'Detail Pengajuan V2')
+@section('title', 'Detail Pengajuan')
 
 @section('content')
     <div class="container-fluid">
         {{-- Header --}}
         <div class="d-flex align-items-center justify-content-between mb-4">
             <div>
-                <h1 class="h3 mb-1 text-gray-800">Detail Pengajuan V2</h1>
+                <h1 class="h3 mb-1 text-gray-800">Detail Pengajuan</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="{{ route('verifier.submissions-v2.index') }}">Pengajuan V2</a>
+                        <li class="breadcrumb-item"><a href="{{ route('verifier.submissions-v2.index') }}">Pengajuan</a>
                         </li>
                         <li class="breadcrumb-item active">Detail</li>
                     </ol>
@@ -251,11 +251,55 @@
                                 ],
                             ])
 
+                            {{-- A.1.2 --}}
+                            @include('admin.submissions-v2.partials.section-table', [
+                                'code' => 'A.1.2',
+                                'title' => 'Analisis Skema Sertifikasi dan Kesesuaian KKNI',
+                                'data' => $answers['A.1.2'] ?? null,
+                                'columns' => [
+                                    ['key' => 'scheme', 'label' => 'Skema Sertifikasi'],
+                                    ['key' => 'kkni_level', 'label' => 'Level KKNI'],
+                                    ['key' => 'suitability', 'label' => 'Kesesuaian'],
+                                    ['key' => 'remarks', 'label' => 'Keterangan'],
+                                ],
+                                'dynamicRows' => true,
+                            ])
+
                             {{-- A.2.1 --}}
                             @include('admin.submissions-v2.partials.section-tracer', [
                                 'code' => 'A.2.1',
                                 'title' => 'Penelusuran Alumni (Tracer Study)',
                                 'data' => $answers['A.2.1'] ?? null,
+                            ])
+
+                            {{-- A.3 --}}
+                            @include('admin.submissions-v2.partials.section-table', [
+                                'code' => 'A.3',
+                                'title' => 'Data Putus Sekolah dan Ketidaklulusan Kelas',
+                                'data' => $answers['A.3'] ?? null,
+                                'columns' => [
+                                    ['key' => 'year', 'label' => 'Tahun'],
+                                    ['key' => 'initial_students', 'label' => 'Siswa Awal'],
+                                    ['key' => 'dropouts', 'label' => 'Putus Sekolah'],
+                                    ['key' => 'dropout_percentage', 'label' => '% Putus Sekolah'],
+                                    ['key' => 'not_passed', 'label' => 'Tidak Naik Kelas'],
+                                    ['key' => 'remarks', 'label' => 'Keterangan'],
+                                ],
+                                'dynamicRows' => true,
+                            ])
+
+                            {{-- A.4 --}}
+                            @include('admin.submissions-v2.partials.section-table', [
+                                'code' => 'A.4',
+                                'title' => 'Data Skor Rata-rata TKA Tahun 2025',
+                                'data' => $answers['A.4'] ?? null,
+                                'columns' => [
+                                    ['key' => 'subject', 'label' => 'Mata Pelajaran'],
+                                    ['key' => 'school_avg', 'label' => 'Rata-rata Sekolah'],
+                                    ['key' => 'national_avg', 'label' => 'Rata-rata Nasional'],
+                                    ['key' => 'difference', 'label' => 'Selisih'],
+                                ],
+                                'dynamicRows' => true,
                             ])
                         </div>
 
@@ -265,27 +309,11 @@
                                 <i class="bi bi-journal-text me-2"></i>B - Data Sarana Prasarana
                             </h5>
 
-                            {{-- B.1.1 --}}
-                            @include('admin.submissions-v2.partials.section-table', [
-                                'code' => 'B.1.1',
-                                'title' => 'Inventarisasi dan Kesesuaian dengan Standar Industri',
-                                'data' => $answers['B.1.1'] ?? null,
-                                'columns' => [
-                                    ['key' => 'label', 'label' => 'Item/Perangkat'],
-                                    ['key' => 'specification', 'label' => 'Spesifikasi'],
-                                    ['key' => 'quantity', 'label' => 'Jumlah'],
-                                    ['key' => 'condition', 'label' => 'Kondisi'],
-                                    ['key' => 'industry_standard', 'label' => 'Standar Industri'],
-                                    ['key' => 'remarks', 'label' => 'Keterangan'],
-                                ],
-                                'dynamicRows' => true,
-                            ])
-
-                            {{-- B.2.1 --}}
-                            @include('admin.submissions-v2.partials.section-checklist', [
-                                'code' => 'B.2.1',
-                                'title' => 'Penilaian Kesiapan Fasilitas (Checklist)',
-                                'data' => $answers['B.2.1'] ?? null,
+                            {{-- B.sapras — dynamic per-concentration table --}}
+                            @include('admin.submissions-v2.partials.section-sapras', [
+                                'code' => 'B.sapras',
+                                'title' => 'Inventarisasi Sarana Prasarana per Konsentrasi Keahlian',
+                                'data' => $answers['B.sapras'] ?? null,
                             ])
                         </div>
 

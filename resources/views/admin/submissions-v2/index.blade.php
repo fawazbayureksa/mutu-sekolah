@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', 'Data Pengajuan V2')
+@section('title', 'Data Pengajuan')
 
 @section('content')
     <div class="container-fluid">
         {{-- Header --}}
         <div class="d-flex align-items-center justify-content-between mb-4">
             <div>
-                <h1 class="h3 mb-1 text-gray-800">Data Pengajuan V2</h1>
+                <h1 class="h3 mb-1 text-gray-800">Data Pengajuan</h1>
                 <p class="text-muted mb-0">Pengelolaan data pengajuan instrumen versi 2</p>
             </div>
             {{-- <div>

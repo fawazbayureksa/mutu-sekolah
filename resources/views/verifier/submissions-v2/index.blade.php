@@ -1,13 +1,13 @@
 @extends('verifier.layouts.verifier')
 
-@section('title', 'Data Pengajuan V2')
+@section('title', 'Data Pengajuan')
 
 @section('content')
     <div class="container-fluid">
         {{-- Header --}}
         <div class="d-flex align-items-center justify-content-between mb-4">
             <div>
-                <h1 class="h3 mb-1 text-gray-800">Data Pengajuan V2</h1>
+                <h1 class="h3 mb-1 text-gray-800">Data Pengajuan</h1>
                 <p class="text-muted mb-0">Verifikasi data pengajuan instrumen versi 2</p>
             </div>
         </div>
@@ -35,7 +35,8 @@
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Menunggu Verifikasi</div>
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Menunggu Verifikasi
+                                </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['submitted'] }}</div>
                             </div>
                             <div class="col-auto">

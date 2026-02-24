@@ -76,9 +76,8 @@
                                     <span class="badge bg-primary">{{ $school->assessments()->count() }}</span>
                                 </td> --}}
                                 <td>
-                                    @if ($school->latestSubmission)
-                                        <small
-                                            class="text-muted">{{ $school->latestSubmission->filled_at->format('d/m/Y') }}</small>
+                                    @if ($school->created_at)
+                                        <small class="text-muted">{{ $school->created_at->format('d/m/Y') }}</small>
                                     @else
                                         <span class="text-muted">-</span>
                                     @endif
