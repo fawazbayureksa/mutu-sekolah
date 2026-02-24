@@ -155,8 +155,6 @@ class PublicInstrumentV2Controller extends Controller
             'A.3',
             'A.4',
             'B.sapras',
-            'B.1.1',
-            'B.2.1',
             'C.1.1',
             'C.2.1',
             'C.3.1',
@@ -170,9 +168,14 @@ class PublicInstrumentV2Controller extends Controller
                 $rowCount = 0;
 
                 if (is_array($data)) {
-                    if (isset($data['rows']) && is_array($data['rows'])) {
+                    if ($code === 'B.sapras') {
+                        // B.sapras structure: { sections: [ { rows: [...] }, ... ] }
+                        foreach ($data['sections'] ?? [] as $section) {
+                            $rowCount += count($section['rows'] ?? []);
+                        }
+                    } elseif (isset($data['rows']) && is_array($data['rows'])) {
                         $rowCount = count($data['rows']);
-                    } elseif (is_array($data) && isset($data[0])) {
+                    } elseif (isset($data[0])) {
                         $rowCount = count($data);
                     }
                 }
@@ -189,9 +192,6 @@ class PublicInstrumentV2Controller extends Controller
 
     private function calculateCompletionPercentage(array $answers): float
     {
-        $totalSections = 13;
-        $filledSections = 0;
-
         $sectionCodes = [
             'A.1.1',
             'A.1.2',
@@ -199,8 +199,6 @@ class PublicInstrumentV2Controller extends Controller
             'A.3',
             'A.4',
             'B.sapras',
-            'B.1.1',
-            'B.2.1',
             'C.1.1',
             'C.2.1',
             'C.3.1',
@@ -208,12 +206,31 @@ class PublicInstrumentV2Controller extends Controller
             'C.3.3',
         ];
 
+        $totalSections = count($sectionCodes);
+        $filledSections = 0;
+
         foreach ($sectionCodes as $code) {
-            if (isset($answers[$code]) && ! empty($answers[$code])) {
+            if (! isset($answers[$code]) || empty($answers[$code])) {
+                continue;
+            }
+
+            // B.sapras is filled only if it has at least one row in any section
+            if ($code === 'B.sapras') {
+                $hasSaprasRows = false;
+                foreach ($answers[$code]['sections'] ?? [] as $section) {
+                    if (! empty($section['rows'])) {
+                        $hasSaprasRows = true;
+                        break;
+                    }
+                }
+                if ($hasSaprasRows) {
+                    $filledSections++;
+                }
+            } else {
                 $filledSections++;
             }
         }
 
-        return ($filledSections / $totalSections) * 100;
+        return $totalSections > 0 ? ($filledSections / $totalSections) * 100 : 0;
     }
 }
