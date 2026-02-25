@@ -49,17 +49,18 @@
                                         $firstRow = $rows[0];
                                         $fieldKeys = array_keys(array_diff_key($firstRow, ['name' => '']));
                                         $labelMap = [
-                                            'qty_available' => 'Jml Tersedia',
+                                            'qty_available' => 'Jumlah Tersedia',
                                             'condition' => 'Kondisi',
-                                            'industry_standard' => 'Standar Industri',
-                                            'document' => 'Dokumen',
+                                            'industry_standard' => 'Kesesuaian Standar Industri',
+                                            'document' => 'Dokumen Pendukung',
                                             'remarks' => 'Keterangan',
-                                            'actual_area' => 'Luas Tersedia',
+                                            'actual_area' => 'Luas Tersedia (m²)',
                                             'available' => 'Ada/Tidak',
-                                            'suitability' => 'Kesesuaian',
+                                            'compliance' => 'Kesesuaian',
+                                            'status' => 'Status',
                                             'age' => 'Usia',
                                             'source' => 'Sumber',
-                                            'status' => 'Status',
+                                            'spec' => 'Spesifikasi',
                                         ];
                                     @endphp
                                     @foreach ($fieldKeys as $fk)
