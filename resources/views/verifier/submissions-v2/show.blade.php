@@ -257,9 +257,11 @@
                                 'title' => 'Analisis Skema Sertifikasi dan Kesesuaian KKNI',
                                 'data' => $answers['A.1.2'] ?? null,
                                 'columns' => [
-                                    ['key' => 'scheme', 'label' => 'Skema Sertifikasi'],
-                                    ['key' => 'kkni_level', 'label' => 'Level KKNI'],
-                                    ['key' => 'suitability', 'label' => 'Kesesuaian'],
+                                    ['key' => 'label', 'label' => 'Skema Sertifikasi'],
+                                    ['key' => 'scheme_type', 'label' => 'Jenis Kemasan'],
+                                    ['key' => 'kkni_level', 'label' => 'Jenjang KKNI'],
+                                    ['key' => 'competency_units', 'label' => 'Jumlah Unit Kompetensi'],
+                                    ['key' => 'compliance', 'label' => 'Kesesuaian'],
                                     ['key' => 'remarks', 'label' => 'Keterangan'],
                                 ],
                                 'dynamicRows' => true,
@@ -278,28 +280,20 @@
                                 'title' => 'Data Putus Sekolah dan Ketidaklulusan Kelas',
                                 'data' => $answers['A.3'] ?? null,
                                 'columns' => [
-                                    ['key' => 'year', 'label' => 'Tahun'],
-                                    ['key' => 'initial_students', 'label' => 'Siswa Awal'],
-                                    ['key' => 'dropouts', 'label' => 'Putus Sekolah'],
+                                    ['key' => 'year', 'label' => 'Tahun Ajaran'],
+                                    ['key' => 'initial_students', 'label' => 'Jumlah Murid Awal'],
+                                    ['key' => 'final_students', 'label' => 'Jumlah Murid Akhir'],
+                                    ['key' => 'dropouts', 'label' => 'Jumlah Putus Sekolah'],
+                                    ['key' => 'failed_students', 'label' => 'Jumlah Tidak Naik Kelas'],
                                     ['key' => 'dropout_percentage', 'label' => '% Putus Sekolah'],
-                                    ['key' => 'not_passed', 'label' => 'Tidak Naik Kelas'],
-                                    ['key' => 'remarks', 'label' => 'Keterangan'],
+                                    ['key' => 'main_factor', 'label' => 'Faktor Utama Penyebab'],
                                 ],
                                 'dynamicRows' => true,
                             ])
 
                             {{-- A.4 --}}
-                            @include('admin.submissions-v2.partials.section-table', [
-                                'code' => 'A.4',
-                                'title' => 'Data Skor Rata-rata TKA Tahun 2025',
+                            @include('admin.submissions-v2.partials.section-a4', [
                                 'data' => $answers['A.4'] ?? null,
-                                'columns' => [
-                                    ['key' => 'subject', 'label' => 'Mata Pelajaran'],
-                                    ['key' => 'school_avg', 'label' => 'Rata-rata Sekolah'],
-                                    ['key' => 'national_avg', 'label' => 'Rata-rata Nasional'],
-                                    ['key' => 'difference', 'label' => 'Selisih'],
-                                ],
-                                'dynamicRows' => true,
                             ])
                         </div>
 

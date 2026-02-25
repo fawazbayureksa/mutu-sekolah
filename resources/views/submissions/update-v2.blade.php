@@ -1056,6 +1056,9 @@
                     case 'equipment_no_spec':
                         tableHtml = renderEquipmentNoSpecTable(section, sectionNum);
                         break;
+                    case 'equipment_gim':
+                        tableHtml = renderEquipmentGimTable(section, sectionNum);
+                        break;
                     case 'k3':
                         tableHtml = renderK3Table(section, sectionNum);
                         break;
