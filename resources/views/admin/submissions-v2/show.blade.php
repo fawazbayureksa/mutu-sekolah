@@ -270,7 +270,7 @@
                         {{-- ASPECT A --}}
                         <div class="mb-5">
                             <h5 class="text-primary border-bottom pb-2 mb-3">
-                                <i class="bi bi-journal-text me-2"></i>A - Standar Peserta Didik
+                                <i class="bi bi-journal-text me-2"></i>A - Peserta Didik
                             </h5>
 
                             {{-- A.1.1 --}}

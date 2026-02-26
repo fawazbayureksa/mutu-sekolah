@@ -186,7 +186,7 @@
                             <div class="icon-box mb-4 mx-auto">
                                 <i class="bi bi-person-lines-fill fs-1"></i>
                             </div>
-                            <h4 class="card-title fw-bold mb-4">Standar Peserta Didik</h4>
+                            <h4 class="card-title fw-bold mb-4">Peserta Didik</h4>
                             <p class="card-text text-secondary">
                                 Fokus pada kompetensi dan kesiapan kerja lulusan. Meliputi pemantauan kemampuan teknis, soft
                                 skills, serta kesesuaian kompetensi dengan kebutuhan industri.
@@ -200,7 +200,7 @@
                             <div class="icon-box mb-4 mx-auto">
                                 <i class="bi bi-building-gear fs-1"></i>
                             </div>
-                            <h4 class="card-title fw-bold mb-4">Standar Sarana Prasarana (Sapras)</h4>
+                            <h4 class="card-title fw-bold mb-4">Sarana Prasarana (Sapras)</h4>
                             <p class="card-text text-secondary">
                                 Mengevaluasi kesesuaian fasilitas dengan standar industri. Meliputi kelengkapan, kondisi,
                                 dan relevansi peralatan praktik serta lingkungan belajar.
@@ -214,7 +214,7 @@
                             <div class="icon-box mb-4 mx-auto">
                                 <i class="bi bi-diagram-3 fs-1"></i>
                             </div>
-                            <h4 class="card-title fw-bold mb-4">Standar Tata Kelola</h4>
+                            <h4 class="card-title fw-bold mb-4"> Tata Kelola</h4>
                             <p class="card-text text-secondary">
                                 Meliputi kerjasama dengan industri, pengelolaan Teaching Factory (TEFA), serta data
                                 pelatihan dan sertifikasi guru. Memastikan adanya sistem manajemen yang mendukung
