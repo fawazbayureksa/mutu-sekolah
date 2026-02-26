@@ -56,7 +56,7 @@ class AdvancedInstrumentSeeder extends Seeder
             // =========================
             $aspectA = AssessmentAspect::updateOrCreate(
                 ['code' => 'A'],
-                ['name' => 'Standar Peserta Didik (Kompetensi & Kesiapan Kerja)', 'order' => 1]
+                ['name' => 'Peserta Didik (Kompetensi & Kesiapan Kerja)', 'order' => 1]
             );
 
             // Indicator A.1: Data Kompetensi (UKK & Sertifikasi)

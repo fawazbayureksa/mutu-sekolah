@@ -292,7 +292,7 @@
                     <div class="form-card mt-3">
                         <div class="section-title">
                             <i class="bi bi-journal-text"></i>
-                            <strong>A - Standar Peserta Didik (Kompetensi & Kesiapan Kerja)</strong>
+                            <strong>A - Peserta Didik (Kompetensi & Kesiapan Kerja)</strong>
                         </div>
 
                         {{-- A.1: Data Kompetensi (UKK & Sertifikasi) --}}
