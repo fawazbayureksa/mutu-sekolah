@@ -146,57 +146,66 @@
                             <div class="col-md-12">
                                 <label class="form-label">Kategori Sekolah</label>
                                 <div class="mt-2">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_category"
-                                            id="catReguler" value="SMK PK Reguler"
-                                            {{ old('school_category') == 'SMK PK Reguler' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="catReguler">SMK PK Reguler</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_category"
-                                            id="catPenguatan" value="SMK PK Penguatan Pembelajaran Mendalam"
-                                            {{ old('school_category') == 'SMK PK Penguatan Pembelajaran Mendalam' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="catPenguatan">SMK PK Penguatan Pembelajaran
-                                            Mendalam</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_category"
-                                            id="catModel" value="SMK Model"
-                                            {{ old('school_category') == 'SMK Model' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="catModel">SMK Model</label>
-                                    </div>
+                                    @foreach (config('constant.school_category') as $value => $label)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="school_category"
+                                                id="cat{{ Str::slug($value) }}" value="{{ $value }}"
+                                                {{ old('school_category') == $value ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="cat{{ Str::slug($value) }}">{{ $label }}</label>
+                                        </div>
+                                    @endforeach
                                 </div>
                                 @error('school_category')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-12">
+                                <label class="form-label">Kurikulum</label>
+                                <div class="mt-2">
+                                    @foreach (config('constant.curriculum') as $cur)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="curriculum"
+                                                id="cur{{ Str::slug($cur) }}" value="{{ $cur }}"
+                                                {{ old('curriculum') == $cur ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="cur{{ Str::slug($cur) }}">{{ $cur }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @error('curriculum')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-12" id="approval-status-wrapper" style="display:none;">
+                                <label class="form-label">Status Persetujuan</label>
+                                <div class="mt-2">
+                                    @foreach (config('constant.approval_status') as $status)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="approval_status"
+                                                id="appr{{ Str::slug($status) }}" value="{{ $status }}"
+                                                {{ old('approval_status') == $status ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="appr{{ Str::slug($status) }}">{{ $status }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @error('approval_status')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-12">
                                 <label class="form-label">Akreditasi Sekolah</label>
                                 <div class="mt-2">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_accreditation"
-                                            id="accA" value="A"
-                                            {{ old('school_accreditation') == 'A' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="accA">A</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_accreditation"
-                                            id="accB" value="B"
-                                            {{ old('school_accreditation') == 'B' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="accB">B</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_accreditation"
-                                            id="accC" value="C"
-                                            {{ old('school_accreditation') == 'C' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="accC">C</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_accreditation"
-                                            id="accTidak" value="Tidak Terakreditasi"
-                                            {{ old('school_accreditation') == 'Tidak Terakreditasi' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="accTidak">Tidak Terakreditasi</label>
-                                    </div>
+                                    @foreach (config('constant.school_accreditation') as $acc)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="school_accreditation"
+                                                id="acc{{ Str::slug($acc) }}" value="{{ $acc }}"
+                                                {{ old('school_accreditation') == $acc ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="acc{{ Str::slug($acc) }}">{{ $acc }}</label>
+                                        </div>
+                                    @endforeach
                                 </div>
                                 @error('school_accreditation')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -487,6 +496,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeDynamicTables();
 
+            // Restore approval_status visibility on page load (e.g. after validation failure)
+            const initialExpertise = document.getElementById('expertiseSelect')?.value;
+            const approvalWrapper = document.getElementById('approval-status-wrapper');
+            if (approvalWrapper && initialExpertise === 'Kemaritiman') {
+                approvalWrapper.style.display = '';
+            }
+
             document.getElementById('instrumentForm').addEventListener('submit', function(e) {
                 collectAllTableData();
 
@@ -776,6 +792,7 @@
         function loadExpertisePrograms(expertise) {
             const programSelect = document.getElementById('expertiseProgramSelect');
             const concentrationSelect = document.getElementById('expertiseConcentrationSelect');
+            const approvalWrapper = document.getElementById('approval-status-wrapper');
 
             // Reset program dropdown
             programSelect.innerHTML = '<option value="">-- Pilih Program Keahlian --</option>';
@@ -784,6 +801,11 @@
             // Reset concentration dropdown
             concentrationSelect.innerHTML = '<option value="">-- Pilih Konsentrasi Keahlian --</option>';
             concentrationSelect.disabled = true;
+
+            // Show approval_status only for Kemaritiman
+            if (approvalWrapper) {
+                approvalWrapper.style.display = expertise === 'Kemaritiman' ? '' : 'none';
+            }
 
             if (!expertise || !expertiseData[expertise]) {
                 return;

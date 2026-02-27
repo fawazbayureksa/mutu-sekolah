@@ -24,6 +24,8 @@ class School extends Model
         'school_category',
         'program_duration',
         'school_accreditation',
+        'curriculum',
+        'approval_status',
     ];
 
     protected $casts = [
