@@ -34,6 +34,7 @@ return [
                     'Agribisnis_Perikanan_Payau_Dan_Laut',
                     'Agribisnis_Perikanan_Air_Tawar',
                     'Agribisnis_Rumput_Laut',
+                    'Agribisnis_Pengolahan_Hasil_Perikanan',
                 ],
             ],
         ],
