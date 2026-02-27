@@ -52,6 +52,18 @@ return [
         ],
     ],
 
+    'curriculum'      => ['K13', 'Kurikulum Merdeka'],
+
+    'approval_status' => ['Sudah', 'Belum'],
+
+    'school_category' => [
+        'SMK PK Reguler'  => 'SMK PK',
+        'SMK Non PK'      => 'SMK Non PK',
+        'SMK Model'       => 'SMK Model',
+    ],
+
+    'school_accreditation' => ['A', 'B', 'C', 'Belum Terakreditasi'],
+
     'jenis_pengembangan_kompetensi' => [
         'Pelatihan Teknis',
         'Sertifikasi Profesi',
