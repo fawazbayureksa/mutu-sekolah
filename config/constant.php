@@ -65,6 +65,12 @@ return [
 
     'school_accreditation' => ['A', 'B', 'C', 'Belum Terakreditasi'],
 
+    'scheme_types' => [
+        'okupasi_nasional' => 'Okupasi Nasional',
+        'klaster'          => 'Klaster',
+        'kkni'             => 'KKNI',
+    ],
+
     'jenis_pengembangan_kompetensi' => [
         'Pelatihan Teknis',
         'Sertifikasi Profesi',
