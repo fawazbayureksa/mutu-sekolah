@@ -34,6 +34,7 @@ return [
                     'Agribisnis_Perikanan_Payau_Dan_Laut',
                     'Agribisnis_Perikanan_Air_Tawar',
                     'Agribisnis_Rumput_Laut',
+                    'Agribisnis_Pengolahan_Hasil_Perikanan',
                 ],
             ],
         ],
@@ -63,6 +64,12 @@ return [
     ],
 
     'school_accreditation' => ['A', 'B', 'C', 'Belum Terakreditasi'],
+
+    'scheme_types' => [
+        'okupasi_nasional' => 'Okupasi Nasional',
+        'klaster'          => 'Klaster',
+        'kkni'             => 'KKNI',
+    ],
 
     'jenis_pengembangan_kompetensi' => [
         'Pelatihan Teknis',

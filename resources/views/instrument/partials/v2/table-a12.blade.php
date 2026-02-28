@@ -54,6 +54,9 @@
                                     <option value="Klaster"
                                         {{ ($rowData['scheme_type'] ?? '') === 'Klaster' ? 'selected' : '' }}>Klaster
                                     </option>
+                                    <option value="{{ config('constant.scheme_types.kkni') }}"
+                                        {{ ($rowData['scheme_type'] ?? '') === config('constant.scheme_types.kkni') ? 'selected' : '' }}>
+                                        {{ config('constant.scheme_types.kkni') }}</option>
                                 </select>
                             </td>
                             <td>
