@@ -9,9 +9,9 @@ return [
     'respondent_positions' => [
         'Kepala Sekolah',
         'Wakil Kepala Sekolah',
-        'Ketua Jurusan (Kajur) / Ketua Kompetensi Keahlian',
-        'Kepala Bengkel / Kepala Laboratorium',
-        'Guru Produktif'
+        'Ketua Kompetensi Keahlian',
+        'Kepala Bengkel / Laboratorium',
+        'Guru'
     ],
 
     'expertise' => [

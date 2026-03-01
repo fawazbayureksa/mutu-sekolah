@@ -34,6 +34,7 @@
                     <tr>
                         <th style="width: 5%">No</th>
                         <th style="width: 40%">Pertanyaan</th>
+                        <th style="width: 10%">Standar Minimal SMK PK (60% lulusan terserap)</th>
                         <th style="width: 25%">Jawaban (Kuantitatif)</th>
                         <th style="width: 30%">Kualitatif (Jika Ada)</th>
                     </tr>
@@ -111,6 +112,11 @@
                         <tr data-row="{{ $index }}">
                             <td class="text-center row-number">{{ $index + 1 }}</td>
                             <td>{{ $row['label'] }}</td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm table-input"
+                                    data-key="standard_minimal" data-row="{{ $index }}"
+                                    value="{{ $rowData['standard_minimal'] ?? '' }}">
+                            </td>
                             <td>
                                 @if ($row['quantitative_type'] === 'percentage')
                                     <div class="input-group input-group-sm">
