@@ -58,7 +58,7 @@ return [
     'approval_status' => ['Sudah', 'Belum'],
 
     'school_category' => [
-        'SMK PK Reguler'  => 'SMK PK',
+        'SMK PK'  => 'SMK PK',
         'SMK Non PK'      => 'SMK Non PK',
         'SMK Model'       => 'SMK Model',
     ],

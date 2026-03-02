@@ -406,52 +406,27 @@
                             <strong>B - Data Sarana Prasarana (Sapras)</strong>
                         </div>
 
-                        {{-- B.1: Inventarisasi dan Kesesuaian dengan Standar Industri --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">B.1</span>
-                                Inventarisasi dan Kesesuaian dengan Standar Industri
-                            </h5>
+                        {{-- Hidden input to store all sapras data --}}
+                        <input type="hidden" name="answers[B.sapras]" id="sapras-data-input"
+                            value="{{ old('answers.B.sapras', isset($answers['B.sapras']) ? json_encode($answers['B.sapras']) : '{}') }}">
 
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">B.1.1</span>
-                                    <span class="badge bg-info ms-2">Dynamic Rows</span>
-                                </div>
-                                <p class="indicator-text mb-2">Inventarisasi dan Kesesuaian dengan Standar Industri</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data inventaris perangkat bengkel/lab dan
-                                    bandingkan dengan standar industri
-                                </small>
-
-                                @include('instrument.partials.v2.table-b11', [
-                                    'existingData' => $answers['B.1.1'] ?? [],
-                                ])
-                            </div>
+                        {{-- Placeholder when no concentration is selected --}}
+                        <div id="sapras-placeholder" class="text-center py-5">
+                            <i class="bi bi-building-gear" style="font-size: 3rem; color: #dee2e6;"></i>
+                            <p class="text-muted mt-3 mb-0">Pilih <strong>Konsentrasi Keahlian</strong> pada bagian Data
+                                Sekolah di atas untuk menampilkan tabel Sarana Prasarana.</p>
                         </div>
 
-                        {{-- B.2: Penilaian Kesiapan Fasilitas (Checklist) --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">B.2</span>
-                                Penilaian Kesiapan Fasilitas (Checklist)
-                            </h5>
-
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">B.2.1</span>
-                                </div>
-                                <p class="indicator-text mb-2">Penilaian Kesiapan Fasilitas (Checklist)</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi checklist penilaian kesiapan fasilitas
-                                    bengkel/lab
-                                </small>
-
-                                @include('instrument.partials.v2.checklist-b21', [
-                                    'existingData' => $answers['B.2.1'] ?? [],
-                                ])
+                        {{-- Loading indicator --}}
+                        <div id="sapras-loading" class="text-center py-5" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
                             </div>
+                            <p class="text-muted mt-3 mb-0">Memuat data sarana prasarana...</p>
                         </div>
+
+                        {{-- Dynamic sapras container --}}
+                        <div id="sapras-container" style="display: none;"></div>
                     </div>
 
                     {{-- ASPECT C: Data Tata Kelola --}}
@@ -852,7 +827,7 @@
 
         function collectAllTableData() {
             console.log('collectAllTableData() called');
-            const tables = ['table-a11', 'table-a12', 'table-a21', 'table-a3', 'table-a4', 'table-b11', 'table-b21',
+            const tables = ['table-a11', 'table-a12', 'table-a21', 'table-a3', 'table-a4',
                 'table-c11',
                 'table-c21',
                 'table-c31', 'table-c32', 'table-c33'
@@ -874,6 +849,9 @@
                     console.warn(`Table ${tableId} not found`);
                 }
             });
+
+            // Collect dynamic sapras data
+            collectSaprasData();
 
         }
 

@@ -79,9 +79,10 @@
                 <thead class="table-light">
                     <tr>
                         <th style="width: 40px">No</th>
-                        <th style="width: 40%">Pertanyaan</th>
-                        <th style="width: 20%">Jawaban</th>
-                        <th style="width: 35%">Keterangan</th>
+                        <th style="width: 35%">Pertanyaan</th>
+                        <th style="width: 15%">Standar Minimal SMK PK</th>
+                        <th style="width: 15%">Jawaban</th>
+                        <th style="width: 30%">Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,6 +90,7 @@
                         <tr>
                             <td class="text-center">{{ $idx + 1 }}</td>
                             <td>{{ $row['label'] }}</td>
+                            <td>{{ $rows[$idx]['standard_minimal'] ?? '-' }}</td>
                             <td>{{ $rowsMap[$row['key'] . '_quantitative'] ?? '-' }}</td>
                             <td>
                                 @if ($row['has_qualitative'])
