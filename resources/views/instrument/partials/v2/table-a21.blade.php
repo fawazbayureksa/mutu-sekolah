@@ -34,7 +34,8 @@
                     <tr>
                         <th style="width: 5%">No</th>
                         <th style="width: 40%">Pertanyaan</th>
-                        <th style="width: 10%">Standar Minimal SMK PK (60% lulusan terserap)</th>
+                        <th class="col-smk-pk-std" style="width: 10%; display: none;">Standar Minimal SMK PK (60%
+                            lulusan terserap)</th>
                         <th style="width: 25%">Jawaban (Kuantitatif)</th>
                         <th style="width: 30%">Kualitatif (Jika Ada)</th>
                     </tr>
@@ -112,7 +113,7 @@
                         <tr data-row="{{ $index }}">
                             <td class="text-center row-number">{{ $index + 1 }}</td>
                             <td>{{ $row['label'] }}</td>
-                            <td>
+                            <td class="col-smk-pk-std" style="display: none;">
                                 <input type="text" class="form-control form-control-sm table-input"
                                     data-key="standard_minimal" data-row="{{ $index }}"
                                     value="{{ $rowData['standard_minimal'] ?? '' }}">

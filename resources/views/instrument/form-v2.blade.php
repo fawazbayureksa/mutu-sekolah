@@ -503,6 +503,12 @@
                 approvalWrapper.style.display = '';
             }
 
+            // Toggle "Standar Minimal SMK PK" column on school_category change
+            toggleSmkPkColumn();
+            document.querySelectorAll('input[name="school_category"]').forEach(function(radio) {
+                radio.addEventListener('change', toggleSmkPkColumn);
+            });
+
             document.getElementById('instrumentForm').addEventListener('submit', function(e) {
                 collectAllTableData();
 
@@ -511,6 +517,14 @@
                 }
             });
         });
+
+        function toggleSmkPkColumn() {
+            const selected = document.querySelector('input[name="school_category"]:checked');
+            const isSmkPk = selected && selected.value === 'SMK PK';
+            document.querySelectorAll('.col-smk-pk-std').forEach(function(el) {
+                el.style.display = isSmkPk ? '' : 'none';
+            });
+        }
 
         function initializeDynamicTables() {
             document.querySelectorAll('.btn-add-row').forEach(btn => {
