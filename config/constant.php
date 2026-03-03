@@ -19,10 +19,10 @@ return [
             'programs' => ['Bidang Keahlian Kemaritiman'],
             'concentrations' => [
                 'Bidang Keahlian Kemaritiman' => [
-                    'Nautika_Kapal_Penangkap_Ikan',
-                    'Teknika_Kapal_Penangkap_Ikan',
-                    'Nautika_Kapal_Niaga',
-                    'Teknika_Kapal_Niaga',
+                    'Nautika Kapal Penangkap Ikan',
+                    'Teknika Kapal Penangkap Ikan',
+                    'Nautika Kapal Niaga',
+                    'Teknika Kapal Niaga',
                 ],
             ],
         ],
@@ -30,11 +30,11 @@ return [
             'programs' => ['Bidang Keahlian Perikanan'],
             'concentrations' => [
                 'Bidang Keahlian Perikanan' => [
-                    'Agribisnis_Ikan_Hias',
-                    'Agribisnis_Perikanan_Payau_Dan_Laut',
-                    'Agribisnis_Perikanan_Air_Tawar',
-                    'Agribisnis_Rumput_Laut',
-                    'Agribisnis_Pengolahan_Hasil_Perikanan',
+                    'Agribisnis Ikan Hias',
+                    'Agribisnis Perikanan Payau dan Laut',
+                    'Agribisnis Perikanan Air Tawar',
+                    'Agribisnis Rumput Laut',
+                    'Agribisnis Pengolahan Hasil Perikanan',
                 ],
             ],
         ],
@@ -42,15 +42,113 @@ return [
             'programs' => ['Bidang Teknologi Informasi'],
             'concentrations' => [
                 'Bidang Teknologi Informasi' => [
-                    'Rekayasa_Perangkat_Lunak',
-                    'Pengembangan_GIM',
-                    'Sistem_Informasi_Jaringan_Dan_Aplikasi',
-                    'Teknik_Komputer_Dan_Jaringan',
-                    'Teknik_Jaringan_Akses_Telekomunikasi',
-                    'Teknik_Transmisi_Telekomunikasi',
+                    'Rekayasa Perangkat Lunak',
+                    'Pengembangan GIM',
+                    'Sistem Informasi Jaringan dan Aplikasi',
+                    'Teknik Komputer dan Jaringan',
+                    'Teknik Jaringan Akses Telekomunikasi',
+                    'Teknik Transmisi Telekomunikasi',
                 ],
             ],
         ],
+    ],
+
+    // Expertise data separated by curriculum
+    'expertise_by_curriculum' => [
+
+        'Kurikulum Merdeka' => [
+            'Kemaritiman' => [
+                'programs' => [
+                    'Teknika Kapal Penangkap Ikan',
+                    'Nautika Kapal Penangkap Ikan',
+                    'Nautika Kapal Niaga',
+                    'Teknika Kapal Niaga',
+                ],
+                'concentrations' => [
+                    'Teknika Kapal Penangkap Ikan' => ['Teknika Kapal Penangkap Ikan'],
+                    'Nautika Kapal Penangkap Ikan' => ['Nautika Kapal Penangkap Ikan'],
+                    'Nautika Kapal Niaga'          => ['Nautika Kapal Niaga'],
+                    'Teknika Kapal Niaga'           => ['Teknika Kapal Niaga'],
+                ],
+            ],
+            'Agribisnis dan Agriteknologi' => [
+                'programs' => [
+                    'Agribisnis Perikanan',
+                    'Agriteknologi Pengolahan Hasil Pertanian',
+                ],
+                'concentrations' => [
+                    'Agribisnis Perikanan' => [
+                        'Agribisnis Perikanan Air Tawar',
+                        'Agribisnis Perikanan Payau dan Laut',
+                        'Agribisnis Ikan Hias',
+                        'Agribisnis Rumput Laut',
+                        'Agribisnis Pengolahan Hasil Perikanan',
+                    ],
+                    'Agriteknologi Pengolahan Hasil Pertanian' => [
+                        'Agriteknologi Pengolahan Hasil Pertanian',
+                    ],
+                ],
+            ],
+            'Teknologi Informasi' => [
+                'programs' => [
+                    'Pengembangan Perangkat Lunak dan GIM',
+                    'Teknik Jaringan Komputer dan Telekomunikasi',
+                ],
+                'concentrations' => [
+                    'Pengembangan Perangkat Lunak dan GIM' => [
+                        'Rekayasa Perangkat Lunak',
+                        'Pengembangan GIM',
+                        'Sistem Informasi Jaringan dan Aplikasi',
+                    ],
+                    'Teknik Jaringan Komputer dan Telekomunikasi' => [
+                        'Teknik Komputer dan Jaringan',
+                        'Teknik Transmisi Telekomunikasi',
+                        'Pengembangan GIM',
+                        'Teknik Jaringan Akses Telekomunikasi',
+                    ],
+                ],
+            ],
+        ],
+
+        'K13' => [
+            'Kemaritiman' => [
+                'programs' => [
+                    'Pelayaran Kapal Penangkap Ikan',
+                    'Perikanan',
+                ],
+                'concentrations' => [
+                    'Pelayaran Kapal Penangkap Ikan' => [
+                        'Nautika Kapal Penangkap Ikan',
+                        'Teknika Kapal Penangkap Ikan',
+                        'Nautika Kapal Niaga',
+                        'Teknika Kapal Niaga',
+                    ],
+                    'Perikanan' => [
+                        'Agribisnis Perikanan Air Tawar',
+                        'Agribisnis Perikanan Payau dan Laut',
+                        'Agribisnis Ikan Hias',
+                    ],
+                ],
+            ],
+            'Teknologi Informasi dan Komunikasi' => [
+                'programs' => [
+                    'Teknik Komputer dan Informatika',
+                    'Teknik Telekomunikasi',
+                ],
+                'concentrations' => [
+                    'Teknik Komputer dan Informatika' => [
+                        'Rekayasa Perangkat Lunak',
+                        'Teknik Komputer dan Jaringan',
+                        'Multimedia',
+                    ],
+                    'Teknik Telekomunikasi' => [
+                        'Teknik Transmisi Telekomunikasi',
+                        'Teknik Jaringan Akses Telekomunikasi',
+                    ],
+                ],
+            ],
+        ],
+
     ],
 
     'curriculum'      => ['K13', 'Kurikulum Merdeka'],

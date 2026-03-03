@@ -94,6 +94,17 @@
                                 <td class="fw-semibold text-muted">Kabupaten/Kota</td>
                                 <td>{{ $submission->school?->regency?->name ?? ($submission->regency?->name ?? '-') }}</td>
                             </tr>
+                            @if ($submission->school?->curriculum)
+                                <tr>
+                                    <td class="fw-semibold text-muted">Kurikulum</td>
+                                    <td>
+                                        <span
+                                            class="badge {{ $submission->school->curriculum === 'K13' ? 'bg-warning text-dark' : 'bg-success' }}">
+                                            {{ $submission->school->curriculum }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endif
                             @if ($submission->school?->expertise)
                                 <tr>
                                     <td class="fw-semibold text-muted">Bidang Keahlian</td>
