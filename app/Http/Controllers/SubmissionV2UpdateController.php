@@ -58,6 +58,7 @@ class SubmissionV2UpdateController extends Controller
         }
 
         $expertiseData = config('constant.expertise', []);
+        $expertiseByCurriculum = config('constant.expertise_by_curriculum', []);
         $respondentPositions = config('constant.respondent_positions', []);
         $updateUrl = route('submissions-v2.update.store', $token);
 
@@ -67,6 +68,7 @@ class SubmissionV2UpdateController extends Controller
             'provinces',
             'regencies',
             'expertiseData',
+            'expertiseByCurriculum',
             'respondentPositions'
         ));
     }
@@ -91,8 +93,9 @@ class SubmissionV2UpdateController extends Controller
             'school_category' => 'nullable|string|max:100',
             'program_duration' => 'nullable|string|max:50',
             'school_accreditation' => 'nullable|string|max:50',
-            'expertise' => 'nullable|string|max:255',
-            'expertise_program' => 'nullable|string|max:255',
+            'curriculum'             => 'nullable|string|max:50',
+            'expertise'              => 'nullable|string|max:255',
+            'expertise_program'      => 'nullable|string|max:255',
             'expertise_concentration' => 'nullable|string|max:255',
             'respondent_name' => 'sometimes|required|string|max:255',
             'respondent_position' => 'sometimes|required|string|max:255',
@@ -127,6 +130,9 @@ class SubmissionV2UpdateController extends Controller
             }
             if ($request->filled('regency_code')) {
                 $data['regency_code'] = $request->regency_code;
+            }
+            if ($request->filled('curriculum')) {
+                $data['curriculum'] = $request->curriculum;
             }
             if ($request->filled('expertise')) {
                 $data['expertise'] = $request->expertise;
@@ -177,9 +183,9 @@ class SubmissionV2UpdateController extends Controller
                 // Also update the school record with relevant fields
                 if ($submission->school) {
                     $schoolData = [];
-                    foreach (['school_name', 'npsn', 'address', 'province_code', 'regency_code', 
+                    foreach (['school_name', 'npsn', 'address', 'province_code', 'regency_code',
                               'school_status', 'school_category', 'program_duration', 'school_accreditation',
-                              'expertise', 'expertise_program', 'expertise_concentration'] as $field) {
+                              'curriculum', 'expertise', 'expertise_program', 'expertise_concentration'] as $field) {
                         if (isset($data[$field])) {
                             $schoolData[$field] = $data[$field];
                         }

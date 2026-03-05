@@ -19,8 +19,9 @@ class PublicInstrumentV2Controller extends Controller
         $provinces = Province::orderBy('name')->get();
         $respondentPositions = config('constant.respondent_positions');
         $expertiseData = config('constant.expertise');
+        $expertiseByCurriculum = config('constant.expertise_by_curriculum');
 
-        return view('instrument.form-v2', compact('provinces', 'respondentPositions', 'expertiseData'));
+        return view('instrument.form-v2', compact('provinces', 'respondentPositions', 'expertiseData', 'expertiseByCurriculum'));
     }
 
     public function getRegencies($provinceCode)
@@ -37,8 +38,14 @@ class PublicInstrumentV2Controller extends Controller
         $saprasData = config('sapras_data');
         $concentration = urldecode($concentration);
 
+        // Normalize: try exact match first, then underscore-replaced key
         if (!isset($saprasData[$concentration])) {
-            return response()->json(['sections' => []], 200);
+            $underscoredKey = str_replace(' ', '_', $concentration);
+            if (isset($saprasData[$underscoredKey])) {
+                $concentration = $underscoredKey;
+            } else {
+                return response()->json(['sections' => []], 200);
+            }
         }
 
         return response()->json($saprasData[$concentration]);

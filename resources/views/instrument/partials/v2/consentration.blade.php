@@ -6,7 +6,7 @@
             <option value="">-- Pilih Bidang Keahlian --</option>
             @foreach (array_keys($expertiseData) as $expertise)
                 <option value="{{ $expertise }}" {{ old('expertise') == $expertise ? 'selected' : '' }}>
-                    {{ $expertise == 'TIK' ? 'TIK (Teknologi Informasi dan Komunikasi)' : $expertise }}
+                    {{ $expertise }}
                 </option>
             @endforeach
         </select>
@@ -37,3 +37,8 @@
         @enderror
     </div>
 </div>
+
+{{-- Expose curriculum-based expertise data globally so form-v2.blade.php JS can use it --}}
+<script>
+    window.expertiseByCurriculum = @json($expertiseByCurriculum ?? []);
+</script>

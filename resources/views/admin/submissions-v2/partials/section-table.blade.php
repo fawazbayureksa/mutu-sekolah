@@ -66,7 +66,17 @@
                             <tr>
                                 <td class="text-center">{{ $idx + 1 }}</td>
                                 @foreach ($columns as $col)
-                                    <td>{{ $row[$col['key']] ?? '-' }}</td>
+                                    <td>
+                                        @if (($col['type'] ?? '') === 'boolean')
+                                            @if (!empty($row[$col['key']]))
+                                                <span class="text-success fw-bold">✓</span>
+                                            @else
+                                                <span class="text-muted">—</span>
+                                            @endif
+                                        @else
+                                            {{ $row[$col['key']] ?? '-' }}
+                                        @endif
+                                    </td>
                                 @endforeach
                             </tr>
                         @endforeach

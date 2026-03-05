@@ -10,15 +10,6 @@
 {{-- Table A.2.1: Penelusuran Alumni (Tracer Study) --}}
 <div class="card table-card">
     {{-- Header Input for Graduation Class --}}
-    <div class="card-body border-bottom">
-        <div class="header-input-group">
-            <label class="form-label fw-semibold">Kelas Lulusan</label>
-            <input type="text" class="form-control header-input" data-key="graduation_class"
-                placeholder="Contoh: 2024/2025" style="max-width: 300px;"
-                value="{{ $headerData['graduation_class'] ?? '' }}">
-        </div>
-    </div>
-
     <div class="card-body p-0">
         @php
             $initialValue = old('answers.A.2.1');

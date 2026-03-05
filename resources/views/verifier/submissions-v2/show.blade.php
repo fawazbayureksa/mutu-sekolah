@@ -91,6 +91,17 @@
                                 <td class="fw-semibold text-muted">Kabupaten/Kota</td>
                                 <td>{{ $submission->school?->regency?->name ?? ($submission->regency?->name ?? '-') }}</td>
                             </tr>
+                            @if ($submission->school?->curriculum)
+                                <tr>
+                                    <td class="fw-semibold text-muted">Kurikulum</td>
+                                    <td>
+                                        <span
+                                            class="badge {{ $submission->school->curriculum === 'K13' ? 'bg-warning text-dark' : 'bg-success' }}">
+                                            {{ $submission->school->curriculum }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endif
                             @if ($submission->school?->expertise)
                                 <tr>
                                     <td class="fw-semibold text-muted">Bidang Keahlian</td>
@@ -325,7 +336,49 @@
                                 'columns' => [
                                     ['key' => 'partner_name', 'label' => 'Nama Industri Mitra'],
                                     ['key' => 'mou_status', 'label' => 'Status MoU/MoA'],
-                                    ['key' => 'duration', 'label' => 'Durasi Kerjasama (Tahun)'],
+                                    ['key' => 'duration', 'label' => 'Durasi (Tahun)'],
+                                    [
+                                        'key' => 'program_kurikulum',
+                                        'label' => '1. Penyelarasan Kurikulum',
+                                        'type' => 'boolean',
+                                    ],
+                                    ['key' => 'program_guru', 'label' => '2. Guru Tamu', 'type' => 'boolean'],
+                                    [
+                                        'key' => 'program_magang',
+                                        'label' => '3. Magang/PKL Siswa',
+                                        'type' => 'boolean',
+                                    ],
+                                    [
+                                        'key' => 'program_sertifikasi',
+                                        'label' => '4. Sertifikasi (BNSP/LSP)',
+                                        'type' => 'boolean',
+                                    ],
+                                    [
+                                        'key' => 'program_pelatihan',
+                                        'label' => '5. Pelatihan Guru',
+                                        'type' => 'boolean',
+                                    ],
+                                    [
+                                        'key' => 'program_rekrutmen',
+                                        'label' => '6. Penyerapan Lulusan',
+                                        'type' => 'boolean',
+                                    ],
+                                    [
+                                        'key' => 'program_tefa',
+                                        'label' => '7. Teaching Factory',
+                                        'type' => 'boolean',
+                                    ],
+                                    [
+                                        'key' => 'program_kelas',
+                                        'label' => '8. Kelas Industri',
+                                        'type' => 'boolean',
+                                    ],
+                                    [
+                                        'key' => 'program_csr',
+                                        'label' => '9. CSR/Alat/Bahan/Beasiswa',
+                                        'type' => 'boolean',
+                                    ],
+                                    ['key' => 'program_lainnya_text', 'label' => '10. Lainnya'],
                                     ['key' => 'contribution_quantitative', 'label' => 'Kontribusi Kuantitatif'],
                                     ['key' => 'contribution_qualitative', 'label' => 'Kontribusi Kualitatif'],
                                 ],
@@ -338,17 +391,50 @@
                                 'title' => 'Teaching Factory (TEFA) / Unit Produksi Sekolah',
                                 'data' => $answers['C.2.1'] ?? null,
                                 'columns' => [
-                                    ['key' => 'program_name', 'label' => 'Nama Program TEFA/Produk'],
+                                    ['key' => 'kategori_tefa', 'label' => 'Kategori TEFA'],
+                                    ['key' => 'product_name', 'label' => 'Nama Produk'],
+                                    ['key' => 'product_description', 'label' => 'Deskripsi Produk'],
                                     ['key' => 'industry_partner', 'label' => 'Mitra Industri'],
-                                    ['key' => 'operation_scale', 'label' => 'Skala Operasi'],
-                                    ['key' => 'store_name', 'label' => 'Skema TeFa'],
-                                    ['key' => 'achievement', 'label' => 'Pencapaian & Manfaat'],
+                                    [
+                                        'key' => 'tefa_identifikasi',
+                                        'label' => '1. Identifikasi Produk',
+                                        'type' => 'boolean',
+                                    ],
+                                    [
+                                        'key' => 'tefa_analisis_komp',
+                                        'label' => '2. Analisis Kompetensi',
+                                        'type' => 'boolean',
+                                    ],
+                                    [
+                                        'key' => 'tefa_perencanaan',
+                                        'label' => '3. Perencanaan Produksi',
+                                        'type' => 'boolean',
+                                    ],
+                                    [
+                                        'key' => 'tefa_analisis_sda',
+                                        'label' => '4. Analisis Sumber Daya',
+                                        'type' => 'boolean',
+                                    ],
+                                    [
+                                        'key' => 'tefa_pengerjaan',
+                                        'label' => '5. Pengerjaan Produk',
+                                        'type' => 'boolean',
+                                    ],
+                                    [
+                                        'key' => 'tefa_penyerahan',
+                                        'label' => '6. Penyerahan Produk',
+                                        'type' => 'boolean',
+                                    ],
+                                    [
+                                        'key' => 'tefa_purna_jual',
+                                        'label' => '7. Layanan Purna Jual',
+                                        'type' => 'boolean',
+                                    ],
                                     ['key' => 'certification', 'label' => 'Sertifikasi Kompetensi'],
-                                    ['key' => 'curriculum_integration', 'label' => 'Integrasi Kurikulum'],
-                                    ['key' => 'branding_haki', 'label' => 'HaKI/Branding Produk'],
+                                    ['key' => 'curriculum_sync', 'label' => 'Sinkronisasi Kurikulum'],
+                                    ['key' => 'branding_haki', 'label' => 'Branding/HAKI'],
                                     ['key' => 'quality_evaluation', 'label' => 'Evaluasi Mutu Produk'],
-                                    ['key' => 'revenue_activity', 'label' => 'Omzet/Sustainability'],
-                                    ['key' => 'tracer_impact', 'label' => 'Dampak Tracer Study'],
+                                    ['key' => 'revenue_activity', 'label' => 'Omzet (Rp/Bulan/Tahun)'],
                                     ['key' => 'industry_contribution', 'label' => 'Keterlibatan Alumni/Industri'],
                                     ['key' => 'constraints', 'label' => 'Kendala'],
                                 ],
@@ -398,10 +484,21 @@
                                 'title' => 'Data Ketenagaan dan Beban Mengajar (Rasio Guru-Murid)',
                                 'data' => $answers['C.3.3'] ?? null,
                                 'columns' => [
-                                    ['key' => 'concentration', 'label' => 'Kompetensi Keahlian'],
-                                    ['key' => 'teacher_count', 'label' => 'Jumlah Guru Produktif'],
+                                    ['key' => 'concentration', 'label' => 'Konsentrasi Keahlian'],
+                                    ['key' => 'total_teacher_count', 'label' => 'Jumlah Guru (PNA)'],
                                     ['key' => 'student_count', 'label' => 'Jumlah Total Murid'],
-                                    ['key' => 'ratio', 'label' => 'Rasio Guru:Siswa'],
+                                    ['key' => 'ideal_ratio', 'label' => 'Rasio Ideal (Guru PNA : Murid)'],
+                                    ['key' => 'ratio_gm', 'label' => 'Rasio Guru:Murid (G:M)'],
+                                    ['key' => 'concentration_count', 'label' => 'Jml Konsentrasi per Bidang'],
+                                    ['key' => 'productive_teacher_count', 'label' => 'Jml Guru Produktif'],
+                                    [
+                                        'key' => 'ideal_productive_ratio',
+                                        'label' => 'Rasio Ideal (Guru Produktif : Konsentrasi)',
+                                    ],
+                                    [
+                                        'key' => 'ratio_productive_concentration',
+                                        'label' => 'Rasio Guru Produktif : Konsentrasi',
+                                    ],
                                     ['key' => 'remarks', 'label' => 'Keterangan'],
                                 ],
                                 'dynamicRows' => true,

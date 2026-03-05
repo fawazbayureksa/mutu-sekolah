@@ -178,7 +178,7 @@
                                 @enderror
                             </div>
                             <div class="col-md-12" id="approval-status-wrapper" style="display:none;">
-                                <label class="form-label">Status Persetujuan</label>
+                                <label class="form-label">Status Approval</label>
                                 <div class="mt-2">
                                     @foreach (config('constant.approval_status') as $status)
                                         <div class="form-check form-check-inline">
@@ -803,7 +803,38 @@
         // Expertise cascading dropdowns - loaded from config
         const expertiseData = @json($expertiseData);
 
+        function getActiveExpertiseTree() {
+            const checked = document.querySelector('input[name="curriculum"]:checked');
+            if (checked && window.expertiseByCurriculum && window.expertiseByCurriculum[checked.value]) {
+                return window.expertiseByCurriculum[checked.value];
+            }
+            return expertiseData;
+        }
+
+        function repopulateExpertiseSelect() {
+            const tree = getActiveExpertiseTree();
+            const expertiseSelect = document.getElementById('expertiseSelect');
+            const programSelect = document.getElementById('expertiseProgramSelect');
+            const concentrationSelect = document.getElementById('expertiseConcentrationSelect');
+
+            expertiseSelect.innerHTML = '<option value="">-- Pilih Bidang Keahlian --</option>';
+            programSelect.innerHTML = '<option value="">-- Pilih Program Keahlian --</option>';
+            programSelect.disabled = true;
+            concentrationSelect.innerHTML = '<option value="">-- Pilih Konsentrasi Keahlian --</option>';
+            concentrationSelect.disabled = true;
+
+            Object.keys(tree).forEach(function(name) {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                expertiseSelect.appendChild(opt);
+            });
+
+            resetSaprasContainer();
+        }
+
         function loadExpertisePrograms(expertise) {
+            const tree = getActiveExpertiseTree();
             const programSelect = document.getElementById('expertiseProgramSelect');
             const concentrationSelect = document.getElementById('expertiseConcentrationSelect');
             const approvalWrapper = document.getElementById('approval-status-wrapper');
@@ -821,12 +852,12 @@
                 approvalWrapper.style.display = expertise === 'Kemaritiman' ? '' : 'none';
             }
 
-            if (!expertise || !expertiseData[expertise]) {
+            if (!expertise || !tree[expertise]) {
                 return;
             }
 
             // Populate program dropdown
-            const programs = expertiseData[expertise].programs;
+            const programs = tree[expertise].programs;
             programs.forEach(program => {
                 const option = document.createElement('option');
                 option.value = program;
@@ -838,6 +869,7 @@
         }
 
         function loadExpertiseConcentrations(program) {
+            const tree = getActiveExpertiseTree();
             const concentrationSelect = document.getElementById('expertiseConcentrationSelect');
             const expertiseSelect = document.getElementById('expertiseSelect');
             const expertise = expertiseSelect.value;
@@ -846,12 +878,12 @@
             concentrationSelect.innerHTML = '<option value="">-- Pilih Konsentrasi Keahlian --</option>';
             concentrationSelect.disabled = true;
 
-            if (!expertise || !program || !expertiseData[expertise]) {
+            if (!expertise || !program || !tree[expertise]) {
                 return;
             }
 
             // Populate concentration dropdown
-            const concentrations = expertiseData[expertise].concentrations[program];
+            const concentrations = tree[expertise].concentrations[program];
             if (concentrations) {
                 concentrations.forEach(concentration => {
                     const option = document.createElement('option');
@@ -868,6 +900,11 @@
 
         // Page load - restore old values
         document.addEventListener('DOMContentLoaded', function() {
+            // Attach curriculum radio change listener — swap expertise tree
+            document.querySelectorAll('input[name="curriculum"]').forEach(function(radio) {
+                radio.addEventListener('change', repopulateExpertiseSelect);
+            });
+
             // Restore province and regency if old values exist
             const oldProvinceCode = "{{ old('province_code') }}";
             const oldRegencyCode = "{{ old('regency_code') }}";
