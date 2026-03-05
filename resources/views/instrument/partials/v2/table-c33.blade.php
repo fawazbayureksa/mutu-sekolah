@@ -22,19 +22,23 @@
             <table class="table instrument-table table-sm-header mb-0" id="table-c33">
                 <thead>
                     <tr>
-                        <th style="width:3%; white-space:normal;">No</th>
-                        <th style="width:10%; white-space:normal;">Konsentrasi Keahlian</th>
-                        <th style="width:8%; white-space:normal;">Jumlah Total Murid (Kelas X, XI, XII)</th>
-                        <th style="width:10%; white-space:normal;">Rasio Ideal (Guru PNA : Murid)</th>
-                        <th style="width:8%; white-space:normal;">Rasio Guru:Murid (G:M)</th>
-                        <th style="width:10%; white-space:normal;">Jumlah Konsentrasi Keahlian per Bidang Keahlian
-                            (Kemaritiman/Perikanan/Teknologi Informasi)</th>
-                        <th style="width:9%; white-space:normal;">Jumlah Guru Produktif : Konsentrasi Keahlian</th>
-                        <th style="width:12%; white-space:normal;">Rasio Ideal (Guru Produktif : Konsentrasi Keahlian)
+                        <th style="min-width: 40px; white-space:normal;">No</th>
+                        <th style="min-width: 160px; white-space:normal;">Konsentrasi Keahlian</th>
+                        <th style="min-width: 140px; white-space:normal;">Jumlah Guru (Produktif, Normatif, Adaptif)
                         </th>
-                        <th style="width:10%; white-space:normal;">Rasio Guru Produktif : Konsentrasi Keahlian</th>
-                        <th style="width:10%; white-space:normal;">Keterangan</th>
-                        <th style="width:3%;"></th>
+                        <th style="min-width: 120px; white-space:normal;">Jumlah Total Murid (Kelas X, XI, XII)</th>
+                        <th style="min-width: 180px; white-space:normal;">Rasio Ideal (Guru PNA : Murid)</th>
+                        <th style="min-width: 130px; white-space:normal;">Rasio Guru:Murid (G:M)</th>
+                        <th style="min-width: 160px; white-space:normal;">Jumlah Konsentrasi Keahlian per Bidang
+                            Keahlian (Kemaritiman/Perikanan/Teknologi Informasi)</th>
+                        <th style="min-width: 140px; white-space:normal;">Jumlah Guru Produktif : Konsentrasi Keahlian
+                        </th>
+                        <th style="min-width: 200px; white-space:normal;">Rasio Ideal (Guru Produktif : Konsentrasi
+                            Keahlian)</th>
+                        <th style="min-width: 160px; white-space:normal;">Rasio Guru Produktif : Konsentrasi Keahlian
+                        </th>
+                        <th style="min-width: 140px; white-space:normal;">Keterangan</th>
+                        <th style="min-width: 45px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,6 +56,13 @@
                                     id="c33-concentration-{{ $i }}"
                                     placeholder="Otomatis dari pilihan Konsentrasi"
                                     value="{{ $rowData['concentration'] ?? '' }}" readonly>
+                            </td>
+
+                            {{-- Jumlah Guru PNA (Produktif, Normatif, Adaptif) --}}
+                            <td>
+                                <input type="number" class="form-control form-control-sm table-input c33-total-teacher"
+                                    data-key="total_teacher_count" data-row="{{ $i }}" placeholder="Jumlah"
+                                    min="0" value="{{ $rowData['total_teacher_count'] ?? '' }}">
                             </td>
 
                             {{-- Jumlah Total Murid --}}
@@ -140,34 +151,53 @@
 
 <script>
     (function() {
+        // Ratio map sourced from config/constant.php
+        const idealProductiveRatioMap = @json(config('constant.ideal_productive_ratio_by_bidang'));
+        const defaultRatio = idealProductiveRatioMap['_default'] ??
+            '1 : 5 (minimal 5 guru produktif per konsentrasi keahlian)';
+
+        function getRatioForBidang(bidang) {
+            return idealProductiveRatioMap[bidang] ?? defaultRatio;
+        }
+
         function syncC33Concentration(value) {
             document.querySelectorAll('#table-c33 input[data-key="concentration"]').forEach(function(input) {
                 input.value = value;
             });
         }
 
+        function syncC33IdealProductiveRatio(bidang) {
+            const ratio = getRatioForBidang(bidang);
+            document.querySelectorAll('#table-c33 input[data-key="ideal_productive_ratio"]').forEach(function(
+                input) {
+                input.value = ratio;
+            });
+        }
+
         function calcC33Ratios(row) {
+            const totalTeacherInput = row.querySelector('.c33-total-teacher');
             const studentInput = row.querySelector('.c33-student');
             const productiveInput = row.querySelector('.c33-productive-teacher');
             const concCountInput = row.querySelector('.c33-concentration-count');
             const ratioGmInput = row.querySelector('.c33-ratio-gm');
             const ratioPcInput = row.querySelector('.c33-ratio-pc');
 
+            const totalTeachers = parseFloat(totalTeacherInput?.value) || 0;
             const students = parseFloat(studentInput?.value) || 0;
             const productive = parseFloat(productiveInput?.value) || 0;
             const concCount = parseFloat(concCountInput?.value) || 0;
 
-            // Ratio Guru:Murid — needs productive + total teachers; use productive as proxy for now
+            // Rasio Guru PNA : Murid — uses total PNA teacher count
             if (ratioGmInput) {
-                if (productive > 0 && students > 0) {
-                    const r = (students / productive).toFixed(1);
+                if (totalTeachers > 0 && students > 0) {
+                    const r = (students / totalTeachers).toFixed(1);
                     ratioGmInput.value = `1 : ${r}`;
                 } else {
                     ratioGmInput.value = '';
                 }
             }
 
-            // Ratio Guru Produktif : Konsentrasi
+            // Rasio Guru Produktif : Konsentrasi
             if (ratioPcInput) {
                 if (productive > 0 && concCount > 0) {
                     const r = (productive / concCount).toFixed(1);
@@ -180,8 +210,21 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const concentrationSelect = document.getElementById('expertiseConcentrationSelect');
+            const expertiseSelect = document.getElementById('expertiseSelect');
             const table = document.getElementById('table-c33');
             if (!table) return;
+
+            // Initialize ideal productive ratio from current Bidang Keahlian selection
+            if (expertiseSelect && expertiseSelect.value) {
+                syncC33IdealProductiveRatio(expertiseSelect.value);
+            }
+
+            // Sync ideal productive ratio whenever Bidang Keahlian changes
+            if (expertiseSelect) {
+                expertiseSelect.addEventListener('change', function() {
+                    syncC33IdealProductiveRatio(this.value);
+                });
+            }
 
             // Sync concentration dropdown → table
             if (concentrationSelect) {
@@ -200,12 +243,14 @@
             // Run calculations for pre-filled rows
             table.querySelectorAll('tbody tr').forEach(calcC33Ratios);
 
-            // Sync concentration when new row is added
+            // Sync on new row added
             const addBtn = document.querySelector('[data-table-id="table-c33"].btn-add-row');
             if (addBtn) {
                 addBtn.addEventListener('click', function() {
                     setTimeout(function() {
                         if (concentrationSelect) syncC33Concentration(concentrationSelect
+                            .value);
+                        if (expertiseSelect) syncC33IdealProductiveRatio(expertiseSelect
                             .value);
                     }, 50);
                 });

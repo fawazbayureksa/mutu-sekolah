@@ -177,4 +177,23 @@ return [
         'TOT/Asesor',
         'Studi Lanjut',
     ],
+
+    /**
+     * Rasio Ideal Guru Produktif : Konsentrasi Keahlian per Bidang Keahlian
+     * Key   = Bidang Keahlian (matches expertiseSelect value)
+     * Value = human-readable ratio string displayed in the readonly field
+     */
+    'ideal_productive_ratio_by_bidang' => [
+        'Kemaritiman'                          => '1 : 5 (5 guru produktif untuk 1 konsentrasi keahlian bidang Kemaritiman)',
+        'Perikanan'                            => '1 : 2 (2 guru produktif untuk 1 konsentrasi keahlian bidang Perikanan)',
+        'Teknologi Informasi dan Komunikasi'   => '1 : 2 (2 guru produktif untuk 1 konsentrasi keahlian bidang TIK)',
+        'Teknologi dan Rekayasa'               => '1 : 5 (minimal 5 guru produktif per konsentrasi keahlian)',
+        'Bisnis dan Manajemen'                 => '1 : 5 (minimal 5 guru produktif per konsentrasi keahlian)',
+        'Pariwisata'                           => '1 : 5 (minimal 5 guru produktif per konsentrasi keahlian)',
+        'Seni dan Industri Kreatif'            => '1 : 5 (minimal 5 guru produktif per konsentrasi keahlian)',
+        'Agribisnis dan Agroteknologi'         => '1 : 5 (minimal 5 guru produktif per konsentrasi keahlian)',
+        'Kesehatan dan Pekerjaan Sosial'       => '1 : 5 (minimal 5 guru produktif per konsentrasi keahlian)',
+        '_default'                             => '1 : 5 (minimal 5 guru produktif per konsentrasi keahlian)',
+    ],
 ];
+

@@ -22,22 +22,22 @@
             <table class="table instrument-table mb-0" id="table-c21">
                 <thead>
                     <tr>
-                        <th style="width: 3%; white-space: normal;">No</th>
-                        <th style="width: 8%; white-space: normal;">Kategori TEFA</th>
-                        <th style="width: 8%; white-space: normal;">Nama Produk</th>
-                        <th style="width: 8%; white-space: normal;">Deskripsi Produk</th>
-                        <th style="width: 7%; white-space: normal;">Mitra Industri</th>
-                        <th style="width: 7%; white-space: normal;">Proses/Dokumen Tefa</th>
-                        <th style="width: 7%; white-space: normal;">Sertifikasi Kompetensi (Siswa/Guru, BNSP/Industri)
-                        </th>
-                        <th style="width: 7%; white-space: normal;">Sinkronisasi Kurikulum</th>
-                        <th style="width: 7%; white-space: normal;">Branding Produk/HAKI</th>
-                        <th style="width: 7%; white-space: normal;">Evaluasi Mutu Produk</th>
-                        <th style="width: 7%; white-space: normal;">Omzet (Rp/Bulan/Tahun)</th>
-                        <th style="width: 7%; white-space: normal;">Keterlibatan Alumni/Industri dalam pengembangan
-                            produk</th>
-                        <th style="width: 7%; white-space: normal;">Kendala</th>
-                        <th style="width: 3%"></th>
+                        <th style="min-width: 40px; white-space: normal;">No</th>
+                        <th style="min-width: 140px; white-space: normal;">Kategori TEFA</th>
+                        <th style="min-width: 130px; white-space: normal;">Nama Produk</th>
+                        <th style="min-width: 140px; white-space: normal;">Deskripsi Produk</th>
+                        <th style="min-width: 130px; white-space: normal;">Mitra Industri</th>
+                        <th style="min-width: 210px; white-space: normal;">Proses/Dokumen Tefa</th>
+                        <th style="min-width: 200px; white-space: normal;">Sertifikasi Kompetensi (Siswa/Guru,
+                            BNSP/Industri)</th>
+                        <th style="min-width: 130px; white-space: normal;">Sinkronisasi Kurikulum</th>
+                        <th style="min-width: 130px; white-space: normal;">Branding Produk/HAKI</th>
+                        <th style="min-width: 130px; white-space: normal;">Evaluasi Mutu Produk</th>
+                        <th style="min-width: 120px; white-space: normal;">Omzet (Rp/Bulan/Tahun)</th>
+                        <th style="min-width: 150px; white-space: normal;">Keterlibatan Alumni/Industri dalam
+                            pengembangan produk</th>
+                        <th style="min-width: 130px; white-space: normal;">Kendala</th>
+                        <th style="min-width: 45px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,9 +91,33 @@
 
                             {{-- Proses/Dokumen Tefa --}}
                             <td>
-                                <textarea class="form-control form-control-sm table-input" data-key="tefa_process" data-row="{{ $i }}"
-                                    rows="2" placeholder="Contoh: SOP, modul, lembar kerja">{{ $rowData['tefa_process'] ?? '' }}</textarea>
+                                <div class="small">
+                                    @php
+                                        $tefaItems = [
+                                            'tefa_identifikasi' => '1. Identifikasi produk',
+                                            'tefa_analisis_komp' => '2. Analisis cakupan kompetensi',
+                                            'tefa_perencanaan' => '3. Perencanaan produksi',
+                                            'tefa_analisis_sda' => '4. Analisis kecukupan sumber daya',
+                                            'tefa_pengerjaan' => '5. Pengerjaan produk',
+                                            'tefa_penyerahan' => '6. Penyerahan hasil produk',
+                                            'tefa_purna_jual' => '7. Layanan purna jual',
+                                        ];
+                                    @endphp
+                                    @foreach ($tefaItems as $key => $label)
+                                        <div class="form-check form-check-sm">
+                                            <input class="form-check-input table-input" type="checkbox"
+                                                id="{{ $key }}_{{ $i }}"
+                                                data-key="{{ $key }}" data-row="{{ $i }}"
+                                                {{ !empty($rowData[$key]) ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="{{ $key }}_{{ $i }}">
+                                                {{ $label }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </td>
+
 
                             {{-- Sertifikasi Kompetensi --}}
                             <td>

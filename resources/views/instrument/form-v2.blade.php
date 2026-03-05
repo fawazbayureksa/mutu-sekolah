@@ -178,7 +178,7 @@
                                 @enderror
                             </div>
                             <div class="col-md-12" id="approval-status-wrapper" style="display:none;">
-                                <label class="form-label">Status Persetujuan</label>
+                                <label class="form-label">Status Approval</label>
                                 <div class="mt-2">
                                     @foreach (config('constant.approval_status') as $status)
                                         <div class="form-check form-check-inline">
