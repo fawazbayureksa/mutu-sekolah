@@ -359,17 +359,17 @@
                             </div>
                         </div>
 
-                        {{-- A.3: Data Putus Sekolah dan Ketidaklulusan Kelas --}}
+                        {{-- A.3: Data Putus Sekolah dan Ketidaknaikan Kelas --}}
                         <div class="indicator-group mb-4">
                             <h5 class="indicator-header mb-3">
                                 <span class="badge bg-secondary me-2">A.3</span>
-                                Data Putus Sekolah dan Ketidaklulusan Kelas
+                                Data Putus Sekolah dan Ketidaknaikan Kelas
                             </h5>
 
                             <div class="indicator-item">
-                                <p class="indicator-text mb-2">Data Putus Sekolah dan Ketidaklulusan Kelas</p>
+                                <p class="indicator-text mb-2">Data Putus Sekolah dan Ketidaknaikan Kelas</p>
                                 <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data putus sekolah dan ketidaklulusan kelas
+                                    <i class="bi bi-info-circle me-1"></i>Isi Data Putus Sekolah dan Ketidaknaikan Kelas
                                 </small>
 
                                 @include('instrument.partials.v2.table-a3', [

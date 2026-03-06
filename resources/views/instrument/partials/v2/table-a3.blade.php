@@ -7,7 +7,7 @@
     $rowCount = max(2, count($rows));
 @endphp
 
-{{-- Table A.3: Data Putus Sekolah dan Ketidaklulusan Kelas --}}
+{{-- Table A.3: Data Putus Sekolah dan Ketidaknaikan Kelas --}}
 <div class="card table-card">
     <div class="card-body p-0">
         @php
@@ -24,7 +24,7 @@
                     <tr>
                         <th style="width: 5%">No</th>
                         <th style="width: 10%; white-space: normal;">Tahun Ajaran</th>
-                        <th style="width: 13%; white-space: normal;">Jumlah Murid Awal (Kelas X/XI/XII)</th>
+                        <th style="width: 13%; white-space: normal;">Jumlah Murid Awal (Kelas X+XI+XII)</th>
                         <th style="width: 13%; white-space: normal;">Jumlah Murid Akhir</th>
                         <th style="width: 13%; white-space: normal;">Jumlah Putus Sekolah</th>
                         <th style="width: 13%; white-space: normal;">Jumlah Tidak Naik Kelas</th>

@@ -25,7 +25,7 @@
                         <th>No</th>
                         <th>Nama Guru</th>
                         <th>Mata Pelajaran/Keahlian</th>
-                        <th>Jenis Kompetensi</th>
+                        <th>Jenis Pelatihan/Sertifikasi</th>
                         <th>Judul Pelatihan/Sertifikasi</th>
                         <th>Tahun (Kegiatan)</th>
                         <th>Penyedia (Industri/Lembaga)</th>

@@ -32,7 +32,8 @@
                             BNSP/Industri)</th>
                         <th style="min-width: 130px; white-space: normal;">Sinkronisasi Kurikulum</th>
                         <th style="min-width: 130px; white-space: normal;">Branding Produk/HAKI</th>
-                        <th style="min-width: 130px; white-space: normal;">Evaluasi Mutu Produk</th>
+                        <th style="min-width: 130px; white-space: normal;">Evaluasi Mutu Produk (Standar
+                            Industri/Halal/ISO)</th>
                         <th style="min-width: 120px; white-space: normal;">Omzet (Rp/Bulan/Tahun)</th>
                         <th style="min-width: 150px; white-space: normal;">Keterlibatan Alumni/Industri dalam
                             pengembangan produk</th>
@@ -72,7 +73,7 @@
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
                                     data-key="product_name" data-row="{{ $i }}"
-                                    placeholder="Nama produk/jasa" value="{{ $rowData['product_name'] ?? '' }}">
+                                    placeholder="Nama produk Barang/Jasa" value="{{ $rowData['product_name'] ?? '' }}">
                             </td>
 
                             {{-- Deskripsi Produk --}}

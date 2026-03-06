@@ -24,11 +24,11 @@
                     <tr>
                         <th style="width: 5%">No</th>
                         <th style="width: 15%; white-space: normal;">Tahun Ajaran</th>
-                        <th style="width: 50%; white-space: normal;">Nama Ujian/Sertifikasi</th>
+                        <th style="width: 50%; white-space: normal;">Jenis Ujian/Sertifikasi</th>
                         <th style="width: 10%; white-space: normal;">Jumlah Peserta</th>
                         <th style="width: 10%; white-space: normal;">Jumlah Lulus</th>
                         <th style="width: 10%; white-space: normal;">Tingkat Kelulusan (%)</th>
-                        <th style="width: 10%; white-space: normal;">Lembaga Sertifikasi/Penyelenggara</th>
+                        <th style="width: 10%; white-space: normal;">Lembaga Penyelenggara/Penguji</th>
                         <th style="width: 10%; white-space: normal;">Keterangan</th>
                         <th style="width: 10%"></th>
                     </tr>

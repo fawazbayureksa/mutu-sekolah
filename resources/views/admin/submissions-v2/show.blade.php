@@ -329,7 +329,7 @@
                             {{-- A.3 --}}
                             @include('admin.submissions-v2.partials.section-table', [
                                 'code' => 'A.3',
-                                'title' => 'Data Putus Sekolah dan Ketidaklulusan Kelas',
+                                'title' => 'Data Putus Sekolah dan Ketidaknaikan Kelas',
                                 'data' => $answers['A.3'] ?? null,
                                 'columns' => [
                                     ['key' => 'year', 'label' => 'Tahun Ajaran'],
@@ -433,7 +433,7 @@
                                 'data' => $answers['C.2.1'] ?? null,
                                 'columns' => [
                                     ['key' => 'kategori_tefa', 'label' => 'Kategori TEFA'],
-                                    ['key' => 'product_name', 'label' => 'Nama Produk'],
+                                    ['key' => 'product_name', 'label' => 'Nama Produk (Barang/Jasa)'],
                                     ['key' => 'product_description', 'label' => 'Deskripsi Produk'],
                                     ['key' => 'industry_partner', 'label' => 'Mitra Industri'],
                                     [
@@ -490,7 +490,7 @@
                                 'columns' => [
                                     ['key' => 'teacher_name', 'label' => 'Nama Guru'],
                                     ['key' => 'subject', 'label' => 'Mata Pelajaran'],
-                                    ['key' => 'competency_type', 'label' => 'Jenis Kompetensi'],
+                                    ['key' => 'competency_type', 'label' => 'Jenis Pelatihan/Sertifikasi'],
                                     ['key' => 'training_title', 'label' => 'Judul Pelatihan'],
                                     ['key' => 'year', 'label' => 'Tahun'],
                                     ['key' => 'provider', 'label' => 'Penyedia'],
