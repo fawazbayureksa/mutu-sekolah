@@ -34,7 +34,6 @@ return [
                     'Agribisnis Perikanan Payau dan Laut',
                     'Agribisnis Perikanan Air Tawar',
                     'Agribisnis Rumput Laut',
-                    'Agribisnis Pengolahan Hasil Perikanan',
                 ],
             ],
         ],
@@ -85,7 +84,7 @@ return [
                         'Agribisnis Pengolahan Hasil Perikanan',
                     ],
                     'Agriteknologi Pengolahan Hasil Pertanian' => [
-                        'Agriteknologi Pengolahan Hasil Pertanian',
+                        'Agriteknologi Pengolahan Hasil Perikanan',
                     ],
                 ],
             ],
