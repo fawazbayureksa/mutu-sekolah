@@ -767,6 +767,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -921,6 +922,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -1040,6 +1042,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -1241,6 +1244,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -1459,6 +1463,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -1621,6 +1626,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -1769,6 +1775,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -1933,6 +1940,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -2097,6 +2105,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -2275,6 +2284,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -2452,6 +2462,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang'],
                 ],
             ],
         ],
