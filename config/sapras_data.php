@@ -294,18 +294,18 @@ return [
             // 3. PERANGKAT LUNAK (SOFTWARE) PENGEMBANGAN GIM
             [
                 'title' => 'Perangkat Lunak (Software) Pengembangan Gim',
-                'type' => 'equipment_gim',
+                'type' => 'equipment',
                 'items' => [
-                    ['name' => 'Game Engine (Unity)', 'spec' => 'Unity Pro atau equivalent, lisensi pendidikan', 'standard_qty' => '18 lisensi'],
-                    ['name' => 'Game Engine (Unreal Engine)', 'spec' => 'Unreal Engine dengan akses full features', 'standard_qty' => '18 lisensi'],
-                    ['name' => 'Software Desain 2D (Adobe Photoshop/Illustrator)', 'spec' => 'Lisensi or setara (GIMP/Krita untuk open source)', 'standard_qty' => '18 lisensi'],
-                    ['name' => 'Software Desain 3D (Blender/Autodesk Maya/3DS Max)', 'spec' => 'Lisensi pendidikan atau open source', 'standard_qty' => '18 lisensi'],
-                    ['name' => 'Software Animasi (Spine/Adobe Animate)', 'spec' => 'Untuk animasi 2D karakter', 'standard_qty' => '9 lisensi'],
-                    ['name' => 'Software Pemodelan 3D (ZBrush)', 'spec' => 'Untuk sculpting karakter 3D', 'standard_qty' => '6 lisensi'],
-                    ['name' => 'Software Audio (Audacity/Adobe Audition)', 'spec' => 'Untuk editing suara dan musik', 'standard_qty' => '9 lisensi'],
-                    ['name' => 'Integrated Development Environment (Visual Studio)', 'spec' => 'Untuk scripting dan programming', 'standard_qty' => '18 lisensi'],
-                    ['name' => 'Version Control (Git/GitHub Desktop)', 'spec' => 'Untuk kolaborasi tim', 'standard_qty' => '18 lisensi'],
-                    ['name' => 'Project Management (Trello/Jira)', 'spec' => 'Untuk manajemen proyek game', 'standard_qty' => '1 paket'],
+                    ['name' => 'Game Engine (Unity)', 'spec' => 'Platform: Windows, macOS, Linux. Lisensi: Software berlisensi resmi (Unity Pro - Lisensi Pendidikan). Fitur: Dukungan pengembangan gim 3D/2D, aset store, dokumentasi lengkap, multi-platform build. Garansi: Minimal 1 tahun untuk lisensi dan dukungan teknis', 'standard_qty' => '18 Unit/Ruang Praktik'],
+                    ['name' => 'Game Engine (Unreal Engine)', 'spec' => 'Platform: Windows, macOS, Linux. Lisensi: Software berlisensi resmi (Unreal Engine - Full Features). Fitur: Dukungan pengembangan gim 3D/2D, blueprint system, real-time rendering, dokumentasi lengkap. Garansi: Minimal 1 tahun untuk dukungan teknis', 'standard_qty' => '18 Unit/Ruang Praktik'],
+                    ['name' => 'Software Desain 2D', 'spec' => 'Platform: Windows, macOS. Lisensi: Software berlisensi resmi (Adobe Photoshop/Illustrator) atau setara (GIMP/Krita - Open Source). Fitur: Desain grafis, ilustrasi, editing gambar, manipulasi foto, pembuatan aset 2D. Garansi: Minimal 1 tahun untuk lisensi dan dukungan teknis', 'standard_qty' => '18 Unit/Ruang Praktik'],
+                    ['name' => 'Software Desain 3D', 'spec' => 'Platform: Windows, macOS. Lisensi: Software berlisensi resmi (Autodesk Maya/3DS Max - Lisensi Pendidikan) atau Blender (Open Source). Fitur: Pemodelan 3D, texturing, rendering, animasi 3D, rigging. Garansi: Minimal 1 tahun untuk lisensi dan dukungan teknis', 'standard_qty' => '18 Unit/Ruang Praktik'],
+                    ['name' => 'Software Animasi 2D', 'spec' => 'Platform: Windows, macOS. Lisensi: Software berlisensi resmi (Spine/Adobe Animate). Fitur: Animasi 2D karakter, rigging, skeletal animation, ekspor ke berbagai format game engine. Garansi: Minimal 1 tahun untuk lisensi dan dukungan teknis', 'standard_qty' => '9 Unit/Ruang Praktik'],
+                    ['name' => 'Software Pemodelan 3D (Sculpting)', 'spec' => 'Platform: Windows, macOS. Lisensi: Software berlisensi resmi (ZBrush). Fitur: Digital sculpting, high-poly modeling, texture painting, ekspor normal/displacement map. Garansi: Minimal 1 tahun untuk lisensi dan dukungan teknis', 'standard_qty' => '6 Unit/Ruang Praktik'],
+                    ['name' => 'Software Audio', 'spec' => 'Platform: Windows, macOS. Lisensi: Software berlisensi resmi (Adobe Audition) atau Audacity (Open Source). Fitur: Editing suara, rekaman, mixing audio, efek suara, mastering untuk game audio. Garansi: Minimal 1 tahun untuk lisensi dan dukungan teknis', 'standard_qty' => '9 Unit/Ruang Praktik'],
+                    ['name' => 'Integrated Development Environment (IDE)', 'spec' => 'Platform: Windows, macOS, Linux. Lisensi: Software berlisensi resmi (Visual Studio). Fitur: Scripting, programming, debugging, intellisense, integrasi dengan game engine. Garansi: Minimal 1 tahun untuk lisensi dan dukungan teknis', 'standard_qty' => '18 Unit/Ruang Praktik'],
+                    ['name' => 'Version Control System', 'spec' => 'Platform: Windows, macOS, Linux. Lisensi: Software berlisensi resmi (Git/GitHub Desktop) atau open source. Fitur: Kolaborasi tim, versioning, branching, merging, integrasi dengan IDE. Garansi: Minimal 1 tahun untuk lisensi dan dukungan teknis', 'standard_qty' => '18 Unit/Ruang Praktik'],
+                    ['name' => 'Software Manajemen Proyek', 'spec' => 'Platform: Web-based, Windows, macOS, iOS, Android. Lisensi: Software berlisensi resmi (Trello/Jira - Akun Berlangganan). Fitur: Manajemen tugas, kolaborasi tim, tracking progres, sprint planning (untuk Jira). Garansi: Minimal 1 tahun untuk lisensi dan akses dan dukungan teknis', 'standard_qty' => '1 Paket/Ruang Praktik'],
                 ],
             ],
 
@@ -425,6 +425,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang'],
                 ],
             ],
         ],
@@ -766,6 +767,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -920,6 +922,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -1039,6 +1042,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -1240,6 +1244,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -1458,6 +1463,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -1620,6 +1626,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -1768,6 +1775,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -1932,6 +1940,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -2096,6 +2105,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -2274,6 +2284,7 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang']
                 ],
             ],
         ],
@@ -2451,6 +2462,202 @@ return [
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
                     ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang'],
+                ],
+            ],
+        ],
+    ],
+
+    'Agriteknologi Pengolahan Hasil Perikanan' => [
+        'sections' => [
+            // 1. RUANG PRAKTIK UTAMA
+            [
+                'title' => 'Ruang Praktik Utama',
+                'type' => 'room',
+                'items' => [
+                    ['name' => 'Ruang Laboratorium Mikrobiologi', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
+                    ['name' => 'Ruang Dapur Produksi', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
+                    ['name' => 'Ruang Pengolahan Hasil Perikanan', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
+                    ['name' => 'Ruang Laboratorium Uji Sensoris', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
+                    ['name' => 'Sub Ruang Instruktur dan Ruang Simpan', 'standard_area' => '3 m²/instruktur', 'capacity' => '9 instruktur'],
+                ],
+            ],
+
+            // 2. PERABOTAN DAN PERALATAN RUANG LABORATORIUM MIKROBIOLOGI
+            [
+                'title' => 'Perabotan dan Peralatan Ruang Laboratorium Mikrobiologi',
+                'type' => 'equipment',
+                'items' => [
+                    ['name' => 'Kursi Kerja', 'spec' => 'Dimensi W42 x D50 x H90 cm, dudukan dan sandaran busa injection, finish fabric, rangka pipa besi oval finishing chrome', 'standard_qty' => '2 unit'],
+                    ['name' => 'Meja Kerja', 'spec' => 'Dimensi 900 x 500 x 450 mm, material MFC', 'standard_qty' => '1 unit'],
+                    ['name' => 'Papan Tulis Dorong', 'spec' => 'Dimensi 150 x 75 x 80 cm, material hard pressed fibreboard, PVC rubber strips, tahan air dan bahan kimia', 'standard_qty' => '1 unit'],
+                    ['name' => 'TV Layar Besar', 'spec' => 'Ukuran layar 45"-75", smart technology, direct full array, quantum dot technology', 'standard_qty' => '1 unit'],
+                    ['name' => 'Lemari Alat (Tools Cabinet)', 'spec' => 'Untuk menyimpan peralatan', 'standard_qty' => '2 unit'],
+                    ['name' => 'Kursi Kerja Lab (Stool)', 'spec' => 'Ukuran memadai untuk duduk saat praktik', 'standard_qty' => '1 unit'],
+                    ['name' => 'Meja Alat', 'spec' => 'Bahan stainless steel, model rak dengan tingkat, ukuran minimal 800 x 400 x 80 cm', 'standard_qty' => '2 unit'],
+                    ['name' => 'Meja Persiapan', 'spec' => 'Bahan stainless steel, model rak tingkat 2 atau 3, ukuran minimal 150 x 70 x 80 cm', 'standard_qty' => '2 unit'],
+                    ['name' => 'Bangku Kerja', 'spec' => 'Bahan stainless steel, ukuran minimal 150 x 70 x 80 cm', 'standard_qty' => '2 unit'],
+                    ['name' => 'Mikroskop Monokuler', 'spec' => 'Perbesaran sampai ± 500X, untuk mengamati mikroorganisme', 'standard_qty' => '6 unit'],
+                    ['name' => 'Mikroskop Binokuler', 'spec' => 'Focusing coaxial cables/fine focusing knobs, illuminator, halogen 6V-20W', 'standard_qty' => '6 unit'],
+                    ['name' => 'Laboratory Refrigerator', 'spec' => 'Untuk pembelajaran proses sterilisasi bahan makanan dengan suhu tinggi', 'standard_qty' => '1 unit'],
+                    ['name' => 'Autoklaf', 'spec' => 'Kapasitas 30-50 liter, tegangan 220V/50Hz, temperatur sterilisasi 105-132°C', 'standard_qty' => '1 unit'],
+                ],
+            ],
+
+            // 3. PERALATAN RUANG DAPUR PRODUKSI
+            [
+                'title' => 'Peralatan Ruang Dapur Produksi',
+                'type' => 'equipment',
+                'items' => [
+                    ['name' => 'Vacuum Sealer', 'spec' => 'Power ≥ 900W, double sealing bar 50 x 1 cm, vacuum pump capacity min 20 m³/h, cycle time 15-25 sec', 'standard_qty' => '1 unit'],
+                    ['name' => 'Mesin Pembuat Kerupuk', 'spec' => 'Kapasitas 60 kg/jam, motor ± ¾ PK, pemotong otomatis, pisau bahan baja', 'standard_qty' => '1 unit'],
+                    ['name' => 'Meat Grinder', 'spec' => 'Material stainless steel, produktivitas ±120 kg/jam, power ±850W', 'standard_qty' => '1 unit'],
+                    ['name' => 'Silent Cutter', 'spec' => 'Untuk mencampur adonan bakso, power ±0.37kW, voltage 220/50Hz, kapasitas min 5L', 'standard_qty' => '1 unit'],
+                    ['name' => 'Mixer', 'spec' => 'Untuk mencampur adonan', 'standard_qty' => '1 unit'],
+                    ['name' => 'Vacuum Packing Machine', 'spec' => 'Voltage 220V/50Hz', 'standard_qty' => '1 unit'],
+                    ['name' => 'Mikro Bakery/Planetary Mixer', 'spec' => 'Kapasitas ±7 L, power ±300 watt', 'standard_qty' => '1 unit'],
+                    ['name' => 'Planetary Mixer', 'spec' => 'Voltage 220V/50Hz, kapasitas 1000 watt', 'standard_qty' => '1 unit'],
+                    ['name' => 'Spiral Mixer', 'spec' => 'Voltage 220V/50Hz, kapasitas bowl ±20L, power ±1500 watt', 'standard_qty' => '1 unit'],
+                    ['name' => 'Drying Oven', 'spec' => 'Range suhu room temperature-300°C, precision ±1°C, power 2 kW, kapasitas min 140L', 'standard_qty' => '1 unit'],
+                    ['name' => 'Air Blast Freezer', 'spec' => 'Kapasitas 900 kg, temperatur -30°C s.d. -78°C, refrigerant R-410a, material stainless steel', 'standard_qty' => '1 unit'],
+                    ['name' => 'Mesin Penepung/Disk Mill', 'spec' => 'Penggerak motor bensin 5.5 HP, kecepatan 9000 rpm, kapasitas 55 kg/jam, material stainless steel', 'standard_qty' => '1 unit'],
+                    ['name' => 'High Speed Automatic Filling and Packaging Machine', 'spec' => 'Untuk mengemas produk olahan kecepatan tinggi dan produk berbentuk granular', 'standard_qty' => '1 unit'],
+                    ['name' => 'Mesin Cetak Bakso', 'spec' => 'Power 220V-750W', 'standard_qty' => '1 unit'],
+                    ['name' => 'Bowl Chopper', 'spec' => 'Untuk mencincang dan mencampur daging', 'standard_qty' => '1 unit'],
+                ],
+            ],
+
+            // 4. PERABOTAN DAN PERALATAN RUANG HASIL PENGOLAHAN PERIKANAN
+            [
+                'title' => 'Perabotan dan Peralatan Ruang Hasil Pengolahan Perikanan',
+                'type' => 'equipment',
+                'items' => [
+                    ['name' => 'Kursi Kerja', 'spec' => 'Dimensi 400 x 450 mm, material MFC', 'standard_qty' => '2 unit'],
+                    ['name' => 'Meja Kerja', 'spec' => 'Untuk bekerja', 'standard_qty' => '1 unit'],
+                    ['name' => 'Papan Tulis Dorong', 'spec' => 'Dapat dipindah-pindah', 'standard_qty' => '1 unit'],
+                    ['name' => 'TV Layar Besar', 'spec' => 'Untuk penayangan kegiatan langsung atau online', 'standard_qty' => '1 unit'],
+                    ['name' => 'Lemari Alat (Tools Cabinet)', 'spec' => 'Untuk menyimpan peralatan', 'standard_qty' => '2 unit'],
+                    ['name' => 'Stool/Kursi Kerja Bengkel', 'spec' => 'Rangka pipa dinding, fitting milling, tinggi 40.5 cm', 'standard_qty' => '1 unit'],
+                    ['name' => 'Meja Alat', 'spec' => 'Bahan stainless steel, model rak dengan tingkat 3, ukuran minimal 880 x 440 x 80 cm', 'standard_qty' => '2 unit'],
+                    ['name' => 'Meja Persiapan', 'spec' => 'Bahan stainless steel, model rak tingkat 2 atau 3, ukuran minimal 1150 x 700 x 80 cm', 'standard_qty' => '2 unit'],
+                    ['name' => 'Bangku Kerja', 'spec' => 'Bahan stainless steel, model dengan laci, ukuran minimal 1150 x 700 x 80 cm', 'standard_qty' => '2 unit'],
+                    ['name' => 'Vacuum Packing Machine', 'spec' => 'Volume vacuum chamber min 375x270x80mm, exhaust pump speed, voltage 220V/50Hz', 'standard_qty' => '1 unit'],
+                    ['name' => 'Continuous Band Sealer', 'spec' => 'Material stainless steel, voltage 220V, input power 2300W, speed up to 20m/min', 'standard_qty' => '1 unit'],
+                    ['name' => 'Combihiler Freezer Cabinet', 'spec' => 'Kapasitas 6000 liter, daya listrik ±450 watt', 'standard_qty' => '1 unit'],
+                    ['name' => 'Refrigerator Side by Side', 'spec' => 'Kapasitas 350L, daya listrik ±300 watt', 'standard_qty' => '1 unit'],
+                    ['name' => 'Spray Dryer', 'spec' => 'Untuk membuat bahan cair menjadi powder dengan metode penyemprotan', 'standard_qty' => '1 unit'],
+                    ['name' => 'Continuous Band Sealer', 'spec' => 'Daya ±500 watt, kecepatan 0-21 m/menit, lebar penyegelan ±1.2 cm', 'standard_qty' => '2 unit'],
+                    ['name' => 'High Speed Automatic Filling and Packaging Machine', 'spec' => 'Untuk produk bentuk irregular', 'standard_qty' => '1 unit'],
+                    ['name' => 'Spray Dryer', 'spec' => 'Untuk pembelajaran proses pengolahan berupa serbuk', 'standard_qty' => '1 unit'],
+                    ['name' => 'Automatic Pasta Machine', 'spec' => 'Automatic weighing and feeding', 'standard_qty' => '1 unit'],
+                ],
+            ],
+
+            // 5. PERABOTAN DAN PERALATAN RUANG LABORATORIUM UJI SENSORIS
+            [
+                'title' => 'Perabotan dan Peralatan Ruang Laboratorium Uji Sensoris',
+                'type' => 'equipment',
+                'items' => [
+                    ['name' => 'Kursi Kerja', 'spec' => 'W42 x D50 x H90 cm, dudukan busa injection', 'standard_qty' => '2 unit'],
+                    ['name' => 'Meja Kerja', 'spec' => '900 x 450 mm, material MFC', 'standard_qty' => '1 unit'],
+                    ['name' => 'Papan Tulis Dorong', 'spec' => '150 x 75 x 80 cm', 'standard_qty' => '1 unit'],
+                    ['name' => 'TV Layar Besar', 'spec' => 'Ukuran 45"-75"', 'standard_qty' => '1 unit'],
+                    ['name' => 'Lemari Alat', 'spec' => 'Untuk menyimpan peralatan', 'standard_qty' => '2 unit'],
+                    ['name' => 'Stool/Kursi Kerja Bengkel', 'spec' => 'Rangka pipa, tinggi 40.5 cm', 'standard_qty' => '1 unit'],
+                    ['name' => 'Meja Alat', 'spec' => 'Stainless steel, 880 x 440 x 80 cm', 'standard_qty' => '2 unit'],
+                    ['name' => 'Meja Persiapan', 'spec' => 'Stainless steel, 1150 x 700 x 80 cm', 'standard_qty' => '2 unit'],
+                    ['name' => 'Bangku Kerja', 'spec' => 'Stainless steel dengan laci', 'standard_qty' => '2 unit'],
+                    ['name' => 'Viscometer', 'spec' => 'Untuk mengukur kekentalan bahan cair', 'standard_qty' => '2 unit'],
+                    ['name' => 'Moisture Tester', 'spec' => 'Untuk mengukur kadar air, power supply 1.5V, suhu 0-50°C', 'standard_qty' => '2 unit'],
+                    ['name' => 'Laboratory Refrigerator', 'spec' => 'Untuk sterilisasi bahan makanan', 'standard_qty' => '1 unit'],
+                    ['name' => 'Timbangan Analitik', 'spec' => 'Ketelitian 4 angka, kapasitas 120-300 gram', 'standard_qty' => '2 unit'],
+                    ['name' => 'Desikator', 'spec' => 'Tempat penyimpanan bahan yang mudah menyerap air', 'standard_qty' => '6 unit'],
+                    ['name' => 'Jangka Sorong', 'spec' => 'Range 0-150 mm, material stainless steel, akurasi ±0.07 mm', 'standard_qty' => '18 unit'],
+                    ['name' => 'Infrared Thermometer', 'spec' => 'Range suhu -32°C s.d. 380°C, akurasi ±2%, distance spot ratio 12:1', 'standard_qty' => '18 unit'],
+                ],
+            ],
+
+            // 6. PERABOTAN DAN PERALATAN SUB RUANG INSTRUKTUR DAN PENYIMPANAN
+            [
+                'title' => 'Perabotan dan Peralatan Sub Ruang Instruktur dan Penyimpanan',
+                'type' => 'equipment',
+                'items' => [
+                    ['name' => 'Kursi Kerja', 'spec' => 'Ergonomis, nyaman', 'standard_qty' => '5 unit'],
+                    ['name' => 'Meja Kerja', 'spec' => 'Ukuran memadai', 'standard_qty' => '5 unit'],
+                    ['name' => 'Lemari Simpan', 'spec' => 'Sistem knock down, 900 x 400 x 1850 mm, sheet metal 0.7 mm', 'standard_qty' => '2 unit'],
+                    ['name' => 'Refraktometer', 'spec' => 'Untuk mengukur kadar gula/garam, range Brix 0-53%', 'standard_qty' => '2 unit'],
+                    ['name' => 'Timbangan Digital', 'spec' => 'Ketelitian 0.1 g', 'standard_qty' => '1 unit'],
+                    ['name' => 'Lux Meter', 'spec' => 'Range 0-200.000 LUX', 'standard_qty' => '2 unit'],
+                    ['name' => 'Portable pH/ORP/Conductivity Meter', 'spec' => 'Untuk uji kualitas air', 'standard_qty' => '2 unit'],
+                    ['name' => 'Turbidity Meter', 'spec' => 'Untuk mengukur kekeruhan, minimum 90% scattered light', 'standard_qty' => '2 unit'],
+                    ['name' => 'Water Hardness Tester', 'spec' => 'Untuk uji kesadahan air', 'standard_qty' => '2 unit'],
+                    ['name' => 'Water Color Meter', 'spec' => 'Untuk uji warna air', 'standard_qty' => '2 unit'],
+                    ['name' => 'BOD Meter', 'spec' => 'Untuk mengukur oksigen terlarut, range 5-4000 mg/L', 'standard_qty' => '2 unit'],
+                ],
+            ],
+
+            // 7. KELENGKAPAN SMART CLASSROOM
+            [
+                'title' => 'Kelengkapan Smart Classroom',
+                'type' => 'equipment_no_spec',
+                'items' => [
+                    ['name' => 'Smart Board / Whiteboard Interaktif', 'standard_qty' => '1 unit'],
+                    ['name' => 'Smart TV Videoconference', 'standard_qty' => '1 unit'],
+                    ['name' => 'HD Pro Cam / Live Casting', 'standard_qty' => '1 unit'],
+                    ['name' => 'Smart Table Interaktif', 'standard_qty' => '1 unit'],
+                    ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
+                    ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
+                    ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                ],
+            ],
+
+            // 8. KELENGKAPAN KESELAMATAN DAN KESEHATAN KERJA (K3)
+            [
+                'title' => 'Kelengkapan Keselamatan dan Kesehatan Kerja (K3)',
+                'type' => 'k3',
+                'items' => [
+                    ['name' => 'APAR (Alat Pemadam Api Ringan)', 'spec' => 'Tersedia, terisi, dan berkala uji', 'standard_qty' => '4 unit'],
+                    ['name' => 'Hydrant Box dan Alarm', 'spec' => 'Berfungsi, mudah diakses', 'standard_qty' => '1 set'],
+                    ['name' => 'Smoke Detector', 'spec' => 'Terpasang di area rawan, berfungsi', 'standard_qty' => '4 unit'],
+                    ['name' => 'Sprinkler', 'spec' => 'Terpasang sesuai ketentuan', 'standard_qty' => '1 set'],
+                    ['name' => 'P3K Kit', 'spec' => 'Isi lengkap dan tidak kadaluarsa', 'standard_qty' => '2 unit'],
+                    ['name' => 'APD (masker, sarung tangan, safety shoes, jas laboratorium)', 'spec' => 'Tersedia dan sesuai standar', 'standard_qty' => '18 set'],
+                    ['name' => 'Jalur Evakuasi dan Titik Kumpul', 'spec' => 'Ada rambu yang jelas dan mudah dilihat', 'standard_qty' => '1 set'],
+                    ['name' => 'Rambu K3 dan Poster Keselamatan', 'spec' => 'Terpasang di area strategis', 'standard_qty' => '10 buah'],
+                    ['name' => 'Fasilitas Cuci Tangan (CTPS)', 'spec' => 'Dengan air mengalir dan sabun', 'standard_qty' => '2 unit'],
+                    ['name' => 'Prosedur Kesehatan (Covid-19)', 'spec' => 'Poster protokol kesehatan terpasang', 'standard_qty' => '5 buah'],
+                ],
+            ],
+
+            // 9. KELENGKAPAN UTILITAS DAN BANGUNAN
+            [
+                'title' => 'Kelengkapan Utilitas dan Bangunan',
+                'type' => 'utility',
+                'items' => [
+                    ['name' => 'Jaringan Internet', 'spec' => 'Tersedia dan dapat diakses'],
+                    ['name' => 'Pencahayaan Alami dan Buatan (Sesuai SNI)'],
+                    ['name' => 'Ventilasi Udara (Sesuai SNI)'],
+                    ['name' => 'Toilet Terpisah Pria/Wanita'],
+                    ['name' => 'Sumber Air Bersih'],
+                    ['name' => 'Instalasi Listrik yang Aman (Sesuai SNI)'],
+                    ['name' => 'Stop Kontak 1 Phase (jarak 3 m sepanjang dinding)'],
+                    ['name' => 'Sistem Penangkal Petir'],
+                ],
+            ],
+
+            // 10. PENERAPAN BUDAYA KERJA INDUSTRI
+            [
+                'title' => 'Penerapan Budaya Kerja Industri',
+                'type' => 'culture',
+                'items' => [
+                    ['name' => 'Penerapan 5R (Ringkas, Rapi, Resik, Rawat, Rajin)'],
+                    ['name' => 'Poster/Infografis 5S/5R terpasang'],
+                    ['name' => 'Penerapan Budaya Safety/K3 (C.A.N.T.I.K./T.A.M.P.A.N.)'],
+                    ['name' => 'Poster/Infografis K3 terpasang'],
+                    ['name' => 'SOP Penggunaan Peralatan tersedia'],
+                    ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
+                    ['name' => 'Buku Log Penggunaan Ruang Praktik'],
+                    ['name' => 'Prosedur Masuk Ruang (Protokol Kesehatan) terpasang'],
                 ],
             ],
         ],

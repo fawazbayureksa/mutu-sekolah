@@ -76,7 +76,7 @@
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="organizer" data-row="{{ $i }}"
+                                    data-key="description" data-row="{{ $i }}"
                                     placeholder="Skema Level II KKNI, 8 unit kompetensi"
                                     value="{{ $rowData['description'] ?? '' }}">
                             </td>
