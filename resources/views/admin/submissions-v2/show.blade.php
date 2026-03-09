@@ -290,17 +290,15 @@
                                 'title' => 'Data Kelulusan Uji Kompetensi dan Sertifikasi',
                                 'data' => $answers['A.1.1'] ?? null,
                                 'columns' => [
-                                    ['key' => 'year', 'label' => 'Tahun'],
+                                    ['key' => 'year', 'label' => 'Tahun Ajaran'],
+                                    ['key' => 'label', 'label' => 'Jenis Ujian/Sertifikasi'],
                                     ['key' => 'total_participants', 'label' => 'Jumlah Peserta'],
                                     ['key' => 'total_passed', 'label' => 'Jumlah Lulus'],
                                     ['key' => 'pass_rate', 'label' => 'Tingkat Kelulusan (%)'],
-                                    ['key' => 'organizer', 'label' => 'Lembaga'],
+                                    ['key' => 'organizer', 'label' => 'Lembaga Penyelenggara'],
+                                    ['key' => 'description', 'label' => 'Keterangan'],
                                 ],
-                                'staticRows' => [
-                                    'Uji Kompetensi Keahlian (UKK) Mandiri',
-                                    'Uji Kompetensi Keahlian (UKK) LSP',
-                                    'Sertifikasi Profesi',
-                                ],
+                                'dynamicRows' => true,
                             ])
 
                             {{-- A.1.2 --}}
@@ -339,6 +337,7 @@
                                     ['key' => 'failed_students', 'label' => 'Jumlah Tidak Naik Kelas'],
                                     ['key' => 'dropout_percentage', 'label' => '% Putus Sekolah'],
                                     ['key' => 'main_factor', 'label' => 'Faktor Utama Penyebab'],
+                                    ['key' => 'main_factor_other', 'label' => 'Faktor Lainnya (Keterangan)'],
                                 ],
                                 'dynamicRows' => true,
                             ])
