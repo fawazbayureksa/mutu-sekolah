@@ -53,7 +53,7 @@ class SchoolController extends Controller
 
     public function show(School $school): View
     {
-        $school->load(['assessments.instrument', 'submissions.instrument', 'responses']);
+        $school->load(['province', 'regency', 'instrumentSubmissionsV2']);
 
         return view('admin.schools.show', compact('school'));
     }

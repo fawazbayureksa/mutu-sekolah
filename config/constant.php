@@ -81,7 +81,7 @@ return [
                         'Agribisnis Perikanan Payau dan Laut',
                         'Agribisnis Ikan Hias',
                         'Agribisnis Rumput Laut',
-                        'Agribisnis Pengolahan Hasil Perikanan',
+                        // 'Agribisnis Pengolahan Hasil Perikanan',
                     ],
                     'Agriteknologi Pengolahan Hasil Pertanian' => [
                         'Agriteknologi Pengolahan Hasil Perikanan',
