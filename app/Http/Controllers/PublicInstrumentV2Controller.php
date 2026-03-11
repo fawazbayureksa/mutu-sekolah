@@ -74,7 +74,7 @@ class PublicInstrumentV2Controller extends Controller
             'program_duration'      => ['required', Rule::in(['3 Tahun', '4 Tahun'])],
             'school_accreditation'  => ['required', Rule::in(config('constant.school_accreditation'))],
             'curriculum'            => ['required', Rule::in(config('constant.curriculum'))],
-            'approval_status'       => ['required', Rule::in(config('constant.approval_status'))],
+            'approval_status'       => ['nullable', Rule::in(config('constant.approval_status'))],
             'expertise'             => 'nullable|string|max:255',
             'expertise_program'     => 'nullable|string|max:255',
             'expertise_concentration' => 'nullable|string|max:255',
