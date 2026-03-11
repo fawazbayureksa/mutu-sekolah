@@ -25,7 +25,8 @@ Route::get('/instrumen', [PublicInstrumentController::class, 'index'])
     ->name('instrument.form');
 
 Route::post('/instrumen', [PublicInstrumentController::class, 'store'])
-    ->name('instrument.submit');
+    ->name('instrument.submit')
+    ->middleware('throttle:5,1');
 
 Route::get('/instrumen/v2', [PublicInstrumentV2Controller::class, 'index'])
     ->name('instrument.v2.form');
@@ -35,29 +36,33 @@ Route::post('/instrumen/v2', [PublicInstrumentV2Controller::class, 'store'])
     ->middleware('throttle:5,1'); // Limit to 5 requests per minute per IP
 
 Route::get('/api/regencies/{provinceCode}', [PublicInstrumentV2Controller::class, 'getRegencies'])
-    ->name('api.regencies');
+    ->name('api.regencies')
+    ->middleware('throttle:60,1');
 
 Route::get('/api/sapras-data/{concentration}', [PublicInstrumentV2Controller::class, 'getSaprasData'])
-    ->name('api.sapras-data');
+    ->name('api.sapras-data')
+    ->middleware('throttle:60,1');
 
 // Submission update via one-time token
 Route::get('/submission/update/{token}', [SubmissionUpdateController::class, 'show'])
     ->name('submission.update.show');
 
 Route::post('/submission/update/{token}', [SubmissionUpdateController::class, 'update'])
-    ->name('submission.update.store');
+    ->name('submission.update.store')
+    ->middleware('throttle:5,1');
 
 // Submission V2 update via one-time token
 Route::get('/submission-v2/update/{token}', [SubmissionV2UpdateController::class, 'show'])
     ->name('submissions-v2.update.show');
 
 Route::post('/submission-v2/update/{token}', [SubmissionV2UpdateController::class, 'update'])
-    ->name('submissions-v2.update.store');
+    ->name('submissions-v2.update.store')
+    ->middleware('throttle:5,1');
 
 // Authentication routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:10,1');
 });
 
 // Protected routes (requires authentication)
