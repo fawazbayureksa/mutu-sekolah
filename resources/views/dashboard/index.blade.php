@@ -154,22 +154,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse(\App\Models\Assessment::with('school')->latest()->take(5)->get() as $assessment)
+                        @forelse(\App\Models\InstrumentSubmissionV2::latest()->take(5)->get() as $submission)
                             <tr>
                                 <td class="px-4 py-3">
-                                    <strong>{{ $assessment->school->school_name ?? 'N/A' }}</strong>
+                                    <strong>{{ $submission->school_name }}</strong>
                                 </td>
-                                <td class="px-4 py-3">{{ $assessment->respondent_name }}</td>
-                                <td class="px-4 py-3">{{ $assessment->filled_at->format('d/m/Y') }}</td>
+                                <td class="px-4 py-3">{{ $submission->respondent_name }}</td>
+                                <td class="px-4 py-3">{{ $submission->filled_at?->format('d/m/Y') ?? '-' }}</td>
                                 <td class="px-4 py-3">
-                                    @if ($assessment->status === 'submitted')
-                                        <span class="badge bg-success">Selesai</span>
-                                    @else
-                                        <span class="badge bg-warning text-dark">Draft</span>
-                                    @endif
+                                    <span class="badge {{ $submission->getStatusBadgeClass() }}">
+                                        {{ $submission->getStatusLabel() }}
+                                    </span>
                                 </td>
                                 <td class="px-4 py-3">
-                                    <a href="#" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ route('admin.submissions-v2.show', $submission) }}"
+                                        class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-eye me-1"></i>Lihat
                                     </a>
                                 </td>
