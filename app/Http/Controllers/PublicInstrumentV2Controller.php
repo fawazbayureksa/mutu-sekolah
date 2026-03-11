@@ -61,7 +61,7 @@ class PublicInstrumentV2Controller extends Controller
         $validator = Validator::make($request->all(), [
             // Basic fields
             'school_name'           => 'required|string|max:255',
-            'npsn'                  => 'nullable|digits:8',
+            'npsn'                  => 'required',
             'address'               => 'required|string|max:1000',
 
             // Validated against actual DB values
@@ -69,12 +69,12 @@ class PublicInstrumentV2Controller extends Controller
             'regency_code'          => ['required', 'string', 'exists:regencies,code'],
 
             // Enum whitelist validation — only accept known values
-            'school_status'         => ['nullable', Rule::in(['Negeri', 'Swasta'])],
-            'school_category'       => ['nullable', Rule::in(array_keys(config('constant.school_category')))],
-            'program_duration'      => ['nullable', Rule::in(['3 Tahun', '4 Tahun'])],
-            'school_accreditation'  => ['nullable', Rule::in(config('constant.school_accreditation'))],
-            'curriculum'            => ['nullable', Rule::in(config('constant.curriculum'))],
-            'approval_status'       => ['nullable', Rule::in(config('constant.approval_status'))],
+            'school_status'         => ['required'],
+            'school_category'       => ['required', Rule::in(array_keys(config('constant.school_category')))],
+            'program_duration'      => ['required', Rule::in(['3 Tahun', '4 Tahun'])],
+            'school_accreditation'  => ['required', Rule::in(config('constant.school_accreditation'))],
+            'curriculum'            => ['required', Rule::in(config('constant.curriculum'))],
+            'approval_status'       => ['required', Rule::in(config('constant.approval_status'))],
             'expertise'             => 'nullable|string|max:255',
             'expertise_program'     => 'nullable|string|max:255',
             'expertise_concentration' => 'nullable|string|max:255',
