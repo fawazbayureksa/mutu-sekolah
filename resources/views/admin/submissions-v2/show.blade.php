@@ -714,11 +714,30 @@
 @push('scripts')
     <script>
         function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(function() {
-                alert('Link berhasil disalin!');
-            }, function(err) {
-                console.error('Gagal menyalin: ', err);
-            });
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(function() {
+                    alert('Link berhasil disalin!');
+                }, function(err) {
+                    console.error('Gagal menyalin: ', err);
+                });
+            } else {
+                // Fallback for HTTP (non-secure context)
+                var textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    alert('Link berhasil disalin!');
+                } catch (err) {
+                    console.error('Gagal menyalin: ', err);
+                    alert('Gagal menyalin link. Silakan salin secara manual.');
+                }
+                document.body.removeChild(textarea);
+            }
         }
     </script>
 @endpush
