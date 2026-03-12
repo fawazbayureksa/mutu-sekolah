@@ -564,6 +564,7 @@
             const templateRow = tbody.querySelector('tr:last-child');
             const newRow = templateRow.cloneNode(true);
             const rowIndex = tbody.querySelectorAll('tr').length;
+            const oldIndex = rowIndex - 1;
 
             newRow.querySelectorAll('input, select, textarea').forEach(input => {
                 if (input.type === 'radio' || input.type === 'checkbox') {
@@ -574,10 +575,25 @@
 
                 const name = input.getAttribute('name');
                 if (name) {
-                    input.setAttribute('name', name.replace(/\[\d+\]/, `[${rowIndex}]`));
+                    input.setAttribute('name',
+                        name.replace(/\[\d+\]/, `[${rowIndex}]`)
+                        .replace(new RegExp(`_${oldIndex}$`), `_${rowIndex}`)
+                    );
+                }
+
+                const id = input.getAttribute('id');
+                if (id) {
+                    input.setAttribute('id', id.replace(new RegExp(`_${oldIndex}$`), `_${rowIndex}`));
                 }
 
                 input.dataset.row = rowIndex;
+            });
+
+            newRow.querySelectorAll('label[for]').forEach(label => {
+                const forAttr = label.getAttribute('for');
+                if (forAttr) {
+                    label.setAttribute('for', forAttr.replace(new RegExp(`_${oldIndex}$`), `_${rowIndex}`));
+                }
             });
 
             const rowNumCell = newRow.querySelector('.row-number');
@@ -590,19 +606,39 @@
 
         function renumberRows(tbody) {
             tbody.querySelectorAll('tr').forEach((row, index) => {
+                const oldIndex = parseInt(row.dataset.row ?? index);
+
                 const rowNumCell = row.querySelector('.row-number');
                 if (rowNumCell) {
                     rowNumCell.textContent = index + 1;
                 }
 
                 row.querySelectorAll('input, select, textarea').forEach(input => {
-                    input.dataset.row = index;
-
                     const name = input.getAttribute('name');
                     if (name) {
-                        input.setAttribute('name', name.replace(/\[\d+\]/, `[${index}]`));
+                        input.setAttribute('name',
+                            name.replace(/\[\d+\]/, `[${index}]`)
+                            .replace(new RegExp(`_${oldIndex}$`), `_${index}`)
+                        );
+                    }
+
+                    const id = input.getAttribute('id');
+                    if (id) {
+                        input.setAttribute('id', id.replace(new RegExp(`_${oldIndex}$`), `_${index}`));
+                    }
+
+                    input.dataset.row = index;
+                });
+
+                row.querySelectorAll('label[for]').forEach(label => {
+                    const forAttr = label.getAttribute('for');
+                    if (forAttr) {
+                        label.setAttribute('for', forAttr.replace(new RegExp(`_${oldIndex}$`),
+                        `_${index}`));
                     }
                 });
+
+                row.dataset.row = index;
             });
         }
 
