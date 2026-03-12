@@ -160,7 +160,8 @@
                                             <input class="form-check-input" type="radio" name="school_category"
                                                 id="cat{{ Str::slug($value) }}" value="{{ $value }}"
                                                 {{ old('school_category', $submission->school->school_category) == $value ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="cat{{ Str::slug($value) }}">{{ $label }}</label>
+                                            <label class="form-check-label"
+                                                for="cat{{ Str::slug($value) }}">{{ $label }}</label>
                                         </div>
                                     @endforeach
                                 </div>
@@ -176,7 +177,8 @@
                                             <input class="form-check-input" type="radio" name="curriculum"
                                                 id="cur{{ Str::slug($cur) }}" value="{{ $cur }}"
                                                 {{ old('curriculum', $submission->school->curriculum) == $cur ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="cur{{ Str::slug($cur) }}">{{ $cur }}</label>
+                                            <label class="form-check-label"
+                                                for="cur{{ Str::slug($cur) }}">{{ $cur }}</label>
                                         </div>
                                     @endforeach
                                 </div>
@@ -192,7 +194,8 @@
                                             <input class="form-check-input" type="radio" name="school_accreditation"
                                                 id="acc{{ Str::slug($acc) }}" value="{{ $acc }}"
                                                 {{ old('school_accreditation', $submission->school->school_accreditation) == $acc ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="acc{{ Str::slug($acc) }}">{{ $acc }}</label>
+                                            <label class="form-check-label"
+                                                for="acc{{ Str::slug($acc) }}">{{ $acc }}</label>
                                         </div>
                                     @endforeach
                                 </div>
@@ -208,7 +211,8 @@
                                             <input class="form-check-input" type="radio" name="approval_status"
                                                 id="appr{{ Str::slug($status) }}" value="{{ $status }}"
                                                 {{ old('approval_status', $submission->school->approval_status ?? '') == $status ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="appr{{ Str::slug($status) }}">{{ $status }}</label>
+                                            <label class="form-check-label"
+                                                for="appr{{ Str::slug($status) }}">{{ $status }}</label>
                                         </div>
                                     @endforeach
                                 </div>
@@ -224,7 +228,7 @@
                                     <option value="">-- Pilih Bidang Keahlian --</option>
                                     @foreach (array_keys($expertiseData ?? []) as $expertise)
                                         <option value="{{ $expertise }}"
-                                            {{ old('expertise', $submission->school->expertise) == $expertise ? 'selected' : '' }}>
+                                            {{ old('expertise', $submission->school->expertise ?: $submission->expertise) == $expertise ? 'selected' : '' }}>
                                             {{ $expertise == 'TIK' ? 'TIK (Teknologi Informasi dan Komunikasi)' : $expertise }}
                                         </option>
                                     @endforeach
@@ -1526,29 +1530,51 @@
                 console.error('Form element not found!');
             }
             // Restore expertise fields if submission has data
-            @if ($submission->school->expertise)
-                const expertiseSelect = document.getElementById('expertiseSelect');
-                expertiseSelect.value = '{{ $submission->school->expertise }}';
-                loadExpertisePrograms(expertiseSelect.value);
+            @php
+                $schoolExpertise = $submission->school->expertise ?: $submission->expertise ?? null;
+                $schoolExpertiseProgram = $submission->school->expertise_program ?: $submission->expertise_program ?? null;
+                $schoolExpertiseConcentration = $submission->school->expertise_concentration ?: $submission->expertise_concentration ?? null;
+            @endphp
+            @if ($schoolExpertise)
+                // Rebuild expertise dropdown options based on the selected curriculum
+                // (the static HTML only contains the default tree; curriculum-specific values like
+                // 'Agribisnis dan Agriteknologi' only appear after repopulateExpertiseSelect runs)
+                repopulateExpertiseSelect();
 
-                @if ($submission->school->expertise_program)
+                const expertiseSelect = document.getElementById('expertiseSelect');
+                const savedExpertise = '{{ $schoolExpertise }}';
+                expertiseSelect.value = savedExpertise;
+                loadExpertisePrograms(savedExpertise);
+
+                @if ($schoolExpertiseProgram)
                     setTimeout(() => {
                         const programSelect = document.getElementById('expertiseProgramSelect');
-                        programSelect.value = '{{ $submission->school->expertise_program }}';
-                        loadExpertiseConcentrations(programSelect.value);
+                        const savedProgram = '{{ $schoolExpertiseProgram }}';
+                        programSelect.value = savedProgram;
+                        // Trigger change event to ensure proper state
+                        loadExpertiseConcentrations(savedProgram);
 
-                        @if ($submission->school->expertise_concentration)
+                        @if ($schoolExpertiseConcentration)
                             setTimeout(() => {
                                 const concentrationSelect = document.getElementById(
                                     'expertiseConcentrationSelect');
-                                concentrationSelect.value =
-                                    '{{ $submission->school->expertise_concentration }}';
-                                // Auto-load Sapras data for existing concentration
-                                loadSaprasData(
-                                    '{{ $submission->school->expertise_concentration }}');
-                            }, 100);
+                                const savedConcentration = '{{ $schoolExpertiseConcentration }}';
+                                concentrationSelect.value = savedConcentration;
+
+                                // Verify the value was set
+                                if (concentrationSelect.value === savedConcentration) {
+                                    console.log('Concentration selected:', savedConcentration);
+                                    // Auto-load Sapras data for existing concentration
+                                    loadSaprasData(savedConcentration);
+                                } else {
+                                    console.warn('Failed to select concentration:',
+                                        savedConcentration);
+                                    console.warn('Available options:', Array.from(
+                                        concentrationSelect.options).map(o => o.value));
+                                }
+                            }, 200);
                         @endif
-                    }, 100);
+                    }, 200);
                 @endif
             @endif
         });
