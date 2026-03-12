@@ -231,7 +231,8 @@
                             <div class="col-md-4">
                                 <label class="form-label">Program Keahlian</label>
                                 <select name="expertise_program" id="expertiseProgramSelect"
-                                    class="form-select @error('expertise_program') is-invalid @enderror">
+                                    class="form-select @error('expertise_program') is-invalid @enderror"
+                                    onchange="loadExpertiseConcentrations(this.value)">
                                     <option value="">-- Pilih Program Keahlian --</option>
                                 </select>
                                 @error('expertise_program')
@@ -979,6 +980,16 @@
                     if (data.sections && data.sections.length > 0) {
                         renderSaprasSections(data.sections, container);
                         container.style.display = 'block';
+                        // Restore previously saved sapras values
+                        const saprasHiddenInput = document.getElementById('sapras-data-input');
+                        try {
+                            const existing = JSON.parse(saprasHiddenInput.value || '{}');
+                            if (existing && existing.sections && existing.sections.length > 0) {
+                                restoreSaprasValues(existing);
+                            }
+                        } catch (e) {
+                            console.log('No existing sapras data to restore.');
+                        }
                     } else {
                         placeholder.innerHTML = `
                             <i class="bi bi-exclamation-circle" style="font-size: 3rem; color: #ffc107;"></i>
@@ -1339,12 +1350,41 @@
                 </div>`;
         }
 
+        function restoreSaprasValues(existingData) {
+            if (!existingData || !existingData.sections) return;
+            const container = document.getElementById('sapras-container');
+            if (!container) return;
+            const sectionDivs = container.querySelectorAll('.indicator-group');
+
+            existingData.sections.forEach((savedSection, sIdx) => {
+                if (!sectionDivs[sIdx]) return;
+                const rows = sectionDivs[sIdx].querySelectorAll('tbody tr');
+                (savedSection.rows || []).forEach((rowData, rIdx) => {
+                    if (!rows[rIdx]) return;
+                    rows[rIdx].querySelectorAll('.sapras-input').forEach(input => {
+                        const key = input.dataset.key;
+                        if (key && rowData[key] !== undefined && rowData[key] !== null) {
+                            input.value = rowData[key];
+                        }
+                    });
+                });
+            });
+        }
+
         function collectSaprasData() {
             const container = document.getElementById('sapras-container');
             const hiddenInput = document.getElementById('sapras-data-input');
 
             if (!container || container.style.display === 'none') {
-                hiddenInput.value = '{}';
+                // Don't clobber existing saved data if container is just not yet rendered
+                try {
+                    const existing = JSON.parse(hiddenInput.value || '{}');
+                    if (!existing || !existing.sections || existing.sections.length === 0) {
+                        hiddenInput.value = '{}';
+                    }
+                } catch (e) {
+                    hiddenInput.value = '{}';
+                }
                 return;
             }
 

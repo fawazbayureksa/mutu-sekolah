@@ -107,16 +107,12 @@ class SubmissionV2Controller extends Controller
 
     public function generateUpdateToken(InstrumentSubmissionV2 $submission): RedirectResponse
     {
-        if ($submission->status !== InstrumentSubmissionV2::STATUS_REJECTED) {
-            return back()->with('error', 'Token hanya dapat dibuat untuk submission yang ditolak');
-        }
-
         $token = $submission->generateUpdateToken();
 
         $updateUrl = route('submissions-v2.update.show', $token);
 
         return back()
-            ->with('success', 'Token berhasil dibuat. URL update akan berlaku selama 24 jam.')
+            ->with('success', 'Token berhasil dibuat. URL update akan berlaku selama 5 hari.')
             ->with('update_url', $updateUrl);
     }
 
