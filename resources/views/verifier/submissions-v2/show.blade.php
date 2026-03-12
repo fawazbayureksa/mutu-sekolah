@@ -23,11 +23,10 @@
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
                         <i class="bi bi-x-lg me-1"></i> Tolak
                     </button>
-                @elseif($submission->status === 'rejected')
-                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#tokenModal">
-                        <i class="bi bi-link-45deg me-1"></i> Generate Link Update
-                    </button>
                 @endif
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#tokenModal">
+                    <i class="bi bi-link-45deg me-1"></i> Generate Link Update
+                </button>
                 <a href="{{ route('verifier.submissions-v2.index') }}" class="btn btn-secondary">
                     <i class="bi bi-arrow-left me-1"></i> Kembali
                 </a>
@@ -610,36 +609,34 @@
         </div>
     @endif
 
-    {{-- Token Modal --}}
-    @if ($submission->status === 'rejected')
-        <div class="modal fade" id="tokenModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form action="{{ route('verifier.submissions-v2.generate-token', $submission) }}" method="POST">
-                        @csrf
-                        <div class="modal-header">
-                            <h5 class="modal-title">Generate Link Update</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    {{-- Token Modal (always available for all statuses) --}}
+    <div class="modal fade" id="tokenModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('verifier.submissions-v2.generate-token', $submission) }}" method="POST">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">Generate Link Update</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Anda akan membuat link update untuk pengajuan dari
+                            <strong>{{ $submission->school_name }}</strong>.
+                        </p>
+                        <div class="alert alert-info small">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Link akan berlaku selama <strong>5 hari</strong> dan hanya dapat digunakan sekali.
                         </div>
-                        <div class="modal-body">
-                            <p>Anda akan membuat link update untuk pengajuan dari
-                                <strong>{{ $submission->school_name }}</strong>.
-                            </p>
-                            <div class="alert alert-info small">
-                                <i class="bi bi-info-circle me-1"></i>
-                                Link akan berlaku selama 24 jam dan hanya dapat digunakan sekali.
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-warning"><i class="bi bi-link-45deg me-1"></i> Generate
-                                Link</button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-warning"><i class="bi bi-link-45deg me-1"></i> Generate
+                            Link</button>
+                    </div>
+                </form>
             </div>
         </div>
-    @endif
+    </div>
 @endsection
 
 @push('scripts')
