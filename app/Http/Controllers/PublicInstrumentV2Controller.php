@@ -8,9 +8,11 @@ use App\Models\Province;
 use App\Models\Regency;
 use App\Models\School;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class PublicInstrumentV2Controller extends Controller
 {
@@ -26,9 +28,12 @@ class PublicInstrumentV2Controller extends Controller
 
     public function getRegencies($provinceCode)
     {
-        $regencies = Regency::where('province_code', $provinceCode)
-            ->orderBy('name')
-            ->get(['code', 'name']);
+        // Cache static regency data for 24 hours to avoid repeated DB hits
+        $regencies = Cache::remember("regencies:{$provinceCode}", 86400, function () use ($provinceCode) {
+            return Regency::where('province_code', $provinceCode)
+                ->orderBy('name')
+                ->get(['code', 'name']);
+        });
 
         return response()->json($regencies);
     }
@@ -54,31 +59,44 @@ class PublicInstrumentV2Controller extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'school_name' => 'required|string|max:255',
-            'npsn' => 'nullable|string|max:50',
-            'address' => 'required|string',
-            'province_code' => 'required|string',
-            'regency_code' => 'required|string',
-            'school_status' => 'nullable|string|max:20',
-            'school_category' => 'nullable|string|max:100',
-            'program_duration' => 'nullable|string|max:50',
-            'school_accreditation' => 'nullable|string|max:50',
-            'curriculum'           => 'nullable|string|max:50',
-            'approval_status'      => 'nullable|string|max:20',
-            'expertise' => 'nullable|string|max:255',
-            'expertise_program' => 'nullable|string|max:255',
+            // Basic fields
+            'school_name'           => 'required|string|max:255',
+            'npsn'                  => 'required',
+            'address'               => 'required|string|max:1000',
+
+            // Validated against actual DB values
+            'province_code'         => ['required', 'string', 'exists:provinces,code'],
+            'regency_code'          => ['required', 'string', 'exists:regencies,code'],
+
+            // Enum whitelist validation — only accept known values
+            'school_status'         => ['required'],
+            'school_category'       => ['required', Rule::in(array_keys(config('constant.school_category')))],
+            'program_duration'      => ['required', Rule::in(['3 Tahun', '4 Tahun'])],
+            'school_accreditation'  => ['required', Rule::in(config('constant.school_accreditation'))],
+            'curriculum'            => ['required', Rule::in(config('constant.curriculum'))],
+            'approval_status'       => ['nullable', Rule::in(config('constant.approval_status'))],
+            'expertise'             => 'nullable|string|max:255',
+            'expertise_program'     => 'nullable|string|max:255',
             'expertise_concentration' => 'nullable|string|max:255',
-            'respondent_name' => 'required|string|max:255',
-            'respondent_position' => 'required|string|max:255',
-            'answers' => 'required|array',
+
+            'respondent_name'       => 'required|string|max:255',
+            'respondent_position'   => ['required', 'string', Rule::in(config('constant.respondent_positions'))],
+
+            // Limit array depth/size to prevent payload bombs
+            'answers'               => 'required|array|max:20',
+            'answers.*.rows'        => 'sometimes|array|max:200',
         ], [
-            'school_name.required' => 'Nama sekolah wajib diisi',
-            'address.required' => 'Alamat sekolah wajib diisi',
-            'province_code.required' => 'Provinsi wajib dipilih',
-            'regency_code.required' => 'Kabupaten/Kota wajib dipilih',
-            'respondent_name.required' => 'Nama responden wajib diisi',
+            'school_name.required'       => 'Nama sekolah wajib diisi',
+            'npsn.digits'                => 'NPSN harus 8 digit angka',
+            'address.required'           => 'Alamat sekolah wajib diisi',
+            'province_code.required'     => 'Provinsi wajib dipilih',
+            'province_code.exists'       => 'Provinsi yang dipilih tidak valid',
+            'regency_code.required'      => 'Kabupaten/Kota wajib dipilih',
+            'regency_code.exists'        => 'Kabupaten/Kota yang dipilih tidak valid',
+            'respondent_name.required'   => 'Nama responden wajib diisi',
             'respondent_position.required' => 'Jabatan responden wajib diisi',
-            'answers.required' => 'Data instrumen wajib diisi',
+            'respondent_position.in'     => 'Jabatan responden tidak valid',
+            'answers.required'           => 'Data instrumen wajib diisi',
         ]);
 
         if ($validator->fails()) {
@@ -90,43 +108,57 @@ class PublicInstrumentV2Controller extends Controller
         try {
             DB::beginTransaction();
 
-            // Create or update School record
-            $school = School::updateOrCreate(
-                [
-                    'school_name' => $request->school_name,
-                    'npsn' => $request->npsn ?? null,
-                ],
-                [
-                    'address' => $request->address,
-                    'province_code' => $request->province_code,
-                    'regency_code' => $request->regency_code,
-                    'school_status' => $request->school_status,
-                    'school_category' => $request->school_category,
-                    'program_duration' => $request->program_duration,
-                    'school_accreditation' => $request->school_accreditation,
-                    'curriculum'           => $request->curriculum,
-                    'approval_status'      => $request->approval_status,
-                    'expertise' => $request->expertise,
-                    'expertise_program' => $request->expertise_program,
+            // Create school only if it doesn't exist — never overwrite existing school
+            // data from a public form to prevent data poisoning attacks.
+            $schoolAttributes = array_filter([
+                'npsn'        => $request->npsn ?? null,
+                'school_name' => $request->school_name,
+            ]);
+
+            $school = School::where(function ($q) use ($request) {
+                if ($request->npsn) {
+                    $q->where('npsn', $request->npsn);
+                } else {
+                    $q->where('school_name', $request->school_name)
+                      ->where('province_code', $request->province_code)
+                      ->where('regency_code', $request->regency_code);
+                }
+            })->first();
+
+            if (!$school) {
+                $school = School::create([
+                    'school_name'            => $request->school_name,
+                    'npsn'                   => $request->npsn ?? null,
+                    'address'                => $request->address,
+                    'province_code'          => $request->province_code,
+                    'regency_code'           => $request->regency_code,
+                    'school_status'          => $request->school_status,
+                    'school_category'        => $request->school_category,
+                    'program_duration'       => $request->program_duration,
+                    'school_accreditation'   => $request->school_accreditation,
+                    'curriculum'             => $request->curriculum,
+                    'approval_status'        => $request->approval_status,
+                    'expertise'              => $request->expertise,
+                    'expertise_program'      => $request->expertise_program,
                     'expertise_concentration' => $request->expertise_concentration,
-                ]
-            );
+                ]);
+            }
 
             $submission = InstrumentSubmissionV2::create([
-                'school_id' => $school->id,
-                'school_name' => $request->school_name,
-                'npsn' => $request->npsn ?? null,
-                'address' => $request->address,
-                'province_code' => $request->province_code,
-                'regency_code' => $request->regency_code,
-                'respondent_name' => $request->respondent_name,
+                'school_id'        => $school->id,
+                'school_name'      => $request->school_name,
+                'npsn'             => $request->npsn ?? null,
+                'address'          => $request->address,
+                'province_code'    => $request->province_code,
+                'regency_code'     => $request->regency_code,
+                'respondent_name'  => $request->respondent_name,
                 'respondent_position' => $request->respondent_position,
-                'form_version' => '2.0',
-                'answers' => $request->answers,
-                'status' => InstrumentSubmissionV2::STATUS_SUBMITTED,
-                'filled_at' => now(),
-                'ip_address' => $request->ip(),
-                'user_agent' => $request->userAgent(),
+                'form_version'     => '2.0',
+                'answers'          => $request->answers,
+                'status'           => InstrumentSubmissionV2::STATUS_SUBMITTED,
+                'filled_at'        => now(),
+                'ip_address'       => $request->ip(),
+                'user_agent'       => $request->userAgent(),
             ]);
 
             $this->storeSectionDetails($submission, $request->answers);
@@ -139,7 +171,7 @@ class PublicInstrumentV2Controller extends Controller
 
             Log::info('V2 Instrument submission created', [
                 'submission_id' => $submission->id,
-                'school_name' => $submission->school_name,
+                'school_name'   => $submission->school_name,
             ]);
 
             return redirect()->route('landing')

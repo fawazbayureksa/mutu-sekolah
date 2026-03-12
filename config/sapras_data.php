@@ -576,7 +576,7 @@ return [
         ],
     ],
 
-    'Teknik_Komputer_Dan_Jaringan' => [
+    'Teknik_Komputer_dan_Jaringan' => [
         'sections' => [
             // 1. RUANG PRAKTIK UTAMA
             [

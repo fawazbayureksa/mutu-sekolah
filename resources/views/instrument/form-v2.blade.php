@@ -768,8 +768,6 @@
         function loadRegencies(provinceCode) {
             const regencySelect = document.getElementById('regencySelect');
 
-            console.log('loadRegencies called with provinceCode:', provinceCode);
-
             if (!provinceCode) {
                 regencySelect.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
                 regencySelect.disabled = true;
@@ -782,13 +780,11 @@
             fetch(`/api/regencies/${provinceCode}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Regencies loaded:', data);
                     regencySelect.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
                     data.forEach(regency => {
                         const option = document.createElement('option');
                         option.value = regency.code;
                         option.textContent = regency.name;
-                        console.log('Adding regency option:', regency.code, regency.name);
                         regencySelect.appendChild(option);
                     });
                     regencySelect.disabled = false;
