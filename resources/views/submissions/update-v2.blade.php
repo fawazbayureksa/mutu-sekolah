@@ -155,59 +155,64 @@
                             <div class="col-md-12">
                                 <label class="form-label">Kategori Sekolah</label>
                                 <div class="mt-2">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_category"
-                                            id="catReguler" value="SMK PK Reguler"
-                                            {{ old('school_category', $submission->school->school_category) == 'SMK PK Reguler' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="catReguler">SMK PK Reguler</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_category"
-                                            id="catPenguatan" value="SMK PK Penguatan Pembelajaran Mendalam"
-                                            {{ old('school_category', $submission->school->school_category) == 'SMK PK Penguatan Pembelajaran Mendalam' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="catPenguatan">SMK PK Penguatan Pembelajaran
-                                            Mendalam</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_category"
-                                            id="catModel" value="SMK Model"
-                                            {{ old('school_category', $submission->school->school_category) == 'SMK Model' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="catModel">SMK Model</label>
-                                    </div>
+                                    @foreach (config('constant.school_category') as $value => $label)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="school_category"
+                                                id="cat{{ Str::slug($value) }}" value="{{ $value }}"
+                                                {{ old('school_category', $submission->school->school_category) == $value ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="cat{{ Str::slug($value) }}">{{ $label }}</label>
+                                        </div>
+                                    @endforeach
                                 </div>
                                 @error('school_category')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-12">
+                                <label class="form-label">Kurikulum</label>
+                                <div class="mt-2">
+                                    @foreach (config('constant.curriculum') as $cur)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="curriculum"
+                                                id="cur{{ Str::slug($cur) }}" value="{{ $cur }}"
+                                                {{ old('curriculum', $submission->school->curriculum) == $cur ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="cur{{ Str::slug($cur) }}">{{ $cur }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @error('curriculum')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-12">
                                 <label class="form-label">Akreditasi Sekolah</label>
                                 <div class="mt-2">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_accreditation"
-                                            id="accA" value="A"
-                                            {{ old('school_accreditation', $submission->school->school_accreditation) == 'A' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="accA">A</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_accreditation"
-                                            id="accB" value="B"
-                                            {{ old('school_accreditation', $submission->school->school_accreditation) == 'B' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="accB">B</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_accreditation"
-                                            id="accC" value="C"
-                                            {{ old('school_accreditation', $submission->school->school_accreditation) == 'C' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="accC">C</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="school_accreditation"
-                                            id="accTidak" value="Tidak Terakreditasi"
-                                            {{ old('school_accreditation', $submission->school->school_accreditation) == 'Tidak Terakreditasi' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="accTidak">Tidak Terakreditasi</label>
-                                    </div>
+                                    @foreach (config('constant.school_accreditation') as $acc)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="school_accreditation"
+                                                id="acc{{ Str::slug($acc) }}" value="{{ $acc }}"
+                                                {{ old('school_accreditation', $submission->school->school_accreditation) == $acc ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="acc{{ Str::slug($acc) }}">{{ $acc }}</label>
+                                        </div>
+                                    @endforeach
                                 </div>
                                 @error('school_accreditation')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-12" id="approval-status-wrapper" style="display:none;">
+                                <label class="form-label">Status Approval</label>
+                                <div class="mt-2">
+                                    @foreach (config('constant.approval_status') as $status)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="approval_status"
+                                                id="appr{{ Str::slug($status) }}" value="{{ $status }}"
+                                                {{ old('approval_status', $submission->school->approval_status ?? '') == $status ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="appr{{ Str::slug($status) }}">{{ $status }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @error('approval_status')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -901,10 +906,43 @@
 
         // Expertise cascading dropdowns - loaded from config
         const expertiseData = @json($expertiseData ?? []);
+        window.expertiseByCurriculum = @json($expertiseByCurriculum ?? []);
 
-        function loadExpertisePrograms(expertise) {
+        function getActiveExpertiseTree() {
+            const checked = document.querySelector('input[name="curriculum"]:checked');
+            if (checked && window.expertiseByCurriculum && window.expertiseByCurriculum[checked.value]) {
+                return window.expertiseByCurriculum[checked.value];
+            }
+            return expertiseData;
+        }
+
+        function repopulateExpertiseSelect() {
+            const tree = getActiveExpertiseTree();
+            const expertiseSelect = document.getElementById('expertiseSelect');
             const programSelect = document.getElementById('expertiseProgramSelect');
             const concentrationSelect = document.getElementById('expertiseConcentrationSelect');
+
+            expertiseSelect.innerHTML = '<option value="">-- Pilih Bidang Keahlian --</option>';
+            programSelect.innerHTML = '<option value="">-- Pilih Program Keahlian --</option>';
+            programSelect.disabled = true;
+            concentrationSelect.innerHTML = '<option value="">-- Pilih Konsentrasi Keahlian --</option>';
+            concentrationSelect.disabled = true;
+
+            Object.keys(tree).forEach(function(name) {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                expertiseSelect.appendChild(opt);
+            });
+
+            resetSaprasContainer();
+        }
+
+        function loadExpertisePrograms(expertise) {
+            const tree = getActiveExpertiseTree();
+            const programSelect = document.getElementById('expertiseProgramSelect');
+            const concentrationSelect = document.getElementById('expertiseConcentrationSelect');
+            const approvalWrapper = document.getElementById('approval-status-wrapper');
 
             // Reset program dropdown
             programSelect.innerHTML = '<option value="">-- Pilih Program Keahlian --</option>';
@@ -914,12 +952,17 @@
             concentrationSelect.innerHTML = '<option value="">-- Pilih Konsentrasi Keahlian --</option>';
             concentrationSelect.disabled = true;
 
-            if (!expertise || !expertiseData[expertise]) {
+            // Show approval_status only for Kemaritiman
+            if (approvalWrapper) {
+                approvalWrapper.style.display = expertise === 'Kemaritiman' ? '' : 'none';
+            }
+
+            if (!expertise || !tree[expertise]) {
                 return;
             }
 
             // Populate program dropdown
-            const programs = expertiseData[expertise].programs;
+            const programs = tree[expertise].programs;
             programs.forEach(program => {
                 const option = document.createElement('option');
                 option.value = program;
@@ -931,6 +974,7 @@
         }
 
         function loadExpertiseConcentrations(program) {
+            const tree = getActiveExpertiseTree();
             const concentrationSelect = document.getElementById('expertiseConcentrationSelect');
             const expertiseSelect = document.getElementById('expertiseSelect');
             const expertise = expertiseSelect.value;
@@ -939,12 +983,12 @@
             concentrationSelect.innerHTML = '<option value="">-- Pilih Konsentrasi Keahlian --</option>';
             concentrationSelect.disabled = true;
 
-            if (!expertise || !program || !expertiseData[expertise]) {
+            if (!expertise || !program || !tree[expertise]) {
                 return;
             }
 
             // Populate concentration dropdown
-            const concentrations = expertiseData[expertise].concentrations[program];
+            const concentrations = tree[expertise].concentrations[program];
             if (concentrations) {
                 concentrations.forEach(concentration => {
                     const option = document.createElement('option');
@@ -953,6 +997,9 @@
                     concentrationSelect.appendChild(option);
                 });
                 concentrationSelect.disabled = false;
+
+                // Reset sapras when program changes
+                resetSaprasContainer();
             }
         }
 
@@ -1430,6 +1477,14 @@
             hiddenInput.value = JSON.stringify(saprasData);
         }
 
+        function toggleSmkPkColumn() {
+            const selected = document.querySelector('input[name="school_category"]:checked');
+            const isSmkPk = selected && selected.value === 'SMK PK';
+            document.querySelectorAll('.col-smk-pk-std').forEach(function(el) {
+                el.style.display = isSmkPk ? '' : 'none';
+            });
+        }
+
         // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOMContentLoaded - Initializing...');
@@ -1437,6 +1492,24 @@
             initializeTableEventListeners();
             restoreExistingData();
             collectAllTableData();
+
+            // Restore approval_status visibility
+            const initialExpertise = document.getElementById('expertiseSelect')?.value;
+            const approvalWrapper = document.getElementById('approval-status-wrapper');
+            if (approvalWrapper && initialExpertise === 'Kemaritiman') {
+                approvalWrapper.style.display = '';
+            }
+
+            // Toggle SMK PK column on school_category change
+            toggleSmkPkColumn();
+            document.querySelectorAll('input[name="school_category"]').forEach(function(radio) {
+                radio.addEventListener('change', toggleSmkPkColumn);
+            });
+
+            // Attach curriculum radio change listener — swap expertise tree
+            document.querySelectorAll('input[name="curriculum"]').forEach(function(radio) {
+                radio.addEventListener('change', repopulateExpertiseSelect);
+            });
 
             const form = document.getElementById('instrumentForm');
             if (form) {
