@@ -2072,8 +2072,6 @@ return [
                     ['name' => 'APD (masker, sarung tangan, safety shoes, life jacket, dll.)', 'spec' => 'Tersedia dan sesuai standar', 'standard_qty' => '18 set'],
                     ['name' => 'Jalur Evakuasi dan Titik Kumpul', 'spec' => 'Ada rambu yang jelas dan mudah dilihat', 'standard_qty' => '1 set'],
                     ['name' => 'Rambu K3 dan Poster Keselamatan', 'spec' => 'Terpasang di area strategis', 'standard_qty' => '10 buah'],
-                    ['name' => 'Fasilitas Cuci Tangan (CTPS)', 'spec' => 'Dengan air mengalir dan sabun', 'standard_qty' => '2 unit'],
-                    ['name' => 'Prosedur Kesehatan (Covid-19)', 'spec' => 'Poster protokol kesehatan terpasang', 'standard_qty' => '5 buah'],
                 ],
             ],
 
@@ -2089,18 +2087,17 @@ return [
                     ['name' => 'Sumber Air Bersih', 'spec' => 'Tersedia dan mengalir lancar'],
                     ['name' => 'Instalasi Listrik yang Aman', 'spec' => 'Sesuai PUIL 2011 (SNI 0225:2011)'],
                     ['name' => 'Stop Kontak 1 Phase', 'spec' => 'Jarak masing-masing 3 m'],
-                    ['name' => 'Sistem Penangkal Petir', 'spec' => 'SNI 03-7015-2004, grounding ≤5 Ohm'],
                 ],
             ],
 
-            // 11. PENERAPAN BUDAYA KERJA INDUSTRI
+            // 11. PENERAPAN BUDAYA KERJA INDUSTRI (5S/5R DAN K3)
             [
-                'title' => 'Penerapan Budaya Kerja Industri',
+                'title' => 'Penerapan Budaya Kerja Industri (5S/5R dan K3)',
                 'type' => 'culture',
                 'items' => [
                     ['name' => 'Penerapan 5R (Ringkas, Rapi, Resik, Rawat, Rajin)'],
                     ['name' => 'Poster/Infografis 5S/5R terpasang'],
-                    ['name' => 'Penerapan Budaya Safety/K3 (C.A.N.T.I.K./T.A.M.P.A.N.)'],
+                    ['name' => 'Penerapan Budaya Safety/K3'],
                     ['name' => 'Poster/Infografis K3 terpasang'],
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],
