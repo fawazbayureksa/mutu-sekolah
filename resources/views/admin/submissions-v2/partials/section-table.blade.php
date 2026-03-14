@@ -33,15 +33,15 @@
         @endif
 
         <div class="table-responsive">
-            <table class="table table-bordered table-sm">
+            <table class="table table-bordered table-sm" style="min-width: 700px;">
                 <thead class="table-light">
                     <tr>
-                        <th style="width: 40px">No</th>
+                        <th style="width: 40px; white-space: nowrap;">No</th>
                         @if (isset($staticRows) && !empty($staticRows))
-                            <th>Nama</th>
+                            <th style="white-space: nowrap;">Nama</th>
                         @endif
                         @foreach ($columns as $col)
-                            <th>{{ $col['label'] }}</th>
+                            <th style="white-space: nowrap;">{{ $col['label'] }}</th>
                         @endforeach
                     </tr>
                 </thead>

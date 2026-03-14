@@ -75,14 +75,14 @@
         @endif
 
         <div class="table-responsive">
-            <table class="table table-bordered table-sm">
+            <table class="table table-bordered table-sm" style="min-width: 650px;">
                 <thead class="table-light">
                     <tr>
-                        <th style="width: 40px">No</th>
-                        <th style="width: 35%">Pertanyaan</th>
-                        <th style="width: 15%">Standar Minimal SMK PK</th>
-                        <th style="width: 15%">Jawaban</th>
-                        <th style="width: 30%">Keterangan</th>
+                        <th style="width: 40px; white-space: nowrap;">No</th>
+                        <th style="width: 35%; white-space: nowrap;">Pertanyaan</th>
+                        <th style="width: 15%; white-space: nowrap;">Standar Minimal SMK PK</th>
+                        <th style="width: 15%; white-space: nowrap;">Jawaban</th>
+                        <th style="width: 30%; white-space: nowrap;">Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>
