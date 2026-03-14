@@ -19,7 +19,7 @@ use App\Http\Controllers\Verifier\VerifierSubmissionController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
-Route::get('/', fn () => view('landing'))->name('landing');
+Route::get('/', fn() => view('landing'))->name('landing');
 
 Route::get('/instrumen', [PublicInstrumentController::class, 'index'])
     ->name('instrument.form');
@@ -85,6 +85,7 @@ Route::middleware('auth')->group(function () {
         // Submission V2 routes for verifier
         Route::prefix('submissions-v2')->name('submissions-v2.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'index'])->name('index');
+            Route::get('/{submission}/export', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'exportSingle'])->name('export-single');
             Route::get('/{submission}', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'show'])->name('show');
             Route::post('/{submission}/verify', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'verify'])->name('verify');
             Route::post('/{submission}/reject', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'reject'])->name('reject');
@@ -197,12 +198,13 @@ Route::middleware('auth')->group(function () {
         // Submission V2 Management
         Route::prefix('submissions-v2')->name('submissions-v2.')->group(function () {
             Route::get('/', [SubmissionV2Controller::class, 'index'])->name('index');
+            Route::get('/export/all', [SubmissionV2Controller::class, 'export'])->name('export');
+            Route::get('/{submission}/export', [SubmissionV2Controller::class, 'exportSingle'])->name('export-single');
             Route::get('/{submission}', [SubmissionV2Controller::class, 'show'])->name('show');
             Route::post('/{submission}/verify', [SubmissionV2Controller::class, 'verify'])->name('verify');
             Route::post('/{submission}/reject', [SubmissionV2Controller::class, 'reject'])->name('reject');
             Route::post('/{submission}/validate', [SubmissionV2Controller::class, 'validateSubmission'])->name('validate');
             Route::post('/{submission}/generate-token', [SubmissionV2Controller::class, 'generateUpdateToken'])->name('generate-token');
-            Route::get('/export/all', [SubmissionV2Controller::class, 'export'])->name('export');
             Route::delete('/{submission}', [SubmissionV2Controller::class, 'destroy'])->name('destroy');
         });
 
