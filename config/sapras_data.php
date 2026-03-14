@@ -1907,8 +1907,6 @@ return [
                     ['name' => 'APD (masker, sarung tangan, safety shoes, life jacket, dll.)', 'spec' => 'Tersedia dan sesuai standar', 'standard_qty' => '18 set'],
                     ['name' => 'Jalur Evakuasi dan Titik Kumpul', 'spec' => 'Ada rambu yang jelas dan mudah dilihat', 'standard_qty' => '1 set'],
                     ['name' => 'Rambu K3 dan Poster Keselamatan', 'spec' => 'Terpasang di area strategis', 'standard_qty' => '10 buah'],
-                    ['name' => 'Fasilitas Cuci Tangan (CTPS)', 'spec' => 'Dengan air mengalir dan sabun', 'standard_qty' => '2 unit'],
-                    ['name' => 'Prosedur Kesehatan (Covid-19)', 'spec' => 'Poster protokol kesehatan terpasang', 'standard_qty' => '5 buah'],
                 ],
             ],
 
@@ -1924,7 +1922,6 @@ return [
                     ['name' => 'Sumber Air Bersih', 'spec' => 'Tersedia dan mengalir lancar'],
                     ['name' => 'Instalasi Listrik yang Aman', 'spec' => 'Sesuai PUIL 2011 (SNI 0225:2011)'],
                     ['name' => 'Stop Kontak 1 Phase', 'spec' => 'Jarak masing-masing 3 m'],
-                    ['name' => 'Sistem Penangkal Petir', 'spec' => 'SNI 03-7015-2004, grounding ≤5 Ohm'],
                 ],
             ],
 
@@ -1953,98 +1950,88 @@ return [
                 'title' => 'Ruang Praktik Utama',
                 'type' => 'room',
                 'items' => [
-                    ['name' => 'Area Kerja Menjangka Peta', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
-                    ['name' => 'Ruang Praktik Komunikasi dan MERSAR', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
-                    ['name' => 'Ruang Kerja Navigasi (Simulator)', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
-                    ['name' => 'Bangsal Kecakapan Bahari/Penanganan dan Pengaturan Muatan', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
-                    ['name' => 'Kapal Satu Unit (Kapal Latih)', 'standard_area' => '1 unit (panjang 24 m)', 'capacity' => '9 siswa'],
-                    ['name' => 'Ruang Instruktur dan Penyimpanan', 'standard_area' => '3 m²/instruktur', 'capacity' => '9 instruktur'],
+                    ['name' => 'Area Kerja Bangku/Perbengkelan', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
+                    ['name' => 'Laboratorium Dasar Elektro & Sistem Kontrol', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
+                    ['name' => 'Area Kerja Mesin Kapal', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
+                    ['name' => 'Area Kerja Mesin Bantu', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
+                    ['name' => 'Ruang Instruktur dan Penyimpanan (RIS)', 'standard_area' => '30 m² (24+6)', 'capacity' => '9 instruktur'],
+                    ['name' => 'Smart Classroom', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                 ],
             ],
 
-            // 2. PERALATAN AREA KERJA MENJANGKA PETA
+            // 2. PERALATAN AREA KERJA BANGKU/PERBENGKELAN
             [
-                'title' => 'Peralatan Area Kerja Menjangka Peta',
+                'title' => 'Peralatan Area Kerja Bangku/Perbengkelan',
                 'type' => 'equipment',
                 'items' => [
-                    ['name' => 'Meja Menjangka Peta', 'spec' => 'Untuk perencanaan pelayaran', 'standard_qty' => '1 unit'],
-                    ['name' => 'Marine Nautical (Sextant)', 'spec' => 'Untuk menentukan posisi kapal', 'standard_qty' => '1 unit'],
-                    ['name' => 'Pre-computed Altitude and Azimuth Tables', 'spec' => 'Untuk perhitungan navigasi celestial', 'standard_qty' => '1 set'],
-                    ['name' => 'Ocean Plotting Charts of Area Concerned', 'spec' => 'Peta laut area pelayaran', 'standard_qty' => '2 set'],
+                    ['name' => 'Mesin Bubut Manual', 'spec' => 'Panjang kerja 70-200 cm, range', 'standard_qty' => '1 unit'],
+                    ['name' => 'Mesin Ulir Pipa', 'spec' => 'Untuk membuat ulir pada pipa', 'standard_qty' => '1 unit'],
+                    ['name' => 'Mesin Gerinda Potong', 'spec' => 'Untuk memotong bahan', 'standard_qty' => '1 unit'],
+                    ['name' => 'Mesin Gerinda Piring', 'spec' => 'Untuk surface grinding', 'standard_qty' => '1 unit'],
+                    ['name' => 'Mesin Las SMAW', 'spec' => 'Las listrik, 200-450 A', 'standard_qty' => '2 unit'],
+                    ['name' => 'Mesin Las TIG (GTW)', 'spec' => 'Untuk pengelasan presisi', 'standard_qty' => '1 unit'],
+                    ['name' => 'Mesin Las CO₂/MIG', 'spec' => 'Untuk pengelasan kawat berkelanjutan', 'standard_qty' => '2 unit'],
+                    ['name' => 'Bor Duduk', 'spec' => 'Kapasitas pengeboran 13-25', 'standard_qty' => '2 unit'],
+                    ['name' => 'Mesin Gerinda Tangan', 'spec' => '4 inch, 400-600W', 'standard_qty' => '4 unit'],
+                    ['name' => 'Mesin Bor Tangan', 'spec' => '10-13 mm, 500-800W', 'standard_qty' => '4 unit'],
                 ],
             ],
 
-            // 3. PERALATAN RUANG KOMUNIKASI DAN MERSAR
+            // 3. PERALATAN LABORATORIUM DASAR ELEKTRO
             [
-                'title' => 'Peralatan Ruang Komunikasi dan MERSAR',
+                'title' => 'Peralatan Laboratorium Dasar Elektro',
                 'type' => 'equipment',
                 'items' => [
-                    ['name' => 'CB Transceiver', 'spec' => 'Frekuensi CB, untuk komunikasi jarak dekat', 'standard_qty' => '1 unit'],
-                    ['name' => 'Radio Direction Finder', 'spec' => 'Untuk menentukan arah sinyal radio', 'standard_qty' => '1 unit'],
-                    ['name' => 'VHF Transceiver', 'spec' => '25W, NMEA 0183, fitur DSC', 'standard_qty' => '1 unit'],
-                    ['name' => 'MF/HF Marine Radio', 'spec' => 'Untuk komunikasi jarak jauh dan GMDSS', 'standard_qty' => '1 unit'],
-                    ['name' => 'SART (Search and Rescue Transponder)', 'spec' => 'Frekuensi 9.2-9.5 GHz, floating', 'standard_qty' => '1 unit'],
-                    ['name' => 'EPIRB', 'spec' => 'Frekuensi 406 MHz, dengan GPS built-in', 'standard_qty' => '1 unit'],
-                    ['name' => 'Weather Station', 'spec' => 'Mengukur kecepatan angin, arah angin, suhu, kelembaban, tekanan udara', 'standard_qty' => '1 unit'],
-                    ['name' => 'Satellite Communication Trainer', 'spec' => 'Trainer komunikasi satelit lengkap dengan modul orbit, software, dan panduan', 'standard_qty' => '1 set'],
+                    ['name' => 'Basic Electric Training System', 'spec' => 'Input 3 phase AC 380V, module trainer', 'standard_qty' => '1 unit'],
+                    ['name' => 'Primary Electrical Lighting Trainer', 'spec' => 'Trainer instalasi penerangan', 'standard_qty' => '1 unit'],
+                    ['name' => 'Motor & Transformer Maintenance Trainer', 'spec' => 'Trainer perawatan motor & trafo', 'standard_qty' => '1 unit'],
+                    ['name' => 'Digital Circuit Training Kit', 'spec' => 'Trainer sirkuit digital', 'standard_qty' => '1 unit'],
+                    ['name' => 'PLC Training Set', 'spec' => 'Trainer Programmable Logic Controller', 'standard_qty' => '1 unit'],
+                    ['name' => 'Basic Electro-Pneumatic Training System', 'spec' => 'Trainer elektro-pneumatik dengan kompresor', 'standard_qty' => '1 unit'],
+                    ['name' => 'Basic Electro-Hydraulic Training System', 'spec' => 'Trainer elektro-hidrolik', 'standard_qty' => '1 unit'],
                 ],
             ],
 
-            // 4. PERALATAN RUANG KERJA NAVIGASI
+            // 4. PERALATAN AREA KERJA MESIN KAPAL
             [
-                'title' => 'Peralatan Ruang Kerja Navigasi',
+                'title' => 'Peralatan Area Kerja Mesin Kapal',
                 'type' => 'equipment',
                 'items' => [
-                    ['name' => 'Marine Autopilot', 'spec' => 'Sistem kemudi otomatis terintegrasi dengan GPS dan Gyro', 'standard_qty' => '1 unit'],
-                    ['name' => 'Marine Radar with AIS', 'spec' => 'X-band, 4KW, LCD, dengan AIS terintegrasi', 'standard_qty' => '1 unit'],
-                    ['name' => 'Marine Radar with ARPA', 'spec' => 'Dengan kemampuan target tracking otomatis (min. 20 target)', 'standard_qty' => '1 unit'],
-                    ['name' => 'Electronic Compass with GPS', 'spec' => '10.5-40VDC, NMEA0183, sensor 3-axis', 'standard_qty' => '1 unit'],
-                    ['name' => 'GPS Plotter with Echo Sounder', 'spec' => 'Layar minimal 7", tracklog 8000 titik, dengan fish finder', 'standard_qty' => '1 unit'],
-                    ['name' => 'Fish Finder', 'spec' => 'Untuk mendeteksi gerombolan ikan', 'standard_qty' => '1 unit'],
-                    ['name' => 'Projection Magnetic Compass', 'spec' => 'Kompas magnetik proyeksi untuk menentukan arah', 'standard_qty' => '2 unit'],
-                    ['name' => 'Gyro Compass', 'spec' => 'Sistem kompas gyro dengan koreksi otomatis', 'standard_qty' => '1 unit'],
-                    ['name' => 'Navtex Receiver', 'spec' => 'Untuk menerima informasi navigasi dan cuaca (GMDSS)', 'standard_qty' => '1 unit'],
-                    ['name' => 'Binoculars', 'spec' => '7x50, untuk pengamatan benda di laut', 'standard_qty' => '18 unit'],
+                    ['name' => 'Ship Machinery Operation Simulator', 'spec' => 'Simulator ruang mesin kapal', 'standard_qty' => '1 unit'],
+                    ['name' => 'Motor Tempel 4 Tak', 'spec' => '15-25 kW, bensin', 'standard_qty' => '2 unit'],
+                    ['name' => 'Mesin Diesel Kapal Kecil', 'spec' => 'Mesin penggerak utama kapal', 'standard_qty' => '1 unit'],
                 ],
             ],
 
-            // 5. PERALATAN RUANG BANGSAL KECAKAPAN BAHARI/PENANGANAN DAN PENGATURAN MUATAN
+            // 5. PERALATAN AREA KERJA MESIN BANTU
             [
-                'title' => 'Peralatan Ruang Bangsal Kecakapan Bahari/Penanganan dan Pengaturan Muatan',
+                'title' => 'Peralatan Area Kerja Mesin Bantu',
                 'type' => 'equipment',
                 'items' => [
-                    ['name' => 'Navtex Receiver', 'spec' => 'Untuk kelengkapan GMDSS, frekuensi 518 kHz', 'standard_qty' => '1 unit'],
-                    ['name' => 'Peralatan Penanganan Muatan', 'spec' => 'Model/peraga untuk simulasi pengaturan muatan kapal niaga', 'standard_qty' => '1 set'],
-                    ['name' => 'Peralatan Keselamatan Kapal', 'spec' => 'Life jacket, life buoy, dll.', 'standard_qty' => '1 set'],
+                    ['name' => 'Pompa Sentrifugal', 'spec' => 'Untuk sistem pendingin/bilga', 'standard_qty' => '1 unit'],
+                    ['name' => 'Kompresor Udara', 'spec' => 'Untuk sistem pneumatik dan servis', 'standard_qty' => '1 unit'],
+                    ['name' => 'Steam Boiler Simulator', 'spec' => 'Simulator ketel uap', 'standard_qty' => '1 unit'],
                 ],
             ],
 
-            // 6. PERALATAN RUANG KAPAL SATU UNIT
-            [
-                'title' => 'Peralatan Ruang Kapal Satu Unit',
-                'type' => 'equipment',
-                'items' => [
-                    ['name' => 'Kapal Latih', 'spec' => 'Kapal ukuran panjang 24 m, untuk praktik kondisi pelayaran nyata', 'standard_qty' => '1 unit'],
-                    ['name' => 'Cutaway 3D Models', 'spec' => 'Model struktur bangunan kapal (potongan) untuk pembelajaran konstruksi kapal', 'standard_qty' => '3 unit'],
-                    ['name' => 'Floating Ship Stability Model', 'spec' => 'Model stabilitas kapal untuk demonstrasi pergerakan titik gravitasi dan efek permukaan bebas', 'standard_qty' => '3 unit'],
-                    ['name' => 'Ship Bridge Simulator', 'spec' => 'Sesuai sertifikasi DNV Class B, dengan visualisasi 225°, RADAR, ECDIS, GMDSS, konsole kemudi', 'standard_qty' => '1 unit'],
-                ],
-            ],
-
-            // 7. PERABOTAN DAN PERALATAN RUANG INSTRUKTUR DAN PENYIMPANAN
+            // 6. PERABOTAN DAN PERALATAN RUANG INSTRUKTUR DAN PENYIMPANAN
             [
                 'title' => 'Perabotan dan Peralatan Ruang Instruktur dan Penyimpanan',
                 'type' => 'equipment',
                 'items' => [
                     ['name' => 'Kursi Kerja', 'spec' => 'Ergonomis, dudukan busa injection', 'standard_qty' => '3 unit'],
                     ['name' => 'Meja Kerja', 'spec' => 'Ukuran memadai untuk bekerja nyaman', 'standard_qty' => '3 unit'],
-                    ['name' => 'Lemari Simpan', 'spec' => '5 rak, metal coating, knock down', 'standard_qty' => '2 unit'],
-                    ['name' => 'SART', 'spec' => 'Sebagai kelengkapan GMDSS, TX Freq 9.2-9.5 GHz, 400mW', 'standard_qty' => '1 unit'],
-                    ['name' => 'EPIRB', 'spec' => 'Sebagai kelengkapan GMDSS, 406 MHz', 'standard_qty' => '1 unit'],
+                    ['name' => 'Lemari Simpan', 'spec' => '5 rak, metal coating', 'standard_qty' => '2 unit'],
+                    ['name' => 'Power Bank (Portable)', 'spec' => 'Catu daya darurat', 'standard_qty' => '1 unit'],
+                    ['name' => 'Electric Drill / Bor Tangan', 'spec' => 'Standar kapal/industri', 'standard_qty' => '1 unit'],
+                    ['name' => 'Impact Drill', 'spec' => 'Bor impact 600W, 13 mm', 'standard_qty' => '1 unit'],
+                    ['name' => 'Multi-function Tools', 'spec' => 'Oscillating tool 300W', 'standard_qty' => '1 unit'],
+                    ['name' => 'Gerinda Listrik Tangan', 'spec' => 'Angle grinder 4 inch, 400W', 'standard_qty' => '1 unit'],
+                    ['name' => 'Kotak Alat (Toolkit)', 'spec' => 'Set kunci pas, ring, obeng, tang', 'standard_qty' => '2 set'],
                 ],
             ],
 
-            // 8. KELENGKAPAN SMART CLASSROOM
+            // 7. KELENGKAPAN SMART CLASSROOM
             [
                 'title' => 'Kelengkapan Smart Classroom',
                 'type' => 'equipment_no_spec',
@@ -2059,7 +2046,7 @@ return [
                 ],
             ],
 
-            // 9. KELENGKAPAN KESELAMATAN DAN KESEHATAN KERJA (K3) DAN PROTOKOL KEADAAN DARURAT
+            // 8. KELENGKAPAN KESELAMATAN DAN KESEHATAN KERJA (K3) DAN PROTOKOL KEADAAN DARURAT
             [
                 'title' => 'Kelengkapan Keselamatan dan Kesehatan Kerja (K3) dan Protokol Keadaan Darurat',
                 'type' => 'k3',
@@ -2072,12 +2059,10 @@ return [
                     ['name' => 'APD (masker, sarung tangan, safety shoes, life jacket, dll.)', 'spec' => 'Tersedia dan sesuai standar', 'standard_qty' => '18 set'],
                     ['name' => 'Jalur Evakuasi dan Titik Kumpul', 'spec' => 'Ada rambu yang jelas dan mudah dilihat', 'standard_qty' => '1 set'],
                     ['name' => 'Rambu K3 dan Poster Keselamatan', 'spec' => 'Terpasang di area strategis', 'standard_qty' => '10 buah'],
-                    ['name' => 'Fasilitas Cuci Tangan (CTPS)', 'spec' => 'Dengan air mengalir dan sabun', 'standard_qty' => '2 unit'],
-                    ['name' => 'Prosedur Kesehatan (Covid-19)', 'spec' => 'Poster protokol kesehatan terpasang', 'standard_qty' => '5 buah'],
                 ],
             ],
 
-            // 10. KELENGKAPAN UTILITAS DAN BANGUNAN
+            // 9. KELENGKAPAN UTILITAS DAN BANGUNAN
             [
                 'title' => 'Kelengkapan Utilitas dan Bangunan',
                 'type' => 'utility',
@@ -2089,18 +2074,17 @@ return [
                     ['name' => 'Sumber Air Bersih', 'spec' => 'Tersedia dan mengalir lancar'],
                     ['name' => 'Instalasi Listrik yang Aman', 'spec' => 'Sesuai PUIL 2011 (SNI 0225:2011)'],
                     ['name' => 'Stop Kontak 1 Phase', 'spec' => 'Jarak masing-masing 3 m'],
-                    ['name' => 'Sistem Penangkal Petir', 'spec' => 'SNI 03-7015-2004, grounding ≤5 Ohm'],
                 ],
             ],
 
-            // 11. PENERAPAN BUDAYA KERJA INDUSTRI
+            // 10. PENERAPAN BUDAYA KERJA INDUSTRI (5S/5R DAN K3)
             [
-                'title' => 'Penerapan Budaya Kerja Industri',
+                'title' => 'Penerapan Budaya Kerja Industri (5S/5R dan K3)',
                 'type' => 'culture',
                 'items' => [
                     ['name' => 'Penerapan 5R (Ringkas, Rapi, Resik, Rawat, Rajin)'],
                     ['name' => 'Poster/Infografis 5S/5R terpasang'],
-                    ['name' => 'Penerapan Budaya Safety/K3 (C.A.N.T.I.K./T.A.M.P.A.N.)'],
+                    ['name' => 'Penerapan Budaya Safety/K3'],
                     ['name' => 'Poster/Infografis K3 terpasang'],
                     ['name' => 'SOP Penggunaan Peralatan tersedia'],
                     ['name' => 'Jadwal Pemeliharaan Peralatan tersedia'],

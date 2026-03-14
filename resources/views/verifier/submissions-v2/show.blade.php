@@ -623,10 +623,10 @@
                         <p>Anda akan membuat link update untuk pengajuan dari
                             <strong>{{ $submission->school_name }}</strong>.
                         </p>
-                        <div class="alert alert-info small">
+                        {{-- <div class="alert alert-info small">
                             <i class="bi bi-info-circle me-1"></i>
                             Link akan berlaku selama <strong>5 hari</strong> dan hanya dapat digunakan sekali.
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

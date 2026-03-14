@@ -160,7 +160,7 @@ class InstrumentSubmissionV2 extends Model
     /**
      * Generate update token
      */
-    public function generateUpdateToken(int $expiresInHours = 120): string
+    public function generateUpdateToken(int $expiresInHours = 999): string
     {
         $token = bin2hex(random_bytes(32));
 

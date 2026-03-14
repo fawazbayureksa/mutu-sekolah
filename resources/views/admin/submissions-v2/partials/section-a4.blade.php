@@ -74,15 +74,15 @@
 
     @if (!empty($tableData))
         <div class="table-responsive">
-            <table class="table table-bordered table-sm">
+            <table class="table table-bordered table-sm" style="min-width: 600px;">
                 <thead class="table-light">
                     <tr>
-                        <th style="width: 40px">No</th>
-                        <th>Mata Pelajaran</th>
-                        <th>Rata-rata Nasional 2025</th>
-                        <th>Rata-rata Sekolah 2025</th>
-                        <th>Selisih (+/-)</th>
-                        <th>Keterangan</th>
+                        <th style="width: 40px; white-space: nowrap;">No</th>
+                        <th style="white-space: nowrap;">Mata Pelajaran</th>
+                        <th style="white-space: nowrap;">Rata-rata Nasional 2025</th>
+                        <th style="white-space: nowrap;">Rata-rata Sekolah 2025</th>
+                        <th style="white-space: nowrap;">Selisih (+/-)</th>
+                        <th style="white-space: nowrap;">Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>
