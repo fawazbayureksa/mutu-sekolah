@@ -42,8 +42,8 @@
                         <table class="table table-sm table-bordered mb-0 small" style="min-width: 650px;">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width:4%; white-space: nowrap;">#</th>
-                                    <th style="white-space: nowrap;">Nama Item</th>
+                                    <th style="width:4%; white-space: nowrap; font-size: 0.75rem;">#</th>
+                                    <th style="white-space: nowrap; font-size: 0.75rem;">Nama Item</th>
                                     @php
                                         // Detect columns from the first row
                                         $firstRow = $rows[0];
@@ -64,7 +64,7 @@
                                         ];
                                     @endphp
                                     @foreach ($fieldKeys as $fk)
-                                        <th style="white-space: nowrap;">
+                                        <th style="white-space: nowrap; font-size: 0.75rem;">
                                             {{ $labelMap[$fk] ?? ucwords(str_replace('_', ' ', $fk)) }}</th>
                                     @endforeach
                                 </tr>

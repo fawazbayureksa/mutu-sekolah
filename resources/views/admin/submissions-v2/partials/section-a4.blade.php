@@ -77,12 +77,12 @@
             <table class="table table-bordered table-sm" style="min-width: 600px;">
                 <thead class="table-light">
                     <tr>
-                        <th style="width: 40px; white-space: nowrap;">No</th>
-                        <th style="white-space: nowrap;">Mata Pelajaran</th>
-                        <th style="white-space: nowrap;">Rata-rata Nasional 2025</th>
-                        <th style="white-space: nowrap;">Rata-rata Sekolah 2025</th>
-                        <th style="white-space: nowrap;">Selisih (+/-)</th>
-                        <th style="white-space: nowrap;">Keterangan</th>
+                        <th style="width: 40px; white-space: nowrap; font-size: 0.75rem;">No</th>
+                        <th style="white-space: nowrap; font-size: 0.75rem;">Mata Pelajaran</th>
+                        <th style="white-space: nowrap; font-size: 0.75rem;">Rata-rata Nasional 2025</th>
+                        <th style="white-space: nowrap; font-size: 0.75rem;">Rata-rata Sekolah 2025</th>
+                        <th style="white-space: nowrap; font-size: 0.75rem;">Selisih (+/-)</th>
+                        <th style="white-space: nowrap; font-size: 0.75rem;">Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>

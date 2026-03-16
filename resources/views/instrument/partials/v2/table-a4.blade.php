@@ -135,6 +135,7 @@
                     @endphp
                     @php
                         $rowNumber = 0;
+                        $dataRowIndex = 0;
                     @endphp
                     @foreach ($subjects as $index => $subject)
                         @if ($subject['type'] === 'header')
@@ -143,40 +144,41 @@
                             </tr>
                         @else
                             @php
-                                $rowData = $rows[$index] ?? [];
+                                $rowData = $rows[$dataRowIndex] ?? [];
                                 $rowNumber++;
                                 $nationalAvgValue =
                                     $rowData["{$subject['key']}_national_avg"] ??
                                     number_format($subject['national_avg'], 2, '.', '');
                             @endphp
-                            <tr data-row="{{ $index }}">
+                            <tr data-row="{{ $dataRowIndex }}">
                                 <td class="text-center">{{ $rowNumber }}</td>
                                 <td>{{ $subject['label'] }}</td>
                                 <td>
                                     <input type="number" class="form-control form-control-sm table-input bg-light"
-                                        data-key="{{ $subject['key'] }}_national_avg" data-row="{{ $index }}"
+                                        data-key="{{ $subject['key'] }}_national_avg" data-row="{{ $dataRowIndex }}"
                                         placeholder="0.00" min="0" max="100" step="0.01"
                                         value="{{ $nationalAvgValue }}" readonly>
                                 </td>
                                 <td>
                                     <input type="number" class="form-control form-control-sm table-input"
-                                        data-key="{{ $subject['key'] }}_school_avg" data-row="{{ $index }}"
+                                        data-key="{{ $subject['key'] }}_school_avg" data-row="{{ $dataRowIndex }}"
                                         placeholder="0.00" min="0" max="100" step="0.01"
                                         value="{{ $rowData["{$subject['key']}_school_avg"] ?? '' }}">
                                 </td>
                                 <td>
                                     <input type="text" class="form-control form-control-sm table-input bg-light"
-                                        data-key="{{ $subject['key'] }}_difference" data-row="{{ $index }}"
+                                        data-key="{{ $subject['key'] }}_difference" data-row="{{ $dataRowIndex }}"
                                         placeholder="0.00" readonly
                                         value="{{ $rowData["{$subject['key']}_difference"] ?? '' }}">
                                 </td>
                                 <td>
                                     <input type="text" class="form-control form-control-sm table-input"
-                                        data-key="{{ $subject['key'] }}_remarks" data-row="{{ $index }}"
+                                        data-key="{{ $subject['key'] }}_remarks" data-row="{{ $dataRowIndex }}"
                                         placeholder="Keterangan"
                                         value="{{ $rowData["{$subject['key']}_remarks"] ?? '' }}">
                                 </td>
                             </tr>
+                            @php $dataRowIndex++; @endphp
                         @endif
                     @endforeach
                 </tbody>
