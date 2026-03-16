@@ -43,13 +43,26 @@ class PublicInstrumentV2Controller extends Controller
         $saprasData = config('sapras_data');
         $concentration = urldecode($concentration);
 
-        // Normalize: try exact match first, then underscore-replaced key
+        // Normalize: try exact match first, then underscore-replaced key, then case-insensitive
         if (!isset($saprasData[$concentration])) {
             $underscoredKey = str_replace(' ', '_', $concentration);
             if (isset($saprasData[$underscoredKey])) {
                 $concentration = $underscoredKey;
             } else {
-                return response()->json(['sections' => []], 200);
+                // Case-insensitive fallback: find a matching key
+                $loweredKey = strtolower($underscoredKey);
+                $foundKey = null;
+                foreach (array_keys($saprasData) as $key) {
+                    if (strtolower($key) === $loweredKey) {
+                        $foundKey = $key;
+                        break;
+                    }
+                }
+                if ($foundKey) {
+                    $concentration = $foundKey;
+                } else {
+                    return response()->json(['sections' => []], 200);
+                }
             }
         }
 
@@ -120,8 +133,8 @@ class PublicInstrumentV2Controller extends Controller
                     $q->where('npsn', $request->npsn);
                 } else {
                     $q->where('school_name', $request->school_name)
-                      ->where('province_code', $request->province_code)
-                      ->where('regency_code', $request->regency_code);
+                        ->where('province_code', $request->province_code)
+                        ->where('regency_code', $request->regency_code);
                 }
             })->first();
 
