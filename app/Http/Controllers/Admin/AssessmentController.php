@@ -2,24 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\AssessmentBulkExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssessmentRequest;
+use App\Models\ActivityLog;
 use App\Models\Assessment;
-use App\Models\AssessmentAnswer;
 use App\Models\Instrument;
 use App\Models\School;
 use App\Models\User;
-use App\Models\ActivityLog;
 use App\Services\AssessmentService;
 use App\Services\ScoreCalculationService;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AssessmentController extends Controller
 {
     protected $assessmentService;
+
     protected $scoreService;
 
     public function __construct(AssessmentService $assessmentService, ScoreCalculationService $scoreService)
@@ -127,8 +129,9 @@ class AssessmentController extends Controller
                 ->with('success', 'Assessment created successfully. You can now start filling in the answers.');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return back()->withInput()
-                ->with('error', 'Failed to create assessment: ' . $e->getMessage());
+                ->with('error', 'Failed to create assessment: '.$e->getMessage());
         }
     }
 
@@ -140,7 +143,7 @@ class AssessmentController extends Controller
             'assessor',
             'verifier',
             'approver',
-            'answers.question'
+            'answers.question',
         ]);
 
         // Calculate completion percentage
@@ -157,7 +160,7 @@ class AssessmentController extends Controller
     public function edit(Assessment $assessment)
     {
         // Only drafts can be edited
-        if (!in_array($assessment->status, ['draft', 'rejected'])) {
+        if (! in_array($assessment->status, ['draft', 'rejected'])) {
             return back()->with('error', 'Only draft or rejected assessments can be edited.');
         }
 
@@ -172,7 +175,7 @@ class AssessmentController extends Controller
     public function update(AssessmentRequest $request, Assessment $assessment): RedirectResponse
     {
         // Only drafts can be updated
-        if (!in_array($assessment->status, ['draft', 'rejected'])) {
+        if (! in_array($assessment->status, ['draft', 'rejected'])) {
             return back()->with('error', 'Only draft or rejected assessments can be updated.');
         }
 
@@ -209,8 +212,9 @@ class AssessmentController extends Controller
                 ->with('success', 'Assessment updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return back()->withInput()
-                ->with('error', 'Failed to update assessment: ' . $e->getMessage());
+                ->with('error', 'Failed to update assessment: '.$e->getMessage());
         }
     }
 
@@ -248,7 +252,8 @@ class AssessmentController extends Controller
                 ->with('success', 'Assessment deleted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Failed to delete assessment: ' . $e->getMessage());
+
+            return back()->with('error', 'Failed to delete assessment: '.$e->getMessage());
         }
     }
 
@@ -294,7 +299,8 @@ class AssessmentController extends Controller
                 ->with('success', 'Assessment submitted successfully and is now pending verification.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Failed to submit assessment: ' . $e->getMessage());
+
+            return back()->with('error', 'Failed to submit assessment: '.$e->getMessage());
         }
     }
 
@@ -330,7 +336,8 @@ class AssessmentController extends Controller
                 ->with('success', 'Assessment verified successfully and is now pending approval.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Failed to verify assessment: ' . $e->getMessage());
+
+            return back()->with('error', 'Failed to verify assessment: '.$e->getMessage());
         }
     }
 
@@ -366,7 +373,8 @@ class AssessmentController extends Controller
                 ->with('success', 'Assessment approved successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Failed to approve assessment: ' . $e->getMessage());
+
+            return back()->with('error', 'Failed to approve assessment: '.$e->getMessage());
         }
     }
 
@@ -376,7 +384,7 @@ class AssessmentController extends Controller
             'rejection_reason' => 'required|string|max:1000',
         ]);
 
-        if (!in_array($assessment->status, ['submitted', 'verified'])) {
+        if (! in_array($assessment->status, ['submitted', 'verified'])) {
             return back()->with('error', 'Only submitted or verified assessments can be rejected.');
         }
 
@@ -406,7 +414,8 @@ class AssessmentController extends Controller
                 ->with('success', 'Assessment rejected. The assessor can now make corrections.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Failed to reject assessment: ' . $e->getMessage());
+
+            return back()->with('error', 'Failed to reject assessment: '.$e->getMessage());
         }
     }
 
@@ -426,31 +435,51 @@ class AssessmentController extends Controller
 
             return back()->with('success', 'Scores recalculated successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to recalculate scores: ' . $e->getMessage());
+            return back()->with('error', 'Failed to recalculate scores: '.$e->getMessage());
         }
     }
 
     public function export(Request $request, Assessment $assessment)
     {
         try {
-            $fileName = 'assessment-' . $assessment->assessment_code . '-' . now()->format('Y-m-d') . '.xlsx';
+            $fileName = 'assessment-'.$assessment->assessment_code.'-'.now()->format('Y-m-d').'.xlsx';
 
             return \Maatwebsite\Excel\Facades\Excel::download(
                 new \App\Exports\AssessmentExport($assessment),
                 $fileName
             );
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to export assessment: ' . $e->getMessage());
+            return back()->with('error', 'Failed to export assessment: '.$e->getMessage());
         }
     }
 
-    public function bulkAction(Request $request): RedirectResponse
+    public function bulkAction(Request $request)
     {
         $request->validate([
             'action' => 'required|in:delete,export',
             'assessment_ids' => 'required|array',
             'assessment_ids.*' => 'exists:assessments,id',
         ]);
+
+        if ($request->action === 'export') {
+            try {
+                $count = count($request->assessment_ids);
+
+                ActivityLog::create([
+                    'user_id' => auth()->id(),
+                    'action' => 'bulk_export',
+                    'model_type' => Assessment::class,
+                    'description' => "Bulk exported {$count} assessment(s) to Excel",
+                    'ip_address' => request()->ip(),
+                ]);
+
+                $fileName = 'assessments-bulk-'.now()->format('Y-m-d_His').'.xlsx';
+
+                return Excel::download(new AssessmentBulkExport($request->assessment_ids), $fileName);
+            } catch (\Exception $e) {
+                return back()->with('error', 'Failed to export assessments: '.$e->getMessage());
+            }
+        }
 
         try {
             DB::beginTransaction();
@@ -475,16 +504,12 @@ class AssessmentController extends Controller
 
                     $message = "{$draftCount} draft assessment(s) deleted successfully.";
                     break;
-
-                case 'export':
-                    // TODO: Implement bulk export
-                    return back()->with('info', 'Bulk export functionality will be implemented.');
             }
 
             // Log bulk activity
             ActivityLog::create([
                 'user_id' => auth()->id(),
-                'action' => 'bulk_' . $request->action,
+                'action' => 'bulk_'.$request->action,
                 'model_type' => Assessment::class,
                 'description' => "Bulk {$request->action} on {$count} assessments",
                 'ip_address' => request()->ip(),
@@ -495,7 +520,8 @@ class AssessmentController extends Controller
             return back()->with('success', $message);
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Bulk action failed: ' . $e->getMessage());
+
+            return back()->with('error', 'Bulk action failed: '.$e->getMessage());
         }
     }
 

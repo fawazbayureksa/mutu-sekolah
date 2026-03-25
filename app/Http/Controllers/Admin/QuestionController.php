@@ -4,16 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\QuestionRequest;
-use App\Models\AssessmentQuestion;
-use App\Models\AssessmentIndicator;
-use App\Models\AssessmentAspect;
-use App\Models\ScaleTemplate;
-use App\Models\InstrumentItem;
 use App\Models\ActivityLog;
-use Illuminate\Http\Request;
+use App\Models\AssessmentAspect;
+use App\Models\AssessmentIndicator;
+use App\Models\AssessmentQuestion;
+use App\Models\InstrumentItem;
+use App\Models\ScaleTemplate;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class QuestionController extends Controller
 {
@@ -103,8 +103,9 @@ class QuestionController extends Controller
                 ->with('success', 'Question created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return back()->withInput()
-                ->with('error', 'Failed to create question: ' . $e->getMessage());
+                ->with('error', 'Failed to create question: '.$e->getMessage());
         }
     }
 
@@ -172,8 +173,9 @@ class QuestionController extends Controller
                 ->with('success', 'Question updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return back()->withInput()
-                ->with('error', 'Failed to update question: ' . $e->getMessage());
+                ->with('error', 'Failed to update question: '.$e->getMessage());
         }
     }
 
@@ -208,7 +210,8 @@ class QuestionController extends Controller
                 ->with('success', 'Question deleted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Failed to delete question: ' . $e->getMessage());
+
+            return back()->with('error', 'Failed to delete question: '.$e->getMessage());
         }
     }
 
@@ -252,11 +255,11 @@ class QuestionController extends Controller
             // Generate new unique code
             $baseCode = $question->question_code;
             $counter = 1;
-            $newCode = $baseCode . '_copy' . $counter;
+            $newCode = $baseCode.'_copy'.$counter;
 
             while (AssessmentQuestion::where('question_code', $newCode)->exists()) {
                 $counter++;
-                $newCode = $baseCode . '_copy' . $counter;
+                $newCode = $baseCode.'_copy'.$counter;
             }
 
             $newQuestion = $question->replicate();
@@ -280,13 +283,25 @@ class QuestionController extends Controller
                 ->with('success', 'Question duplicated successfully. Please review and update as needed.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Failed to duplicate question: ' . $e->getMessage());
+
+            return back()->with('error', 'Failed to duplicate question: '.$e->getMessage());
         }
     }
 
     public function showImport(): View
     {
         return view('admin.questions.import');
+    }
+
+    public function downloadTemplate(): \Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\RedirectResponse
+    {
+        try {
+            $service = new \App\Services\QuestionImportService;
+
+            return $service->downloadTemplate();
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to generate template: '.$e->getMessage());
+        }
     }
 
     public function import(Request $request): RedirectResponse
@@ -296,14 +311,14 @@ class QuestionController extends Controller
         ]);
 
         try {
-            $service = new \App\Services\QuestionImportService();
+            $service = new \App\Services\QuestionImportService;
             $result = $service->import($request->file('file'));
 
             if ($result['success']) {
                 $message = $result['message'];
 
-                if (!empty($result['warnings'])) {
-                    $message .= ' Warnings: ' . implode('; ', $result['warnings']);
+                if (! empty($result['warnings'])) {
+                    $message .= ' Warnings: '.implode('; ', $result['warnings']);
                 }
 
                 return redirect()->route('admin.questions.index')
@@ -311,18 +326,18 @@ class QuestionController extends Controller
             } else {
                 $errorMessage = $result['message'];
 
-                if (!empty($result['errors'])) {
-                    $errorMessage .= ' Errors: ' . implode('; ', array_slice($result['errors'], 0, 5));
+                if (! empty($result['errors'])) {
+                    $errorMessage .= ' Errors: '.implode('; ', array_slice($result['errors'], 0, 5));
 
                     if (count($result['errors']) > 5) {
-                        $errorMessage .= ' (and ' . (count($result['errors']) - 5) . ' more errors)';
+                        $errorMessage .= ' (and '.(count($result['errors']) - 5).' more errors)';
                     }
                 }
 
                 return back()->with('error', $errorMessage);
             }
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to import questions: ' . $e->getMessage());
+            return back()->with('error', 'Failed to import questions: '.$e->getMessage());
         }
     }
 
@@ -356,7 +371,7 @@ class QuestionController extends Controller
             $questions = $query->get();
 
             // Export as CSV
-            $filename = 'questions_' . date('Y-m-d_His') . '.csv';
+            $filename = 'questions_'.date('Y-m-d_His').'.csv';
             $headers = [
                 'Content-Type' => 'text/csv',
                 'Content-Disposition' => "attachment; filename=\"$filename\"",
@@ -379,7 +394,7 @@ class QuestionController extends Controller
                     'max_score',
                     'help_text',
                     'answer_options',
-                    'status'
+                    'status',
                 ]);
 
                 // CSV data
@@ -401,7 +416,7 @@ class QuestionController extends Controller
                         $question->max_score,
                         $question->help_text,
                         $answerOptions,
-                        $question->is_active ? 'active' : 'inactive'
+                        $question->is_active ? 'active' : 'inactive',
                     ]);
                 }
 
@@ -418,7 +433,7 @@ class QuestionController extends Controller
 
             return response()->stream($callback, 200, $headers);
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to export questions: ' . $e->getMessage());
+            return back()->with('error', 'Failed to export questions: '.$e->getMessage());
         }
     }
 
@@ -455,6 +470,7 @@ class QuestionController extends Controller
 
                     if ($usedQuestions->isNotEmpty()) {
                         $usedCount = $usedQuestions->count();
+
                         return back()->with('error', "{$usedCount} question(s) cannot be deleted because they are in use.");
                     }
 
@@ -466,7 +482,7 @@ class QuestionController extends Controller
             // Log bulk activity
             ActivityLog::create([
                 'user_id' => auth()->id(),
-                'action' => 'bulk_' . $request->action,
+                'action' => 'bulk_'.$request->action,
                 'model_type' => AssessmentQuestion::class,
                 'description' => "Bulk {$request->action} on {$count} questions",
                 'ip_address' => request()->ip(),
@@ -477,7 +493,8 @@ class QuestionController extends Controller
             return back()->with('success', $message);
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Bulk action failed: ' . $e->getMessage());
+
+            return back()->with('error', 'Bulk action failed: '.$e->getMessage());
         }
     }
 }

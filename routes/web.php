@@ -140,6 +140,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/{question}/duplicate', [QuestionController::class, 'duplicate'])->name('duplicate');
             Route::get('/import', [QuestionController::class, 'showImport'])->name('import');
             Route::post('/import', [QuestionController::class, 'import'])->name('import.store');
+            Route::get('/import/template', [QuestionController::class, 'downloadTemplate'])->name('import.template');
             Route::get('/export', [QuestionController::class, 'export'])->name('export');
             Route::post('/bulk', [QuestionController::class, 'bulkAction'])->name('bulkAction');
         });

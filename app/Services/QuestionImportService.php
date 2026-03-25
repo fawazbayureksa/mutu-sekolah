@@ -2,19 +2,22 @@
 
 namespace App\Services;
 
-use App\Models\AssessmentQuestion;
+use App\Exports\QuestionTemplateExport;
 use App\Models\AssessmentIndicator;
-use App\Models\AssessmentAspect;
-use App\Models\ScaleTemplate;
+use App\Models\AssessmentQuestion;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class QuestionImportService
 {
     protected $errors = [];
+
     protected $warnings = [];
+
     protected $successCount = 0;
+
     protected $failedCount = 0;
 
     public function import($file): array
@@ -27,6 +30,7 @@ class QuestionImportService
 
             if (empty($data)) {
                 $this->errors[] = 'No data found in the uploaded file.';
+
                 return $this->getResult();
             }
 
@@ -38,7 +42,8 @@ class QuestionImportService
 
             return $this->getResult();
         } catch (\Exception $e) {
-            $this->errors[] = 'Import failed: ' . $e->getMessage();
+            $this->errors[] = 'Import failed: '.$e->getMessage();
+
             return $this->getResult();
         }
     }
@@ -61,8 +66,9 @@ class QuestionImportService
             $requiredHeaders = ['question_code', 'indicator_code', 'question_text', 'answer_type'];
             $missingHeaders = array_diff($requiredHeaders, $headers);
 
-            if (!empty($missingHeaders)) {
-                $this->errors[] = 'Missing required columns: ' . implode(', ', $missingHeaders);
+            if (! empty($missingHeaders)) {
+                $this->errors[] = 'Missing required columns: '.implode(', ', $missingHeaders);
+
                 return [];
             }
 
@@ -87,7 +93,7 @@ class QuestionImportService
 
             return $data;
         } catch (\Exception $e) {
-            throw new \Exception('Failed to parse Excel file: ' . $e->getMessage());
+            throw new \Exception('Failed to parse Excel file: '.$e->getMessage());
         }
     }
 
@@ -111,8 +117,9 @@ class QuestionImportService
             ]);
 
             if ($validator->fails()) {
-                $this->errors[] = "Row {$row['row_number']}: " . implode(', ', $validator->errors()->all());
+                $this->errors[] = "Row {$row['row_number']}: ".implode(', ', $validator->errors()->all());
                 $this->failedCount++;
+
                 continue;
             }
 
@@ -120,6 +127,7 @@ class QuestionImportService
             if (AssessmentQuestion::where('question_code', $row['question_code'])->exists()) {
                 $this->warnings[] = "Row {$row['row_number']}: Question code '{$row['question_code']}' already exists and will be skipped.";
                 $this->failedCount++;
+
                 continue;
             }
 
@@ -128,6 +136,7 @@ class QuestionImportService
                 if (empty($row['min_score']) || empty($row['max_score'])) {
                     $this->errors[] = "Row {$row['row_number']}: Scale questions require min_score and max_score.";
                     $this->failedCount++;
+
                     continue;
                 }
             }
@@ -136,6 +145,7 @@ class QuestionImportService
                 if (empty($row['answer_options'])) {
                     $this->errors[] = "Row {$row['row_number']}: Choice questions require answer_options.";
                     $this->failedCount++;
+
                     continue;
                 }
             }
@@ -155,15 +165,16 @@ class QuestionImportService
                 // Get indicator
                 $indicator = AssessmentIndicator::where('indicator_code', $row['indicator_code'])->first();
 
-                if (!$indicator) {
+                if (! $indicator) {
                     $this->errors[] = "Row {$row['row_number']}: Indicator '{$row['indicator_code']}' not found.";
                     $this->failedCount++;
+
                     continue;
                 }
 
                 // Parse answer options if it's a choice question
                 $answerOptions = null;
-                if ($row['answer_type'] === 'choice' && !empty($row['answer_options'])) {
+                if ($row['answer_type'] === 'choice' && ! empty($row['answer_options'])) {
                     $answerOptions = array_map('trim', explode(',', $row['answer_options']));
                 }
 
@@ -196,7 +207,7 @@ class QuestionImportService
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            throw new \Exception('Failed to import questions: ' . $e->getMessage());
+            throw new \Exception('Failed to import questions: '.$e->getMessage());
         }
     }
 
@@ -239,10 +250,10 @@ class QuestionImportService
         return implode(' ', $messages);
     }
 
-    public function downloadTemplate()
+    public function downloadTemplate(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        // TODO: Generate Excel template with example data
-        // This would use PhpSpreadsheet to create a template file
-        // with proper headers and example rows
+        $fileName = 'template_import_pertanyaan.xlsx';
+
+        return Excel::download(new QuestionTemplateExport, $fileName);
     }
 }
