@@ -398,7 +398,7 @@
                     </div>{{-- end form-step 3 --}}
 
                     <div class="form-step" data-step="4" style="display:none">
-                    {{-- ASPECT B: Data wPrasarana --}}
+                    {{-- ASPECT B: Data Sarana Prasarana --}}
                     <div class="form-card mt-3">
                         <div class="section-title">
                             <i class="bi bi-journal-text"></i>
@@ -1582,7 +1582,15 @@
             var requiredFields = stepEl.querySelectorAll('[required]');
             var valid = true;
             requiredFields.forEach(function(field) {
-                if (!field.value || !field.value.trim()) {
+                var isEmpty = false;
+                if (field.type === 'checkbox' || field.type === 'radio') {
+                    var name = field.name;
+                    var checked = stepEl.querySelector('[name="' + name + '"]:checked');
+                    isEmpty = !checked;
+                } else {
+                    isEmpty = !field.value || !field.value.trim();
+                }
+                if (isEmpty) {
                     field.classList.add('is-invalid');
                     if (valid) field.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     valid = false;

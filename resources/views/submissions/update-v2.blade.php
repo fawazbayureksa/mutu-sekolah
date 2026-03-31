@@ -1730,7 +1730,15 @@
             var requiredFields = stepEl.querySelectorAll('[required]');
             var valid = true;
             requiredFields.forEach(function(field) {
-                if (!field.value || !field.value.trim()) {
+                var isEmpty = false;
+                if (field.type === 'checkbox' || field.type === 'radio') {
+                    var name = field.name;
+                    var checked = stepEl.querySelector('[name="' + name + '"]:checked');
+                    isEmpty = !checked;
+                } else {
+                    isEmpty = !field.value || !field.value.trim();
+                }
+                if (isEmpty) {
                     field.classList.add('is-invalid');
                     if (valid) field.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     valid = false;
