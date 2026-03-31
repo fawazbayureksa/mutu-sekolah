@@ -1533,18 +1533,18 @@
         }
 
         // ===== WIZARD STEP NAVIGATION =====
-        var currentStep = 1;
-        var totalSteps = 5;
+        let currentStep = 1;
+        const totalSteps = 5;
 
         function showStep(step) {
             document.querySelectorAll('.form-step').forEach(function(el) {
                 el.style.display = 'none';
             });
-            var stepEl = document.querySelector('.form-step[data-step="' + step + '"]');
+            const stepEl = document.querySelector('.form-step[data-step="' + step + '"]');
             if (stepEl) stepEl.style.display = 'block';
 
             document.querySelectorAll('.wizard-stepper .wizard-step').forEach(function(el) {
-                var stepNum = parseInt(el.dataset.step);
+                const stepNum = parseInt(el.dataset.step);
                 el.classList.remove('active', 'completed');
                 if (stepNum === step) el.classList.add('active');
                 else if (stepNum < step) el.classList.add('completed');
@@ -1555,9 +1555,9 @@
                 else el.classList.remove('completed');
             });
 
-            var prevBtn = document.getElementById('prevBtn');
-            var nextBtn = document.getElementById('nextBtn');
-            var submitBtn = document.getElementById('submitBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
             if (prevBtn) prevBtn.style.display = step > 1 ? 'inline-block' : 'none';
             if (nextBtn) nextBtn.style.display = step < totalSteps ? 'inline-block' : 'none';
             if (submitBtn) submitBtn.style.display = step === totalSteps ? 'inline-block' : 'none';
@@ -1577,15 +1577,15 @@
         }
 
         function validateCurrentStep() {
-            var stepEl = document.querySelector('.form-step[data-step="' + currentStep + '"]');
+            const stepEl = document.querySelector('.form-step[data-step="' + currentStep + '"]');
             if (!stepEl) return true;
-            var requiredFields = stepEl.querySelectorAll('[required]');
-            var valid = true;
+            const requiredFields = stepEl.querySelectorAll('[required]');
+            let valid = true;
             requiredFields.forEach(function(field) {
-                var isEmpty = false;
+                let isEmpty = false;
                 if (field.type === 'checkbox' || field.type === 'radio') {
-                    var name = field.name;
-                    var checked = stepEl.querySelector('[name="' + name + '"]:checked');
+                    const name = field.name;
+                    const checked = stepEl.querySelector('[name="' + name + '"]:checked');
                     isEmpty = !checked;
                 } else {
                     isEmpty = !field.value || !field.value.trim();
@@ -1602,8 +1602,8 @@
         }
 
         function goToFirstErrorStep() {
-            for (var s = 1; s <= totalSteps; s++) {
-                var stepEl = document.querySelector('.form-step[data-step="' + s + '"]');
+            for (let s = 1; s <= totalSteps; s++) {
+                const stepEl = document.querySelector('.form-step[data-step="' + s + '"]');
                 if (stepEl && stepEl.querySelector('.is-invalid')) {
                     showStep(s);
                     return;
