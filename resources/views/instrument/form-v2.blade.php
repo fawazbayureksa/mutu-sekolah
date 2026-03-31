@@ -44,6 +44,50 @@
                 <form action="{{ route('instrument.v2.submit') }}" method="POST" id="instrumentForm">
                     @csrf
 
+                    {{-- Wizard Stepper --}}
+                    <div class="wizard-stepper mb-4">
+                        <div class="wizard-step active" data-step="1">
+                            <div class="wizard-step-circle">
+                                <span class="wizard-step-number">1</span>
+                                <i class="bi bi-check-lg wizard-step-check"></i>
+                            </div>
+                            <div class="wizard-step-label">Identitas Sekolah</div>
+                        </div>
+                        <div class="wizard-step-connector"></div>
+                        <div class="wizard-step" data-step="2">
+                            <div class="wizard-step-circle">
+                                <span class="wizard-step-number">2</span>
+                                <i class="bi bi-check-lg wizard-step-check"></i>
+                            </div>
+                            <div class="wizard-step-label">Data Responden</div>
+                        </div>
+                        <div class="wizard-step-connector"></div>
+                        <div class="wizard-step" data-step="3">
+                            <div class="wizard-step-circle">
+                                <span class="wizard-step-number">3</span>
+                                <i class="bi bi-check-lg wizard-step-check"></i>
+                            </div>
+                            <div class="wizard-step-label">Peserta Didik</div>
+                        </div>
+                        <div class="wizard-step-connector"></div>
+                        <div class="wizard-step" data-step="4">
+                            <div class="wizard-step-circle">
+                                <span class="wizard-step-number">4</span>
+                                <i class="bi bi-check-lg wizard-step-check"></i>
+                            </div>
+                            <div class="wizard-step-label">Sarana Prasarana</div>
+                        </div>
+                        <div class="wizard-step-connector"></div>
+                        <div class="wizard-step" data-step="5">
+                            <div class="wizard-step-circle">
+                                <span class="wizard-step-number">5</span>
+                                <i class="bi bi-check-lg wizard-step-check"></i>
+                            </div>
+                            <div class="wizard-step-label">Tata Kelola</div>
+                        </div>
+                    </div>
+
+                    <div class="form-step" data-step="1">
                     {{-- Section 1: Identitas Sekolah --}}
                     <div class="form-card mt-3">
                         <div class="section-title">
@@ -216,7 +260,9 @@
                             </div>
                         </div>
                     </div>
+                    </div>{{-- end form-step 1 --}}
 
+                    <div class="form-step" data-step="2" style="display:none">
                     {{-- Section 2: Data Responden --}}
                     <div class="form-card mt-3">
                         <div class="section-title">
@@ -251,7 +297,9 @@
                             </div>
                         </div>
                     </div>
+                    </div>{{-- end form-step 2 --}}
 
+                    <div class="form-step" data-step="3" style="display:none">
                     {{-- ASPECT A: Standar Peserta Didik --}}
                     <div class="form-card mt-3">
                         <div class="section-title">
@@ -347,7 +395,9 @@
                             </div>
                         </div>
                     </div>
+                    </div>{{-- end form-step 3 --}}
 
+                    <div class="form-step" data-step="4" style="display:none">
                     {{-- ASPECT B: Data wPrasarana --}}
                     <div class="form-card mt-3">
                         <div class="section-title">
@@ -376,7 +426,9 @@
                         {{-- Dynamic sapras container --}}
                         <div id="sapras-container" style="display: none;"></div>
                     </div>
+                    </div>{{-- end form-step 4 --}}
 
+                    <div class="form-step" data-step="5" style="display:none">
                     {{-- ASPECT C: Data Tata Kelola --}}
                     <div class="form-card mt-3">
                         <div class="section-title">
@@ -474,16 +526,26 @@
                             </div>
                         </div>
                     </div>
+                    </div>{{-- end form-step 5 --}}
 
-                    {{-- Submit Button --}}
-                    <div class="d-grid gap-3 col-lg-6 mx-auto mt-5 mb-5">
-                        <button type="submit" class="btn btn-primary btn-lg shadow rounded-pill py-3 fw-bold"
-                            style="font-size: 1rem;">
-                            <i class="bi bi-send-fill me-2"></i> Kirim Data Instrumen
-                        </button>
-                        <a href="{{ route('landing') }}" class="btn btn-outline-secondary rounded-pill border-0">
-                            <i class="bi bi-arrow-left me-2"></i>Kembali ke Halaman Utama
-                        </a>
+                    {{-- Wizard Navigation --}}
+                    <div class="wizard-nav d-flex justify-content-between align-items-center mt-4 mb-5">
+                        <div>
+                            <button type="button" id="prevBtn" class="btn btn-outline-secondary rounded-pill px-4 py-2" style="display:none" onclick="goPrev()">
+                                <i class="bi bi-arrow-left me-2"></i>Sebelumnya
+                            </button>
+                        </div>
+                        <div>
+                            <a href="{{ route('landing') }}" class="btn btn-link text-secondary me-2">
+                                <i class="bi bi-x me-1"></i>Batal
+                            </a>
+                            <button type="button" id="nextBtn" class="btn btn-primary rounded-pill px-4 py-2" onclick="goNext()">
+                                Selanjutnya<i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                            <button type="submit" id="submitBtn" class="btn btn-success rounded-pill px-4 py-2 fw-bold" style="display:none">
+                                <i class="bi bi-send-fill me-2"></i>Kirim Data Instrumen
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -1469,5 +1531,81 @@
 
             hiddenInput.value = JSON.stringify(saprasData);
         }
+
+        // ===== WIZARD STEP NAVIGATION =====
+        var currentStep = 1;
+        var totalSteps = 5;
+
+        function showStep(step) {
+            document.querySelectorAll('.form-step').forEach(function(el) {
+                el.style.display = 'none';
+            });
+            var stepEl = document.querySelector('.form-step[data-step="' + step + '"]');
+            if (stepEl) stepEl.style.display = 'block';
+
+            document.querySelectorAll('.wizard-stepper .wizard-step').forEach(function(el) {
+                var stepNum = parseInt(el.dataset.step);
+                el.classList.remove('active', 'completed');
+                if (stepNum === step) el.classList.add('active');
+                else if (stepNum < step) el.classList.add('completed');
+            });
+
+            document.querySelectorAll('.wizard-step-connector').forEach(function(el, idx) {
+                if (idx < step - 1) el.classList.add('completed');
+                else el.classList.remove('completed');
+            });
+
+            var prevBtn = document.getElementById('prevBtn');
+            var nextBtn = document.getElementById('nextBtn');
+            var submitBtn = document.getElementById('submitBtn');
+            if (prevBtn) prevBtn.style.display = step > 1 ? 'inline-block' : 'none';
+            if (nextBtn) nextBtn.style.display = step < totalSteps ? 'inline-block' : 'none';
+            if (submitBtn) submitBtn.style.display = step === totalSteps ? 'inline-block' : 'none';
+
+            currentStep = step;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goNext() {
+            if (validateCurrentStep()) {
+                showStep(currentStep + 1);
+            }
+        }
+
+        function goPrev() {
+            showStep(currentStep - 1);
+        }
+
+        function validateCurrentStep() {
+            var stepEl = document.querySelector('.form-step[data-step="' + currentStep + '"]');
+            if (!stepEl) return true;
+            var requiredFields = stepEl.querySelectorAll('[required]');
+            var valid = true;
+            requiredFields.forEach(function(field) {
+                if (!field.value || !field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    if (valid) field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    valid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+            return valid;
+        }
+
+        function goToFirstErrorStep() {
+            for (var s = 1; s <= totalSteps; s++) {
+                var stepEl = document.querySelector('.form-step[data-step="' + s + '"]');
+                if (stepEl && stepEl.querySelector('.is-invalid')) {
+                    showStep(s);
+                    return;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            showStep(1);
+            goToFirstErrorStep();
+        });
     </script>
 @endpush
