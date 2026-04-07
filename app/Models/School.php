@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\InstrumentSubmissionV2;
+use App\Models\User;
 
 class School extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'school_name',
         'npsn',
         'address',
@@ -38,6 +40,11 @@ class School extends Model
     public function province(): BelongsTo
     {
         return $this->belongsTo(Province::class, 'province_code', 'code');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function regency(): BelongsTo

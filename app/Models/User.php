@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -15,12 +16,14 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'npsn',
         'password',
         'phone',
         'is_active',
         'last_login_at',
         'bio',
         'role',
+        'must_change_password',
     ];
 
     protected $hidden = [
@@ -33,11 +36,17 @@ class User extends Authenticatable
         'password' => 'hashed',
         'is_active' => 'boolean',
         'last_login_at' => 'datetime',
+        'must_change_password' => 'boolean',
     ];
 
     public function activityLogs(): HasMany
     {
         return $this->hasMany(ActivityLog::class);
+    }
+
+    public function school(): HasOne
+    {
+        return $this->hasOne(School::class);
     }
 
     public function isAdmin(): bool

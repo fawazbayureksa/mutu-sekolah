@@ -10,6 +10,10 @@ use App\Http\Controllers\Admin\SubmissionController;
 use App\Http\Controllers\Admin\SubmissionV2Controller;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\SchoolLoginController;
+use App\Http\Controllers\School\SchoolDashboardController;
+use App\Http\Controllers\School\SchoolPasswordController;
+use App\Http\Controllers\School\SchoolSubmissionController;
 use App\Http\Controllers\PublicInstrumentController;
 use App\Http\Controllers\PublicInstrumentV2Controller;
 use App\Http\Controllers\SubmissionUpdateController;
@@ -19,7 +23,7 @@ use App\Http\Controllers\Verifier\VerifierSubmissionController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
-Route::get('/', fn () => view('landing'))->name('landing');
+Route::get('/', fn() => view('landing'))->name('landing');
 
 Route::get('/instrumen', [PublicInstrumentController::class, 'index'])
     ->name('instrument.form');
@@ -63,6 +67,35 @@ Route::post('/submission-v2/update/{token}', [SubmissionV2UpdateController::clas
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:10,1');
+});
+
+// School authentication routes (open login / self-registration)
+Route::prefix('school')->name('school.')->group(function () {
+    // Guest-only routes
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [SchoolLoginController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [SchoolLoginController::class, 'login'])->middleware('throttle:10,1');
+    });
+
+    // Authenticated school routes
+    Route::middleware(['auth', 'role:school'])->group(function () {
+        Route::post('/logout', [SchoolLoginController::class, 'logout'])->name('logout');
+
+        // Password change routes — accessible even when must_change_password = true
+        Route::get('/password/change', [SchoolPasswordController::class, 'showChangeForm'])->name('password.change');
+        Route::post('/password/change', [SchoolPasswordController::class, 'update'])->name('password.update')->middleware('throttle:10,1');
+
+        // All other school routes — blocked if must_change_password = true
+        Route::middleware('force.password.change')->group(function () {
+            Route::get('/dashboard', [SchoolDashboardController::class, 'index'])->name('dashboard');
+            Route::prefix('submissions')->name('submissions.')->group(function () {
+                Route::get('/', [SchoolSubmissionController::class, 'index'])->name('index');
+                Route::get('/{submission}', [SchoolSubmissionController::class, 'show'])->name('show');
+                Route::get('/{submission}/edit', [SchoolSubmissionController::class, 'edit'])->name('edit');
+                Route::put('/{submission}', [SchoolSubmissionController::class, 'update'])->name('update');
+            });
+        });
+    });
 });
 
 // Protected routes (requires authentication)
