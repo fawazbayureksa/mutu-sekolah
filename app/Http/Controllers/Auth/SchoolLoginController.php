@@ -79,6 +79,7 @@ class SchoolLoginController extends Controller
                     'user_id'     => $user->id,
                     'school_name' => 'Sekolah ' . $npsn,
                     'npsn'        => $npsn,
+                    'address'     => '',
                 ]);
             }
 

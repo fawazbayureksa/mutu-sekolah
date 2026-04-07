@@ -4,6 +4,7 @@ namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
 use App\Models\InstrumentSubmissionV2;
+use App\Models\School;
 use Illuminate\Support\Facades\Auth;
 
 class SchoolDashboardController extends Controller
@@ -14,11 +15,19 @@ class SchoolDashboardController extends Controller
         $school = $user->school;
 
         if (! $school) {
-            return view('school.dashboard', [
-                'school'            => null,
-                'stats'             => ['total' => 0, 'submitted' => 0, 'verified' => 0, 'validated' => 0, 'rejected' => 0],
-                'recentSubmissions' => collect(),
-            ]);
+            $existing = School::where('npsn', $user->npsn)->whereNull('user_id')->first();
+
+            if ($existing) {
+                $existing->update(['user_id' => $user->id]);
+                $school = $existing->fresh();
+            } else {
+                $school = School::create([
+                    'user_id'     => $user->id,
+                    'school_name' => 'Sekolah ' . $user->npsn,
+                    'npsn'        => $user->npsn,
+                    'address'     => '',
+                ]);
+            }
         }
 
         $stats = [

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
 use App\Models\InstrumentSubmissionV2;
+use App\Models\School;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,10 +12,24 @@ class SchoolSubmissionController extends Controller
 {
     private function getSchool()
     {
-        $school = Auth::user()->school;
+        $user   = Auth::user();
+        $school = $user->school;
 
         if (! $school) {
-            abort(403, 'Akun ini tidak terhubung dengan data sekolah.');
+            // Auto-create a placeholder so first-time users can proceed
+            $existing = School::where('npsn', $user->npsn)->whereNull('user_id')->first();
+
+            if ($existing) {
+                $existing->update(['user_id' => $user->id]);
+                $school = $existing->fresh();
+            } else {
+                $school = School::create([
+                    'user_id'     => $user->id,
+                    'school_name' => 'Sekolah ' . $user->npsn,
+                    'npsn'        => $user->npsn,
+                    'address'     => '',
+                ]);
+            }
         }
 
         return $school;
