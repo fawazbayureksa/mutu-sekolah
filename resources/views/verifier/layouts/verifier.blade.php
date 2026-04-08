@@ -28,7 +28,7 @@
                 <a href="{{ route('verifier.dashboard') }}"
                     class="sidebar-menu-link {{ request()->is('verifier/dashboard*') ? 'active' : '' }}">
                     <i class="bi bi-speedometer2"></i>
-                    <span>Dasbor Verifikasi</span>
+                    <span>Dashboard Verifikasi</span>
                 </a>
             </li>
 

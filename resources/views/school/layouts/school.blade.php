@@ -27,7 +27,7 @@
                 <a href="{{ route('school.dashboard') }}"
                     class="sidebar-menu-link {{ request()->is('school/dashboard*') ? 'active' : '' }}">
                     <i class="bi bi-speedometer2"></i>
-                    <span>Dasbor</span>
+                    <span>Dashboard</span>
                 </a>
             </li>
 

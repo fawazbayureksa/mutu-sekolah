@@ -1,12 +1,12 @@
 @extends('school.layouts.school')
 
-@section('title', 'Dasbor - Portal Sekolah')
+@section('title', 'Dashboard - Portal Sekolah')
 
 @section('content')
     <div class="container-fluid">
         <div class="row mb-4">
             <div class="col-12">
-                <h1 class="h3 mb-0 text-gray-800">Dasbor</h1>
+                <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
                 <p class="text-muted small mb-0">{{ $school->school_name ?? auth()->user()->npsn }}</p>
             </div>
         </div>

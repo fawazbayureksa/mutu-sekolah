@@ -1,12 +1,12 @@
 @extends('verifier.layouts.verifier')
 
-@section('title', 'Dasbor Verifikasi')
+@section('title', 'Dashboard Verifikasi')
 
 @section('content')
     <div class="container-fluid">
         <div class="row mb-4">
             <div class="col-md-6">
-                <h1 class="h3 mb-0 text-gray-800">Dasbor Verifikasi</h1>
+                <h1 class="h3 mb-0 text-gray-800">Dashboard Verifikasi</h1>
             </div>
         </div>
 
@@ -19,7 +19,8 @@
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     Menunggu Verifikasi</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['pending_verification'] }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['pending_verification'] }}
+                                </div>
                             </div>
                             <div class="col-auto">
                                 <i class="bi bi-clock-history fa-2x text-gray-300 fs-2 text-warning"></i>
