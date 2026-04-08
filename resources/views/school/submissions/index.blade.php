@@ -12,6 +12,12 @@
         </div>
 
         <div class="card shadow-sm">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Daftar Pengajuan</h6>
+                <a href="{{ route('instrument.v2.form') }}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>Buat Pengajuan Baru
+                </a>
+            </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
@@ -53,12 +59,8 @@
                             @empty
                                 <tr>
                                     <td colspan="6" class="text-center text-muted py-4">
-                                        Belum ada pengajuan.
-                                        <div class="mt-2">
-                                            <a href="{{ route('instrument.v2.form') }}" class="btn btn-primary btn-sm">
-                                                <i class="bi bi-plus-circle me-1"></i>Isi Instrumen Sekarang
-                                            </a>
-                                        </div>
+                                        Belum ada pengajuan. Klik <strong>Buat Pengajuan Baru</strong> untuk mulai mengisi
+                                        instrumen.
                                     </td>
                                 </tr>
                             @endforelse

@@ -111,18 +111,27 @@
                         <h1 class="display-4 fw-bold mb-4">Penjaminan Mutu SMK Bidang KPTK</h1>
                         <p class="lead mb-5 text-white-50">Upaya sistematis BPPMPV dalam memastikan mutu pendidikan vokasi
                             bidang Kelautan, Perikanan, dan TIK</p>
-                        <div class="d-flex gap-3 justify-content-center">
-                            <a href="{{ route('instrument.v2.form') }}" class="btn btn-primary btn-lg px-5 py-3">
-                                <i class="bi bi-play-circle me-2"></i>Isi Instrumen
-                            </a>
+                        <div class="d-flex gap-3 justify-content-center flex-wrap">
                             @guest
+                                <a href="{{ route('school.login') }}" class="btn btn-primary btn-lg px-5 py-3">
+                                    <i class="bi bi-building me-2"></i>Masuk Sekolah
+                                </a>
                                 <a href="{{ route('login') }}" class="btn btn-outline-light btn-lg px-5 py-3">
-                                    <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Masuk Admin
                                 </a>
                             @else
-                                <a href="{{ route('dashboard') }}" class="btn btn-outline-light btn-lg px-5 py-3">
-                                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
-                                </a>
+                                @if (auth()->user()->role === 'school')
+                                    <a href="{{ route('instrument.v2.form') }}" class="btn btn-primary btn-lg px-5 py-3">
+                                        <i class="bi bi-play-circle me-2"></i>Isi Instrumen
+                                    </a>
+                                    <a href="{{ route('school.dashboard') }}" class="btn btn-outline-light btn-lg px-5 py-3">
+                                        <i class="bi bi-speedometer2 me-2"></i>Dashboard Sekolah
+                                    </a>
+                                @else
+                                    <a href="{{ route('dashboard') }}" class="btn btn-outline-light btn-lg px-5 py-3">
+                                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                                    </a>
+                                @endif
                             @endguest
                         </div>
                     </div>
@@ -130,6 +139,59 @@
             </div>
         </div>
         <div class="hero-overlay"></div>
+    </section>
+
+    {{-- Portal Sekolah --}}
+    <section id="portal-sekolah" class="py-5" style="background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);">
+        <div class="container">
+            <div class="row align-items-center gy-4">
+                <div class="col-lg-8" data-aos="fade-right">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                            style="width:52px;height:52px;background:rgba(255,255,255,0.15);">
+                            <i class="bi bi-building-fill fs-4 text-white"></i>
+                        </div>
+                        <h2 class="fw-bold text-white mb-0">Portal Sekolah</h2>
+                    </div>
+                    <p class="text-white mb-3" style="opacity:.85;">
+                        Akses khusus bagi sekolah SMK bidang KPTK. Masuk menggunakan <strong>NPSN</strong> sekolah Anda
+                        untuk mengisi instrumen penjaminan mutu, memantau status pengajuan, dan menerima hasil verifikasi.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <span class="badge rounded-pill px-3 py-2"
+                            style="background:rgba(255,255,255,0.2);font-size:.85rem;">
+                            <i class="bi bi-key me-1"></i> Login dengan NPSN
+                        </span>
+                        <span class="badge rounded-pill px-3 py-2"
+                            style="background:rgba(255,255,255,0.2);font-size:.85rem;">
+                            <i class="bi bi-shield-check me-1"></i> Data terisolasi per sekolah
+                        </span>
+                        <span class="badge rounded-pill px-3 py-2"
+                            style="background:rgba(255,255,255,0.2);font-size:.85rem;">
+                            <i class="bi bi-bell me-1"></i> Pantau status pengajuan
+                        </span>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-lg-end" data-aos="fade-left">
+                    @guest
+                        <a href="{{ route('school.login') }}" class="btn btn-light btn-lg px-5 py-3 shadow fw-semibold">
+                            <i class="bi bi-box-arrow-in-right me-2 text-primary"></i>
+                            <span class="text-primary">Masuk Sekarang</span>
+                        </a>
+                        <p class="text-white mt-2 mb-0 small" style="opacity:.7;">
+                            Belum punya akun? Cukup masukkan NPSN.
+                        </p>
+                    @else
+                        @if (auth()->user()->role === 'school')
+                            <a href="{{ route('school.dashboard') }}" class="btn btn-light btn-lg px-5 py-3 shadow fw-semibold">
+                                <i class="bi bi-speedometer2 me-2 text-primary"></i>
+                                <span class="text-primary">Dashboard Sekolah</span>
+                            </a>
+                        @endif
+                    @endguest
+                </div>
+            </div>
+        </div>
     </section>
 
     <section id="tentang" class="py-5">

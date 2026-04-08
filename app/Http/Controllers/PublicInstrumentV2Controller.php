@@ -161,6 +161,23 @@ class PublicInstrumentV2Controller extends Controller
                         ]);
                     }
                 }
+
+                // Always sync profile fields from the instrument form into the school record
+                $school->update([
+                    'school_name'             => $request->school_name,
+                    'address'                 => $request->address,
+                    'province_code'           => $request->province_code,
+                    'regency_code'            => $request->regency_code,
+                    'school_status'           => $request->school_status,
+                    'school_category'         => $request->school_category,
+                    'program_duration'        => $request->program_duration,
+                    'school_accreditation'    => $request->school_accreditation,
+                    'curriculum'              => $request->curriculum,
+                    'approval_status'         => $request->approval_status,
+                    'expertise'               => $request->expertise,
+                    'expertise_program'       => $request->expertise_program,
+                    'expertise_concentration' => $request->expertise_concentration,
+                ]);
             } else {
                 // Public (unauthenticated) submission — original lookup by NPSN / name+location
                 $school = School::where(function ($q) use ($request) {
@@ -194,20 +211,24 @@ class PublicInstrumentV2Controller extends Controller
             }
 
             $submission = InstrumentSubmissionV2::create([
-                'school_id'        => $school->id,
-                'school_name'      => $request->school_name,
-                'npsn'             => $request->npsn ?? null,
-                'address'          => $request->address,
-                'province_code'    => $request->province_code,
-                'regency_code'     => $request->regency_code,
-                'respondent_name'  => $request->respondent_name,
-                'respondent_position' => $request->respondent_position,
-                'form_version'     => '2.0',
-                'answers'          => $request->answers,
-                'status'           => InstrumentSubmissionV2::STATUS_SUBMITTED,
-                'filled_at'        => now(),
-                'ip_address'       => $request->ip(),
-                'user_agent'       => $request->userAgent(),
+                'school_id'               => $school->id,
+                'school_name'             => $request->school_name,
+                'npsn'                    => $request->npsn ?? null,
+                'address'                 => $request->address,
+                'province_code'           => $request->province_code,
+                'regency_code'            => $request->regency_code,
+                'expertise'               => $request->expertise,
+                'expertise_program'       => $request->expertise_program,
+                'expertise_concentration' => $request->expertise_concentration,
+                'curriculum'              => $request->curriculum,
+                'respondent_name'         => $request->respondent_name,
+                'respondent_position'     => $request->respondent_position,
+                'form_version'            => '2.0',
+                'answers'                 => $request->answers,
+                'status'                  => InstrumentSubmissionV2::STATUS_SUBMITTED,
+                'filled_at'               => now(),
+                'ip_address'              => $request->ip(),
+                'user_agent'              => $request->userAgent(),
             ]);
 
             $this->storeSectionDetails($submission, $request->answers);
