@@ -103,6 +103,11 @@ class SchoolSubmissionController extends Controller
             abort(403, 'Anda tidak memiliki akses ke data ini.');
         }
 
+        // if (!$submission->isEditable()) {
+        //     return redirect()->route('school.submissions.show', $submission)
+        //         ->with('error', 'Pengajuan ini tidak dapat diedit pada status saat ini.');
+        // }
+
         $submission->load(['school', 'details']);
 
         // Decode answers + prefer details
@@ -157,6 +162,11 @@ class SchoolSubmissionController extends Controller
         if ($submission->school_id !== $school->id) {
             abort(403, 'Anda tidak memiliki akses ke data ini.');
         }
+
+        // if (! $submission->isEditable()) {
+        //     return redirect()->route('school.submissions.show', $submission)
+        //         ->with('error', 'Pengajuan ini tidak dapat diedit pada status saat ini.');
+        // }
 
         $validator = Validator::make($request->all(), [
             'school_name'             => 'sometimes|required|string|max:255',
@@ -218,6 +228,11 @@ class SchoolSubmissionController extends Controller
             }
 
             if (! empty($data)) {
+                // If the submission was rejected and school submits an update, revert to submitted
+                if ($submission->status === InstrumentSubmissionV2::STATUS_REJECTED) {
+                    $data['status'] = InstrumentSubmissionV2::STATUS_SUBMITTED;
+                }
+
                 $submission->update($data);
 
                 // Sync relevant fields back to the school record
@@ -247,13 +262,32 @@ class SchoolSubmissionController extends Controller
             DB::commit();
 
             return redirect()->route('school.submissions.show', $submission)
-                ->with('success', 'Data pengajuan berhasil diperbarui.');
+                ->with('success', 'Data pengajuan berhasil diperbarui dan diajukan kembali untuk verifikasi.');
         } catch (\Exception $e) {
             DB::rollBack();
 
             return redirect()->route('school.submissions.edit-full', $submission)
                 ->with('error', 'Terjadi kesalahan saat memperbarui data. Silakan coba lagi.');
         }
+    }
+
+    public function resubmit(InstrumentSubmissionV2 $submission)
+    {
+        $school = $this->getSchool();
+
+        if ($submission->school_id !== $school->id) {
+            abort(403, 'Anda tidak memiliki akses ke data ini.');
+        }
+
+        if ($submission->status !== InstrumentSubmissionV2::STATUS_REJECTED) {
+            return redirect()->route('school.submissions.show', $submission)
+                ->with('error', 'Hanya pengajuan yang ditolak yang dapat diajukan kembali.');
+        }
+
+        $submission->update(['status' => InstrumentSubmissionV2::STATUS_SUBMITTED]);
+
+        return redirect()->route('school.submissions.show', $submission)
+            ->with('success', 'Pengajuan berhasil diajukan kembali dan menunggu verifikasi.');
     }
 
     private function updateSectionDetails(InstrumentSubmissionV2 $submission, array $answers): void
@@ -265,7 +299,11 @@ class SchoolSubmissionController extends Controller
                 $data     = $answers[$code];
                 $rowCount = 0;
                 if (is_array($data)) {
-                    if (isset($data['rows']) && is_array($data['rows'])) {
+                    if ($code === 'B.sapras') {
+                        foreach ($data['sections'] ?? [] as $section) {
+                            $rowCount += count($section['rows'] ?? []);
+                        }
+                    } elseif (isset($data['rows']) && is_array($data['rows'])) {
                         $rowCount = count($data['rows']);
                     } elseif (isset($data[0])) {
                         $rowCount = count($data);
@@ -287,10 +325,10 @@ class SchoolSubmissionController extends Controller
             abort(403, 'Anda tidak memiliki akses ke data ini.');
         }
 
-        if (! $submission->isEditable()) {
-            return redirect()->route('school.submissions.show', $submission)
-                ->with('error', 'Pengajuan ini tidak dapat diedit pada status saat ini.');
-        }
+        // if (! $submission->isEditable()) {
+        //     return redirect()->route('school.submissions.show', $submission)
+        //         ->with('error', 'Pengajuan ini tidak dapat diedit pada status saat ini.');
+        // }
 
         return view('school.submissions.edit', compact('school', 'submission'));
     }
@@ -303,10 +341,10 @@ class SchoolSubmissionController extends Controller
             abort(403, 'Anda tidak memiliki akses ke data ini.');
         }
 
-        if (! $submission->isEditable()) {
-            return redirect()->route('school.submissions.show', $submission)
-                ->with('error', 'Pengajuan ini tidak dapat diedit pada status saat ini.');
-        }
+        // if (! $submission->isEditable()) {
+        //     return redirect()->route('school.submissions.show', $submission)
+        //         ->with('error', 'Pengajuan ini tidak dapat diedit pada status saat ini.');
+        // }
 
         $request->validate([
             'respondent_name'     => ['required', 'string', 'max:255'],

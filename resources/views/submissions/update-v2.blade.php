@@ -176,7 +176,7 @@
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="curriculum"
                                                 id="cur{{ Str::slug($cur) }}" value="{{ $cur }}"
-                                                {{ old('curriculum', $submission->school->curriculum) == $cur ? 'checked' : '' }}>
+                                                {{ old('curriculum', $submission->curriculum) == $cur ? 'checked' : '' }}>
                                             <label class="form-check-label"
                                                 for="cur{{ Str::slug($cur) }}">{{ $cur }}</label>
                                         </div>
@@ -228,7 +228,7 @@
                                     <option value="">-- Pilih Bidang Keahlian --</option>
                                     @foreach (array_keys($expertiseData ?? []) as $expertise)
                                         <option value="{{ $expertise }}"
-                                            {{ old('expertise', $submission->school->expertise ?: $submission->expertise) == $expertise ? 'selected' : '' }}>
+                                            {{ old('expertise', $submission->expertise) == $expertise ? 'selected' : '' }}>
                                             {{ $expertise == 'TIK' ? 'TIK (Teknologi Informasi dan Komunikasi)' : $expertise }}
                                         </option>
                                     @endforeach
@@ -728,7 +728,7 @@
                     const forAttr = label.getAttribute('for');
                     if (forAttr) {
                         label.setAttribute('for', forAttr.replace(new RegExp(`_${oldIndex}$`),
-                        `_${index}`));
+                            `_${index}`));
                     }
                 });
 
@@ -1570,9 +1570,9 @@
             }
             // Restore expertise fields if submission has data
             @php
-                $schoolExpertise = $submission->school->expertise ?: $submission->expertise ?? null;
-                $schoolExpertiseProgram = $submission->school->expertise_program ?: $submission->expertise_program ?? null;
-                $schoolExpertiseConcentration = $submission->school->expertise_concentration ?: $submission->expertise_concentration ?? null;
+                $schoolExpertise = $submission->expertise ?? null;
+                $schoolExpertiseProgram = $submission->expertise_program ?? null;
+                $schoolExpertiseConcentration = $submission->expertise_concentration ?? null;
             @endphp
             @if ($schoolExpertise)
                 // Rebuild expertise dropdown options based on the selected curriculum

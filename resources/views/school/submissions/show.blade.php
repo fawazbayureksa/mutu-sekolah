@@ -10,13 +10,22 @@
                 <p class="text-muted small mb-0">{{ $school->school_name }}</p>
             </div>
             <div class="d-flex gap-2">
-                <a href="{{ route('school.submissions.edit-full', $submission) }}" class="btn btn-primary btn-sm">
-                    <i class="bi bi-pencil-square me-1"></i>Perbarui Data Instrumen
-                </a>
                 @if ($submission->isEditable())
+                    <a href="{{ route('school.submissions.edit-full', $submission) }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-pencil-square me-1"></i>Perbarui Data Instrumen
+                    </a>
                     <a href="{{ route('school.submissions.edit', $submission) }}" class="btn btn-warning btn-sm">
                         <i class="bi bi-pencil me-1"></i>Edit Responden
                     </a>
+                @endif
+                @if ($submission->status === 'rejected')
+                    <form action="{{ route('school.submissions.resubmit', $submission) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-success btn-sm"
+                            onclick="return confirm('Ajukan kembali pengajuan ini untuk verifikasi?')">
+                            <i class="bi bi-send-check me-1"></i>Ajukan Kembali
+                        </button>
+                    </form>
                 @endif
                 <a href="{{ route('school.submissions.index') }}" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-arrow-left me-1"></i>Kembali
@@ -24,33 +33,26 @@
             </div>
         </div>
 
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
         <!-- Status Banner -->
         @if ($submission->status === 'rejected')
             <div class="alert alert-danger d-flex align-items-start">
                 <i class="bi bi-x-circle-fill me-2 mt-1 flex-shrink-0 fs-5"></i>
-                <div>
+                <div class="flex-grow-1">
                     <strong>Pengajuan Ditolak</strong><br>
                     @if ($submission->verification_notes)
                         Catatan: {{ $submission->verification_notes }}
                     @endif
-                    <div class="mt-2">
+                    <div class="mt-2 d-flex gap-2 flex-wrap">
                         <a href="{{ route('school.submissions.edit-full', $submission) }}" class="btn btn-danger btn-sm">
                             <i class="bi bi-pencil me-1"></i>Perbaiki & Ajukan Ulang
                         </a>
+                        <form action="{{ route('school.submissions.resubmit', $submission) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-danger btn-sm"
+                                onclick="return confirm('Ajukan kembali tanpa mengubah data?')">
+                                <i class="bi bi-send-check me-1"></i>Ajukan Kembali (tanpa edit)
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -379,7 +381,8 @@
                                 <dl class="row mb-0" style="row-gap:.5rem;">
                                     <dt class="col-5 text-muted fw-normal small">Status Sekolah</dt>
                                     <dd class="col-7 mb-0">
-                                        {{ $submission->school?->school_status ?? ($submission->school_status ?? '-') }}</dd>
+                                        {{ $submission->school?->school_status ?? ($submission->school_status ?? '-') }}
+                                    </dd>
 
                                     <dt class="col-5 text-muted fw-normal small">Kategori</dt>
                                     <dd class="col-7 mb-0">
