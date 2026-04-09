@@ -57,22 +57,33 @@
                         <input type="text" class="form-control bg-light" value="{{ $school->school_name }}" readonly>
                     </div>
 
-                    <div class="form-floating mb-3">
+                    <div class="form-floating mb-1 position-relative">
                         <input type="password" class="form-control @error('password') is-invalid @enderror"
-                            id="password" name="password" placeholder="Password baru" required minlength="8">
+                            id="password" name="password" placeholder="Password baru" required minlength="8"
+                            style="padding-right: 3rem;">
                         <label for="password">
                             <i class="bi bi-lock me-2"></i>Password Baru
                         </label>
-                        <div class="form-text text-muted">Minimal 8 karakter.</div>
+                        <button type="button" class="btn btn-link text-muted p-0 position-absolute"
+                            style="right:.75rem;top:50%;transform:translateY(-50%);z-index:5;line-height:1;"
+                            onclick="togglePassword('password','eye-password')" tabindex="-1">
+                            <i class="bi bi-eye fs-5" id="eye-password"></i>
+                        </button>
                     </div>
+                    <div class="form-text text-muted mb-3">Minimal 8 karakter.</div>
 
-                    <div class="form-floating mb-4">
+                    <div class="form-floating mb-4 position-relative">
                         <input type="password" class="form-control @error('password') is-invalid @enderror"
                             id="password_confirmation" name="password_confirmation" placeholder="Konfirmasi password"
-                            required minlength="8">
+                            required minlength="8" style="padding-right: 3rem;">
                         <label for="password_confirmation">
                             <i class="bi bi-lock-fill me-2"></i>Konfirmasi Password
                         </label>
+                        <button type="button" class="btn btn-link text-muted p-0 position-absolute"
+                            style="right:.75rem;top:50%;transform:translateY(-50%);z-index:5;line-height:1;"
+                            onclick="togglePassword('password_confirmation','eye-confirm')" tabindex="-1">
+                            <i class="bi bi-eye fs-5" id="eye-confirm"></i>
+                        </button>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100" id="submitBtn">
@@ -92,6 +103,18 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash fs-5';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye fs-5';
+            }
+        }
+
         document.getElementById('firstLoginForm').addEventListener('submit', function() {
             document.getElementById('btnSpinner').classList.remove('d-none');
             document.getElementById('submitBtn').disabled = true;

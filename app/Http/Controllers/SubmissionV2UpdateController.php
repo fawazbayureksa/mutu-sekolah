@@ -94,6 +94,7 @@ class SubmissionV2UpdateController extends Controller
             'program_duration' => 'nullable|string|max:50',
             'school_accreditation' => 'nullable|string|max:50',
             'curriculum'             => 'nullable|string|max:50',
+            'approval_status'        => ['nullable', \Illuminate\Validation\Rule::in(config('constant.approval_status'))],
             'expertise'              => 'nullable|string|max:255',
             'expertise_program'      => 'nullable|string|max:255',
             'expertise_concentration' => 'nullable|string|max:255',
@@ -133,6 +134,9 @@ class SubmissionV2UpdateController extends Controller
             }
             if ($request->filled('curriculum')) {
                 $data['curriculum'] = $request->curriculum;
+            }
+            if ($request->has('approval_status')) {
+                $data['approval_status'] = $request->approval_status ?: null;
             }
             if ($request->filled('expertise')) {
                 $data['expertise'] = $request->expertise;

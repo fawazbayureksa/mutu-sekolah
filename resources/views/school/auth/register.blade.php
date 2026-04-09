@@ -46,16 +46,20 @@
                 <form method="POST" action="{{ route('school.register') }}" id="registerForm">
                     @csrf
 
-                    <div class="form-floating mb-3">
+                    <div class="form-floating mb-1">
                         <input type="text" class="form-control @error('npsn') is-invalid @enderror" id="npsn"
-                            name="npsn" placeholder="NPSN" value="{{ old('npsn') }}" required maxlength="20"
-                            autofocus>
+                            name="npsn" placeholder="NPSN" value="{{ old('npsn') }}" required maxlength="8"
+                            inputmode="numeric" autocomplete="off" autofocus>
                         <label for="npsn">
                             <i class="bi bi-building me-2"></i>NPSN
                         </label>
                         @error('npsn')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                    </div>
+                    <div class="d-flex justify-content-end mb-3">
+                        <small class="text-muted"><span id="npsn-count">{{ strlen(old('npsn', '')) }}</span> / 8
+                            digit</small>
                     </div>
 
                     <div class="form-floating mb-3">
@@ -70,24 +74,45 @@
                         @enderror
                     </div>
 
-                    <div class="form-floating mb-3">
+                    <div class="form-floating mb-1 position-relative">
                         <input type="password" class="form-control @error('password') is-invalid @enderror"
-                            id="password" name="password" placeholder="Password" required minlength="8">
+                            id="password" name="password" placeholder="Password" required minlength="8"
+                            style="padding-right: 3rem;">
                         <label for="password">
                             <i class="bi bi-lock me-2"></i>Password
                         </label>
-                        <div class="form-text text-muted">Minimal 8 karakter.</div>
+                        <button type="button" class="btn btn-link text-muted p-0 position-absolute"
+                            style="right:.75rem;top:50%;transform:translateY(-50%);z-index:5;line-height:1;"
+                            onclick="togglePassword('password','eye-password')" tabindex="-1">
+                            <i class="bi bi-eye fs-5" id="eye-password"></i>
+                        </button>
                         @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="form-text text-muted mb-1">Minimal 8 karakter.</div>
+                    <div class="mb-3">
+                        <div class="d-flex gap-1 mb-1">
+                            <div id="str-seg1" style="height:4px;flex:1;background:#dee2e6;border-radius:2px;"></div>
+                            <div id="str-seg2" style="height:4px;flex:1;background:#dee2e6;border-radius:2px;"></div>
+                            <div id="str-seg3" style="height:4px;flex:1;background:#dee2e6;border-radius:2px;"></div>
+                            <div id="str-seg4" style="height:4px;flex:1;background:#dee2e6;border-radius:2px;"></div>
+                        </div>
+                        <small id="str-label" class="text-muted"></small>
+                    </div>
 
-                    <div class="form-floating mb-4">
+                    <div class="form-floating mb-4 position-relative">
                         <input type="password" class="form-control" id="password_confirmation"
-                            name="password_confirmation" placeholder="Konfirmasi Password" required minlength="8">
+                            name="password_confirmation" placeholder="Konfirmasi Password" required minlength="8"
+                            style="padding-right: 3rem;">
                         <label for="password_confirmation">
                             <i class="bi bi-lock-fill me-2"></i>Konfirmasi Password
                         </label>
+                        <button type="button" class="btn btn-link text-muted p-0 position-absolute"
+                            style="right:.75rem;top:50%;transform:translateY(-50%);z-index:5;line-height:1;"
+                            onclick="togglePassword('password_confirmation','eye-confirm')" tabindex="-1">
+                            <i class="bi bi-eye fs-5" id="eye-confirm"></i>
+                        </button>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100" id="submitBtn">
@@ -108,6 +133,81 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // NPSN: digits only + live counter
+        const npsnInput = document.getElementById('npsn');
+        document.getElementById('npsn-count').textContent = npsnInput.value.length;
+        npsnInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 8);
+            document.getElementById('npsn-count').textContent = this.value.length;
+        });
+
+        // Password show/hide toggle
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash fs-5';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye fs-5';
+            }
+        }
+
+        // Password strength meter
+        document.getElementById('password').addEventListener('input', function() {
+            const val = this.value;
+            const segs = [
+                document.getElementById('str-seg1'),
+                document.getElementById('str-seg2'),
+                document.getElementById('str-seg3'),
+                document.getElementById('str-seg4'),
+            ];
+            const label = document.getElementById('str-label');
+            segs.forEach(s => s.style.background = '#dee2e6');
+            if (!val) {
+                label.textContent = '';
+                label.className = 'text-muted';
+                return;
+            }
+            if (val.length < 8) {
+                segs[0].style.background = '#dc3545';
+                label.textContent = 'Terlalu pendek';
+                label.className = 'small text-danger';
+                return;
+            }
+            let score = 1;
+            if (val.length >= 12) score++;
+            if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+            if (/[0-9]/.test(val) && /[^A-Za-z0-9]/.test(val)) score++;
+            const cfg = [{
+                    color: '#dc3545',
+                    cls: 'text-danger',
+                    text: 'Lemah'
+                },
+                {
+                    color: '#fd7e14',
+                    cls: 'text-warning',
+                    text: 'Cukup'
+                },
+                {
+                    color: '#ffc107',
+                    cls: 'text-warning',
+                    text: 'Baik'
+                },
+                {
+                    color: '#198754',
+                    cls: 'text-success',
+                    text: 'Kuat'
+                },
+            ];
+            const level = cfg[score - 1];
+            for (let i = 0; i < score; i++) segs[i].style.background = level.color;
+            label.textContent = level.text;
+            label.className = 'small ' + level.cls;
+        });
+
+        // Spinner on submit
         document.getElementById('registerForm').addEventListener('submit', function() {
             document.getElementById('btnSpinner').classList.remove('d-none');
             document.getElementById('submitBtn').disabled = true;

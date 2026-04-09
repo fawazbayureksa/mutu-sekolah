@@ -99,14 +99,15 @@ class SchoolLoginController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'npsn'        => ['required', 'string', 'max:20', 'unique:users,npsn'],
+            'npsn'        => ['required', 'regex:/^\d{8}$/', 'unique:users,npsn'],
             'school_name' => ['required', 'string', 'max:255'],
             'password'    => ['required', 'string', 'min:8', 'confirmed'],
         ], [
             'npsn.unique' => 'NPSN ini sudah terdaftar. Silakan masuk menggunakan password Anda.',
+            'npsn.regex'  => 'NPSN harus terdiri dari 8 digit angka.',
         ]);
 
-        DB::transaction(function () use ($request) {
+        $user = DB::transaction(function () use ($request) {
             $npsn       = $request->input('npsn');
             $schoolName = $request->input('school_name');
 
@@ -144,10 +145,14 @@ class SchoolLoginController extends Controller
                     'address'     => '',
                 ]);
             }
+
+            return $user;
         });
 
-        return redirect()->route('school.login')
-            ->with('success', 'Akun berhasil didaftarkan. Silakan masuk dengan NPSN dan password Anda.');
+        Auth::login($user);
+
+        return redirect()->route('school.dashboard')
+            ->with('success', 'Selamat datang! Akun Anda berhasil didaftarkan.');
     }
 
     public function logout(Request $request)

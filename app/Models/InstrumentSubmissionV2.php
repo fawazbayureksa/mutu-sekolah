@@ -36,6 +36,7 @@ class InstrumentSubmissionV2 extends Model
         'expertise_program',
         'expertise_concentration',
         'curriculum',
+        'approval_status',
         'respondent_name',
         'respondent_position',
         'form_version',

@@ -185,7 +185,7 @@
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="approval_status"
                                                 id="appr{{ Str::slug($status) }}" value="{{ $status }}"
-                                                {{ old('approval_status', $schoolDefaults->approval_status ?? '') == $status ? 'checked' : '' }}>
+                                                {{ old('approval_status', '') == $status ? 'checked' : '' }}>
                                             <label class="form-check-label"
                                                 for="appr{{ Str::slug($status) }}">{{ $status }}</label>
                                         </div>
