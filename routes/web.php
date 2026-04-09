@@ -75,6 +75,8 @@ Route::prefix('school')->name('school.')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('/login', [SchoolLoginController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [SchoolLoginController::class, 'login'])->middleware('throttle:10,1');
+        Route::get('/register', [SchoolLoginController::class, 'showRegisterForm'])->name('register');
+        Route::post('/register', [SchoolLoginController::class, 'register'])->middleware('throttle:5,1');
     });
 
     // Authenticated school routes

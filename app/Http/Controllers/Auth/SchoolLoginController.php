@@ -91,6 +91,56 @@ class SchoolLoginController extends Controller
         return redirect()->route('school.password.change');
     }
 
+    public function showRegisterForm()
+    {
+        return view('school.auth.register');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'npsn'        => ['required', 'string', 'max:20', 'unique:users,npsn'],
+            'school_name' => ['required', 'string', 'max:255'],
+            'password'    => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'npsn.unique' => 'NPSN ini sudah terdaftar. Silakan masuk menggunakan password Anda.',
+        ]);
+
+        DB::transaction(function () use ($request) {
+            $npsn       = $request->input('npsn');
+            $schoolName = $request->input('school_name');
+
+            $user = User::create([
+                'name'                 => $schoolName,
+                'npsn'                 => $npsn,
+                'password'             => Hash::make($request->input('password')),
+                'role'                 => 'school',
+                'is_active'            => true,
+                'must_change_password' => false,
+                'last_login_at'        => null,
+            ]);
+
+            // Link to an existing school record or create a new one
+            $school = School::where('npsn', $npsn)->first();
+
+            if ($school) {
+                if (! $school->user_id) {
+                    $school->update(['user_id' => $user->id]);
+                }
+            } else {
+                School::create([
+                    'user_id'     => $user->id,
+                    'school_name' => $schoolName,
+                    'npsn'        => $npsn,
+                    'address'     => '',
+                ]);
+            }
+        });
+
+        return redirect()->route('school.login')
+            ->with('success', 'Akun berhasil didaftarkan. Silakan masuk dengan NPSN dan password Anda.');
+    }
+
     public function logout(Request $request)
     {
         Auth::logout();
