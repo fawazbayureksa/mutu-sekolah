@@ -126,6 +126,15 @@ class SchoolLoginController extends Controller
             if ($school) {
                 if (! $school->user_id) {
                     $school->update(['user_id' => $user->id]);
+                } else {
+                    // School already linked to a different user (edge case: admin-seeded data)
+                    // — create a dedicated record for this new user.
+                    School::create([
+                        'user_id'     => $user->id,
+                        'school_name' => $schoolName,
+                        'npsn'        => $npsn,
+                        'address'     => '',
+                    ]);
                 }
             } else {
                 School::create([
