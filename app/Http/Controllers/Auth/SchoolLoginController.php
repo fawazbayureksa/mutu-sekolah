@@ -55,40 +55,10 @@ class SchoolLoginController extends Controller
             ]);
         }
 
-        // --- New NPSN: auto-register, link or create school, force password change ---
-        DB::transaction(function () use ($npsn) {
-            $school = School::where('npsn', $npsn)->first();
-
-            $user = User::create([
-                'name'                 => $school ? $school->school_name : 'Sekolah ' . $npsn,
-                'npsn'                 => $npsn,
-                'password'             => Hash::make(Str::random(32)),
-                'role'                 => 'school',
-                'is_active'            => true,
-                'must_change_password' => true,
-                'last_login_at'        => now(),
-            ]);
-
-            if ($school) {
-                if (! $school->user_id) {
-                    $school->update(['user_id' => $user->id]);
-                }
-            } else {
-                // No pre-existing school record — create a placeholder so the dashboard works
-                School::create([
-                    'user_id'     => $user->id,
-                    'school_name' => 'Sekolah ' . $npsn,
-                    'npsn'        => $npsn,
-                    'address'     => '',
-                ]);
-            }
-
-            Auth::login($user);
-        });
-
-        $request->session()->regenerate();
-
-        return redirect()->route('school.password.change');
+        // --- NPSN not found: direct to register ---
+        throw ValidationException::withMessages([
+            'npsn' => 'NPSN tidak ditemukan. Silakan daftar akun terlebih dahulu.',
+        ]);
     }
 
     public function showRegisterForm()

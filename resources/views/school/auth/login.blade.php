@@ -78,9 +78,6 @@
                         @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <div class="form-text text-muted mt-1 small">
-                            Jika pertama kali masuk, biarkan kosong — akun akan dibuat otomatis.
-                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100 mt-3" id="submitBtn">
@@ -90,9 +87,9 @@
                 </form>
 
                 <div class="text-center mt-4">
-                    <small class="text-muted">
+                    {{-- <small class="text-muted">
                         Administrator? <a href="{{ route('login') }}">Masuk di sini</a>
-                    </small>
+                    </small> --}}
                     <div class="mt-2">
                         <small class="text-muted">
                             Belum punya akun?
