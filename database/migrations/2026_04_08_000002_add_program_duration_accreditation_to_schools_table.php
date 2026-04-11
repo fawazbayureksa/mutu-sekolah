@@ -10,14 +10,14 @@ return new class extends Migration
     {
         Schema::table('schools', function (Blueprint $table) {
             // $table->string('program_duration', 20)->nullable()->comment('3 Tahun / 4 Tahun')->after('school_category');
-            $table->string('school_accreditation', 30)->nullable()->comment('A / B / C / Belum Terakreditasi')->after('program_duration');
+            // $table->string('school_accreditation', 30)->nullable()->comment('A / B / C / Belum Terakreditasi')->after('program_duration');
         });
     }
 
     public function down(): void
     {
         Schema::table('schools', function (Blueprint $table) {
-            $table->dropColumn(['school_accreditation']);
+            $table->dropColumn(['program_duration', 'school_accreditation']);
         });
     }
 };
