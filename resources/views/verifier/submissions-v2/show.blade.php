@@ -25,6 +25,11 @@
                     </button>
                 @endif
                 {{-- <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#tokenModal">
+                <a href="{{ route('verifier.submissions-v2.export-single', $submission) }}" class="btn btn-outline-success">
+                    <i class="bi bi-file-earmark-spreadsheet me-1"></i> Download XLSX
+                </a>
+                {{-- 
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#tokenModal">
                     <i class="bi bi-link-45deg me-1"></i> Generate Link Update
                 </button> --}}
                 <a href="{{ route('verifier.submissions-v2.index') }}" class="btn btn-secondary">

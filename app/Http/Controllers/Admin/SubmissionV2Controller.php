@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\SubmissionV2BulkExport;
+use App\Exports\SubmissionV2Export;
 use App\Http\Controllers\Controller;
 use App\Models\InstrumentSubmissionV2;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SubmissionV2Controller extends Controller
 {
@@ -126,9 +129,21 @@ class SubmissionV2Controller extends Controller
             ->with('success', 'Submission berhasil dihapus');
     }
 
+    public function exportSingle(InstrumentSubmissionV2 $submission)
+    {
+        $submission->load(['school', 'province', 'regency', 'verifier', 'validator']);
+
+        $npsn     = $submission->npsn ?? $submission->school?->npsn ?? 'unknown';
+        $date     = now()->format('Ymd');
+        $fileName = "pengajuan-{$npsn}-{$date}.xlsx";
+
+        return Excel::download(new SubmissionV2Export($submission), $fileName);
+    }
+
     public function export(Request $request)
     {
-        // TODO: Implement export functionality
-        return back()->with('info', 'Fitur export akan segera tersedia');
+        $fileName = 'semua-pengajuan-' . now()->format('Ymd') . '.xlsx';
+
+        return Excel::download(new SubmissionV2BulkExport(), $fileName);
     }
 }

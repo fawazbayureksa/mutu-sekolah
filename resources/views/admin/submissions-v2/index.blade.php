@@ -195,6 +195,10 @@
                                                 class="btn btn-primary btn-sm" title="Lihat Detail">
                                                 <i class="bi bi-eye"></i>
                                             </a>
+                                            <a href="{{ route('admin.submissions-v2.export-single', $submission) }}"
+                                                class="btn btn-outline-success btn-sm" title="Download XLSX">
+                                                <i class="bi bi-file-earmark-spreadsheet"></i>
+                                            </a>
                                             @if ($submission->status === 'submitted')
                                                 <button type="button" class="btn btn-success btn-sm"
                                                     data-bs-toggle="modal"

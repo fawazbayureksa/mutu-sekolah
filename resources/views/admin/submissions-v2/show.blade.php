@@ -28,6 +28,9 @@
                         <i class="bi bi-patch-check me-1"></i> Validasi
                     </button>
                 @endif
+                <a href="{{ route('admin.submissions-v2.export-single', $submission) }}" class="btn btn-outline-success">
+                    <i class="bi bi-file-earmark-spreadsheet me-1"></i> Download XLSX
+                </a>
                 {{-- <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#tokenModal">
                     <i class="bi bi-link-45deg me-1"></i> Generate Link Update
                 </button> --}}
@@ -361,8 +364,8 @@
             {{-- School Info --}}
             <div class="accordion-item border-0 mb-2 rounded shadow-sm overflow-hidden">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed fw-semibold bg-white" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseSchool">
+                    <button class="accordion-button collapsed fw-semibold bg-white" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#collapseSchool">
                         <i class="bi bi-building me-2 text-primary"></i>Informasi Sekolah
                     </button>
                 </h2>
