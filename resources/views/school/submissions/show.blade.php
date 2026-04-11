@@ -27,6 +27,10 @@
                         </button>
                     </form>
                 @endif
+                <a href="{{ route('school.submissions.export-single', $submission) }}"
+                    class="btn btn-outline-success btn-sm">
+                    <i class="bi bi-file-earmark-spreadsheet me-1"></i>Download XLSX
+                </a>
                 <a href="{{ route('school.submissions.index') }}" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-arrow-left me-1"></i>Kembali
                 </a>

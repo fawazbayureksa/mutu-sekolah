@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\School;
 
+use App\Exports\SubmissionV2Export;
 use App\Http\Controllers\Controller;
 use App\Models\InstrumentSubmissionV2;
 use App\Models\InstrumentSubmissionV2Detail;
@@ -12,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SchoolSubmissionController extends Controller
 {
@@ -45,6 +47,19 @@ class SchoolSubmissionController extends Controller
         if ($submission->school_id !== $this->getSchool()->id) {
             abort(403, 'Anda tidak memiliki akses ke data ini.');
         }
+    }
+
+    public function exportSingle(InstrumentSubmissionV2 $submission)
+    {
+        $this->authorizeSubmission($submission);
+
+        $submission->load(['school', 'province', 'regency', 'verifier', 'validator']);
+
+        $npsn     = $submission->npsn ?? $submission->school?->npsn ?? 'unknown';
+        $date     = now()->format('Ymd');
+        $fileName = "pengajuan-{$npsn}-{$date}.xlsx";
+
+        return Excel::download(new SubmissionV2Export($submission), $fileName);
     }
 
     public function index()

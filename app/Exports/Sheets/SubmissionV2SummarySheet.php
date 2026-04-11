@@ -42,12 +42,12 @@ class SubmissionV2SummarySheet implements FromArray, WithTitle, WithStyles, With
             ['Alamat',                $s->address ?? $school?->address ?? '-'],
             ['Provinsi',              $s->province?->name ?? '-'],
             ['Kabupaten/Kota',        $s->regency?->name ?? '-'],
-            ['Kurikulum',             $school?->curriculum ?? '-'],
-            ['Bidang Keahlian',       $school?->expertise ?? '-'],
-            ['Program Keahlian',      $school?->expertise_program ?? '-'],
-            ['Konsentrasi Keahlian',  is_array($school?->expertise_concentration)
-                ? implode(', ', $school->expertise_concentration)
-                : ($school?->expertise_concentration ?? '-')],
+            ['Bidang Keahlian',       $s->expertise ?? $school?->expertise ?? '-'],
+            ['Kurikulum',             $s->curriculum ?? $school?->curriculum ?? '-'],
+            ['Program Keahlian',      $s->expertise_program ?? $school?->expertise_program ?? '-'],
+            ['Konsentrasi Keahlian',  is_array($s->expertise_concentration)
+                ? implode(', ', $s->expertise_concentration)
+                : ($s->expertise_concentration ?? $school?->expertise_concentration ?? '-')],
             [''],
             ['INFORMASI RESPONDEN', ''],
             ['Nama Responden',        $s->respondent_name ?? '-'],
