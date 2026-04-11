@@ -234,51 +234,7 @@
                     </div>
                 </div>
 
-                {{-- Expertise Card --}}
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white border-bottom py-3 d-flex align-items-center gap-2">
-                        <span class="rounded-circle d-inline-flex align-items-center justify-content-center"
-                            style="width:32px;height:32px;background:#fff3e0;">
-                            <i class="bi bi-mortarboard text-warning" style="font-size:.9rem;"></i>
-                        </span>
-                        <span class="fw-semibold">Bidang Keahlian</span>
-                    </div>
-                    <div class="card-body">
-                        @if (!$school->expertise && !$school->expertise_program && !$school->expertise_concentration)
-                            <p class="text-muted small mb-0">Belum ada data bidang keahlian.</p>
-                        @else
-                            <dl class="row mb-0" style="row-gap:.75rem;">
-                                @if ($school->expertise)
-                                    <dt class="col-5 text-muted fw-normal small">Bidang</dt>
-                                    <dd class="col-7 mb-0">
-                                        @foreach ((array) $school->expertise as $item)
-                                            <span
-                                                class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle me-1 mb-1">{{ $item }}</span>
-                                        @endforeach
-                                    </dd>
-                                @endif
-                                @if ($school->expertise_program)
-                                    <dt class="col-5 text-muted fw-normal small">Program</dt>
-                                    <dd class="col-7 mb-0">
-                                        @foreach ((array) $school->expertise_program as $item)
-                                            <span
-                                                class="badge bg-info bg-opacity-10 text-info border border-info-subtle me-1 mb-1">{{ $item }}</span>
-                                        @endforeach
-                                    </dd>
-                                @endif
-                                @if ($school->expertise_concentration)
-                                    <dt class="col-5 text-muted fw-normal small">Konsentrasi</dt>
-                                    <dd class="col-7 mb-0">
-                                        @foreach ((array) $school->expertise_concentration as $item)
-                                            <span
-                                                class="badge bg-success bg-opacity-10 text-success border border-success-subtle me-1 mb-1">{{ $item }}</span>
-                                        @endforeach
-                                    </dd>
-                                @endif
-                            </dl>
-                        @endif
-                    </div>
-                </div>
+
             </div>
         </div>
 
@@ -313,7 +269,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th class="ps-3">Responden</th>
-                                    <th>Jabatan</th>
+                                    <th>Konsentrasi Keahlian</th>
                                     <th>Tanggal</th>
                                     <th>Kelengkapan</th>
                                     <th>Status</th>
@@ -323,8 +279,24 @@
                             <tbody>
                                 @foreach ($recentSubmissions as $sub)
                                     <tr>
-                                        <td class="ps-3 fw-semibold">{{ $sub->respondent_name }}</td>
-                                        <td class="text-muted small">{{ $sub->respondent_position }}</td>
+                                        <td class="ps-3">
+                                            <div class="fw-semibold">{{ $sub->respondent_name }}</div>
+                                            <div class="text-muted small">{{ $sub->respondent_position }}</div>
+                                        </td>
+                                        <td>
+                                            @if ($sub->expertise_concentration)
+                                                <div class="fw-semibold small">{{ $sub->expertise_concentration }}</div>
+                                            @endif
+                                            @if ($sub->expertise_program)
+                                                <div class="text-muted small">{{ $sub->expertise_program }}</div>
+                                            @endif
+                                            @if ($sub->expertise)
+                                                <div class="text-muted small">{{ $sub->expertise }}</div>
+                                            @endif
+                                            @if (!$sub->expertise && !$sub->expertise_program && !$sub->expertise_concentration)
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
                                         <td class="text-muted small">
                                             {{ $sub->filled_at ? $sub->filled_at->format('d M Y') : '-' }}
                                         </td>

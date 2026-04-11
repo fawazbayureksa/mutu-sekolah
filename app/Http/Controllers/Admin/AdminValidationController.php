@@ -14,9 +14,9 @@ class AdminValidationController extends Controller
         $status = $request->get('status', 'verified');
 
         $submissions = Submission::with(['school', 'instrument', 'verifier'])
-            ->when($status === 'verified', fn ($q) => $q->pendingValidation())
-            ->when($status === 'validated', fn ($q) => $q->where('status', Submission::STATUS_VALIDATED))
-            ->when($status === 'released', fn ($q) => $q->released())
+            ->when($status === 'verified', fn($q) => $q->pendingValidation())
+            ->when($status === 'validated', fn($q) => $q->where('status', Submission::STATUS_VALIDATED))
+            ->when($status === 'released', fn($q) => $q->released())
             ->latest('filled_at')
             ->paginate(15);
 
@@ -59,7 +59,7 @@ class AdminValidationController extends Controller
             'validation_notes' => $request->notes,
         ]);
 
-        return back()->with('success', 'Submission ditolak');
+        return back()->with('success', 'Pengajuan Ditolak');
     }
 
     public function release(Submission $submission)
@@ -88,6 +88,6 @@ class AdminValidationController extends Controller
                 'released_at' => now(),
             ]);
 
-        return back()->with('success', $count.' data berhasil dirilis');
+        return back()->with('success', $count . ' data berhasil dirilis');
     }
 }

@@ -82,7 +82,7 @@ class SubmissionV2Controller extends Controller
         $routePrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
 
         return redirect()->route("{$routePrefix}.submissions-v2.index")
-            ->with('success', 'Submission ditolak');
+            ->with('success', 'Pengajuan Ditolak');
     }
 
     public function validateSubmission(Request $request, InstrumentSubmissionV2 $submission): RedirectResponse

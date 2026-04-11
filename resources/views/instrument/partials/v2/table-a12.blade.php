@@ -5,6 +5,36 @@
     }
     $rows = $existingData['rows'] ?? [];
     $rowCount = max(3, count($rows));
+
+    $samplePlaceholders = [
+        0 => [
+            'label' => 'Ahli Pengolahan Rumput Laut',
+            'kkni_level' => 'Level II/III',
+            'competency_units' => 10,
+            'remarks' =>
+                'Skema yang diakui BNSP dan LSP-KP. Mencakup kompetensi pengolahan hasil perikanan, termasuk rumput laut menjadi produk seperti dodol, selai, atau bakso.',
+        ],
+        1 => [
+            'label' => 'Ahli Budidaya Rumput Laut',
+            'kkni_level' => 'Level II/III',
+            'competency_units' => 8,
+            'remarks' =>
+                'Mengacu pada Permen KKP No. 1 Tahun 2024 tentang Penerapan KKNI Bidang Budidaya Rumput Laut. Sertifikasi ini menjamin kemampuan pembudidaya mulai dari pembibitan hingga pemanenan sesuai standar.',
+        ],
+        2 => [
+            'label' => 'IndoGAP – Cara Budidaya Ikan yang Baik (CBIB) Rumput Laut',
+            'kkni_level' => 'Level III',
+            'competency_units' => 6,
+            'remarks' =>
+                'Skema ini merupakan bagian dari Indonesian Good Aquaculture Practices (IndoGAP). Mengacu pada SNI 8228.2 tentang Cara Budidaya Ikan yang Baik untuk Rumput Laut.',
+        ],
+    ];
+    $defaultPlaceholder = [
+        'label' => 'Nama skema sertifikasi',
+        'kkni_level' => 'Level II/III',
+        'competency_units' => 0,
+        'remarks' => 'Keterangan tambahan',
+    ];
 @endphp
 
 {{-- Table A.1.2: Analisis Skema Sertifikasi dan Kesesuaian KKNI --}}
@@ -36,17 +66,19 @@
                     @for ($i = 0; $i < $rowCount; $i++)
                         @php
                             $rowData = $rows[$i] ?? [];
+                            $ph = $samplePlaceholders[$i] ?? $defaultPlaceholder;
                         @endphp
                         <tr data-row="{{ $i }}">
                             <td class="text-center row-number">{{ $i + 1 }}</td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input" data-key="label"
-                                    data-row="{{ $i }}" placeholder="Nama skema sertifikasi"
+                                    data-row="{{ $i }}" placeholder="{{ $ph['label'] }}"
                                     value="{{ $rowData['label'] ?? '' }}">
                             </td>
                             <td>
-                                <select class="form-select form-select-sm table-input" data-key="scheme_type"
-                                    data-row="{{ $i }}">
+                                <select class="form-select form-select-sm table-input scheme-type-select"
+                                    data-key="scheme_type" data-row="{{ $i }}"
+                                    onchange="toggleSchemeTypeInput(this)">
                                     <option value="">Pilih</option>
                                     <option value="Okupasi Nasional"
                                         {{ ($rowData['scheme_type'] ?? '') === 'Okupasi Nasional' ? 'selected' : '' }}>
@@ -57,17 +89,27 @@
                                     <option value="{{ config('constant.scheme_types.kkni') }}"
                                         {{ ($rowData['scheme_type'] ?? '') === config('constant.scheme_types.kkni') ? 'selected' : '' }}>
                                         {{ config('constant.scheme_types.kkni') }}</option>
+                                    <option value="Lainnya"
+                                        {{ ($rowData['scheme_type'] ?? '') === 'Lainnya' ? 'selected' : '' }}>Lainnya
+                                    </option>
                                 </select>
+                                <input type="text"
+                                    class="form-control form-control-sm table-input scheme-type-other mt-1"
+                                    data-key="scheme_type_other" data-row="{{ $i }}"
+                                    placeholder="Sebutkan jenis skema lainnya"
+                                    style="display: {{ ($rowData['scheme_type'] ?? '') === 'Lainnya' ? 'block' : 'none' }};"
+                                    value="{{ $rowData['scheme_type_other'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="kkni_level" data-row="{{ $i }}" placeholder="Level II/III"
-                                    value="{{ $rowData['kkni_level'] ?? '' }}">
+                                    data-key="kkni_level" data-row="{{ $i }}"
+                                    placeholder="{{ $ph['kkni_level'] }}" value="{{ $rowData['kkni_level'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="number" class="form-control form-control-sm table-input"
-                                    data-key="competency_units" data-row="{{ $i }}" placeholder="0"
-                                    min="0" value="{{ $rowData['competency_units'] ?? '' }}">
+                                    data-key="competency_units" data-row="{{ $i }}"
+                                    placeholder="{{ $ph['competency_units'] }}" min="0"
+                                    value="{{ $rowData['competency_units'] ?? '' }}">
                             </td>
                             <td>
                                 <select class="form-select form-select-sm table-input" data-key="compliance"
@@ -86,8 +128,8 @@
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
-                                    data-key="remarks" data-row="{{ $i }}" placeholder="Keterangan"
-                                    value="{{ $rowData['remarks'] ?? '' }}">
+                                    data-key="remarks" data-row="{{ $i }}"
+                                    placeholder="{{ $ph['remarks'] }}" value="{{ $rowData['remarks'] ?? '' }}">
                             </td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-remove-row" title="Hapus baris">
@@ -108,3 +150,24 @@
         </div>
     </div>
 </div>
+
+<script>
+    function toggleSchemeTypeInput(selectElement) {
+        const row = selectElement.closest('tr');
+        const otherInput = row.querySelector('.scheme-type-other');
+        if (selectElement.value === 'Lainnya') {
+            otherInput.style.display = 'block';
+        } else {
+            otherInput.style.display = 'none';
+            otherInput.value = '';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('#table-a12 .scheme-type-select').forEach(function(select) {
+            if (select.value === 'Lainnya') {
+                toggleSchemeTypeInput(select);
+            }
+        });
+    });
+</script>

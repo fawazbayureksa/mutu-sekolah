@@ -236,7 +236,7 @@ class VerifierSubmissionController extends Controller
         ]);
         
         return redirect()->route('verifier.submissions.index')
-            ->with('success', 'Submission ditolak');
+            ->with('success', 'Pengajuan Ditolak');
     }
 }
 ```

@@ -94,6 +94,7 @@ class SubmissionV2UpdateController extends Controller
             'program_duration' => 'nullable|string|max:50',
             'school_accreditation' => 'nullable|string|max:50',
             'curriculum'             => 'nullable|string|max:50',
+            'approval_status'        => ['nullable', \Illuminate\Validation\Rule::in(config('constant.approval_status'))],
             'expertise'              => 'nullable|string|max:255',
             'expertise_program'      => 'nullable|string|max:255',
             'expertise_concentration' => 'nullable|string|max:255',
@@ -133,6 +134,9 @@ class SubmissionV2UpdateController extends Controller
             }
             if ($request->filled('curriculum')) {
                 $data['curriculum'] = $request->curriculum;
+            }
+            if ($request->has('approval_status')) {
+                $data['approval_status'] = $request->approval_status ?: null;
             }
             if ($request->filled('expertise')) {
                 $data['expertise'] = $request->expertise;
@@ -178,14 +182,33 @@ class SubmissionV2UpdateController extends Controller
 
             // Only update if there is data to update
             if (! empty($data)) {
+                // If the submission was rejected, revert to submitted on update
+                if ($submission->status === 'rejected') {
+                    $data['status'] = 'submitted';
+                }
+
                 $submission->update($data);
-                
+
                 // Also update the school record with relevant fields
                 if ($submission->school) {
                     $schoolData = [];
-                    foreach (['school_name', 'npsn', 'address', 'province_code', 'regency_code',
-                              'school_status', 'school_category', 'program_duration', 'school_accreditation',
-                              'curriculum', 'expertise', 'expertise_program', 'expertise_concentration'] as $field) {
+                    foreach (
+                        [
+                            'school_name',
+                            'npsn',
+                            'address',
+                            'province_code',
+                            'regency_code',
+                            'school_status',
+                            'school_category',
+                            'program_duration',
+                            'school_accreditation',
+                            'curriculum',
+                            'expertise',
+                            'expertise_program',
+                            'expertise_concentration'
+                        ] as $field
+                    ) {
                         if (isset($data[$field])) {
                             $schoolData[$field] = $data[$field];
                         }

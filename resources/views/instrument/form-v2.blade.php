@@ -58,15 +58,16 @@
                                 <label class="form-label">Nama Sekolah <span class="text-danger">*</span></label>
                                 <input type="text" name="school_name"
                                     class="form-control @error('school_name') is-invalid @enderror" required
-                                    value="{{ old('school_name') }}" placeholder="Nama sekolah">
+                                    value="{{ old('school_name', $schoolDefaults->school_name ?? '') }}"
+                                    placeholder="Nama sekolah">
                                 @error('school_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">NPSN</label>
-                                <input type="text" name="npsn" class="form-control" value="{{ old('npsn') }}"
-                                    placeholder="NPSN">
+                                <input type="text" name="npsn" class="form-control"
+                                    value="{{ old('npsn', $schoolDefaults->npsn ?? '') }}" placeholder="NPSN">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Provinsi <span class="text-danger">*</span></label>
@@ -76,7 +77,7 @@
                                     <option value="">-- Pilih Provinsi --</option>
                                     @foreach ($provinces as $province)
                                         <option value="{{ $province->code }}"
-                                            {{ old('province_code') == $province->code ? 'selected' : '' }}>
+                                            {{ old('province_code', $schoolDefaults->province_code ?? '') == $province->code ? 'selected' : '' }}>
                                             {{ $province->name }}
                                         </option>
                                     @endforeach
@@ -98,7 +99,7 @@
                             <div class="col-md-12">
                                 <label class="form-label">Alamat <span class="text-danger">*</span></label>
                                 <textarea name="address" rows="3" class="form-control @error('address') is-invalid @enderror" required
-                                    placeholder="Masukkan alamat lengkap sekolah">{{ old('address') }}</textarea>
+                                    placeholder="Masukkan alamat lengkap sekolah">{{ old('address', $schoolDefaults->address ?? '') }}</textarea>
                                 @error('address')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -109,13 +110,13 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="school_status"
                                             id="statusNegeri" value="Negeri"
-                                            {{ old('school_status') == 'Negeri' ? 'checked' : '' }}>
+                                            {{ old('school_status', $schoolDefaults->school_status ?? '') == 'Negeri' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="statusNegeri">Negeri</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="school_status"
                                             id="statusSwasta" value="Swasta"
-                                            {{ old('school_status') == 'Swasta' ? 'checked' : '' }}>
+                                            {{ old('school_status', $schoolDefaults->school_status ?? '') == 'Swasta' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="statusSwasta">Swasta</label>
                                     </div>
                                 </div>
@@ -129,13 +130,13 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="program_duration"
                                             id="duration3" value="3 Tahun"
-                                            {{ old('program_duration') == '3 Tahun' ? 'checked' : '' }}>
+                                            {{ old('program_duration', $schoolDefaults->program_duration ?? '') == '3 Tahun' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="duration3">3 Tahun</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="program_duration"
                                             id="duration4" value="4 Tahun"
-                                            {{ old('program_duration') == '4 Tahun' ? 'checked' : '' }}>
+                                            {{ old('program_duration', $schoolDefaults->program_duration ?? '') == '4 Tahun' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="duration4">4 Tahun</label>
                                     </div>
                                 </div>
@@ -150,7 +151,7 @@
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="school_category"
                                                 id="cat{{ Str::slug($value) }}" value="{{ $value }}"
-                                                {{ old('school_category') == $value ? 'checked' : '' }}>
+                                                {{ old('school_category', $schoolDefaults->school_category ?? '') == $value ? 'checked' : '' }}>
                                             <label class="form-check-label"
                                                 for="cat{{ Str::slug($value) }}">{{ $label }}</label>
                                         </div>
@@ -167,7 +168,7 @@
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="curriculum"
                                                 id="cur{{ Str::slug($cur) }}" value="{{ $cur }}"
-                                                {{ old('curriculum') == $cur ? 'checked' : '' }}>
+                                                {{ old('curriculum', $schoolDefaults->curriculum ?? '') == $cur ? 'checked' : '' }}>
                                             <label class="form-check-label"
                                                 for="cur{{ Str::slug($cur) }}">{{ $cur }}</label>
                                         </div>
@@ -184,7 +185,7 @@
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="approval_status"
                                                 id="appr{{ Str::slug($status) }}" value="{{ $status }}"
-                                                {{ old('approval_status') == $status ? 'checked' : '' }}>
+                                                {{ old('approval_status', '') == $status ? 'checked' : '' }}>
                                             <label class="form-check-label"
                                                 for="appr{{ Str::slug($status) }}">{{ $status }}</label>
                                         </div>
@@ -201,7 +202,7 @@
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="school_accreditation"
                                                 id="acc{{ Str::slug($acc) }}" value="{{ $acc }}"
-                                                {{ old('school_accreditation') == $acc ? 'checked' : '' }}>
+                                                {{ old('school_accreditation', $schoolDefaults->school_accreditation ?? '') == $acc ? 'checked' : '' }}>
                                             <label class="form-check-label"
                                                 for="acc{{ Str::slug($acc) }}">{{ $acc }}</label>
                                         </div>
@@ -634,7 +635,7 @@
                     const forAttr = label.getAttribute('for');
                     if (forAttr) {
                         label.setAttribute('for', forAttr.replace(new RegExp(`_${oldIndex}$`),
-                        `_${index}`));
+                            `_${index}`));
                     }
                 });
 
@@ -937,9 +938,9 @@
                 radio.addEventListener('change', repopulateExpertiseSelect);
             });
 
-            // Restore province and regency if old values exist
-            const oldProvinceCode = "{{ old('province_code') }}";
-            const oldRegencyCode = "{{ old('regency_code') }}";
+            // Restore province and regency if old values exist (fall back to school profile defaults)
+            const oldProvinceCode = "{{ old('province_code', $schoolDefaults->province_code ?? '') }}";
+            const oldRegencyCode = "{{ old('regency_code', $schoolDefaults->regency_code ?? '') }}";
 
             if (oldProvinceCode) {
                 // Load regencies for the old province

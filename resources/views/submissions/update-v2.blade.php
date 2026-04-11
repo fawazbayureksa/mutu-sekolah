@@ -176,7 +176,7 @@
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="curriculum"
                                                 id="cur{{ Str::slug($cur) }}" value="{{ $cur }}"
-                                                {{ old('curriculum', $submission->school->curriculum) == $cur ? 'checked' : '' }}>
+                                                {{ old('curriculum', $submission->curriculum) == $cur ? 'checked' : '' }}>
                                             <label class="form-check-label"
                                                 for="cur{{ Str::slug($cur) }}">{{ $cur }}</label>
                                         </div>
@@ -210,7 +210,7 @@
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="approval_status"
                                                 id="appr{{ Str::slug($status) }}" value="{{ $status }}"
-                                                {{ old('approval_status', $submission->school->approval_status ?? '') == $status ? 'checked' : '' }}>
+                                                {{ old('approval_status', $submission->approval_status ?? '') == $status ? 'checked' : '' }}>
                                             <label class="form-check-label"
                                                 for="appr{{ Str::slug($status) }}">{{ $status }}</label>
                                         </div>
@@ -228,7 +228,7 @@
                                     <option value="">-- Pilih Bidang Keahlian --</option>
                                     @foreach (array_keys($expertiseData ?? []) as $expertise)
                                         <option value="{{ $expertise }}"
-                                            {{ old('expertise', $submission->school->expertise ?: $submission->expertise) == $expertise ? 'selected' : '' }}>
+                                            {{ old('expertise', $submission->expertise) == $expertise ? 'selected' : '' }}>
                                             {{ $expertise == 'TIK' ? 'TIK (Teknologi Informasi dan Komunikasi)' : $expertise }}
                                         </option>
                                     @endforeach
@@ -695,6 +695,12 @@
                 rowNumCell.textContent = rowIndex + 1;
             }
 
+            // Hide any "other" inputs that depend on select values (e.g. scheme_type_other)
+            newRow.querySelectorAll('.scheme-type-other, .main-factor-other').forEach(function(el) {
+                el.style.display = 'none';
+                el.value = '';
+            });
+
             tbody.appendChild(newRow);
         }
 
@@ -728,7 +734,7 @@
                     const forAttr = label.getAttribute('for');
                     if (forAttr) {
                         label.setAttribute('for', forAttr.replace(new RegExp(`_${oldIndex}$`),
-                        `_${index}`));
+                            `_${index}`));
                     }
                 });
 
@@ -1570,9 +1576,9 @@
             }
             // Restore expertise fields if submission has data
             @php
-                $schoolExpertise = $submission->school->expertise ?: $submission->expertise ?? null;
-                $schoolExpertiseProgram = $submission->school->expertise_program ?: $submission->expertise_program ?? null;
-                $schoolExpertiseConcentration = $submission->school->expertise_concentration ?: $submission->expertise_concentration ?? null;
+                $schoolExpertise = $submission->expertise ?? null;
+                $schoolExpertiseProgram = $submission->expertise_program ?? null;
+                $schoolExpertiseConcentration = $submission->expertise_concentration ?? null;
             @endphp
             @if ($schoolExpertise)
                 // Rebuild expertise dropdown options based on the selected curriculum
