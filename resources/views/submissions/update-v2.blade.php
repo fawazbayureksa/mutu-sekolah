@@ -695,6 +695,12 @@
                 rowNumCell.textContent = rowIndex + 1;
             }
 
+            // Hide any "other" inputs that depend on select values (e.g. scheme_type_other)
+            newRow.querySelectorAll('.scheme-type-other, .main-factor-other').forEach(function(el) {
+                el.style.display = 'none';
+                el.value = '';
+            });
+
             tbody.appendChild(newRow);
         }
 
