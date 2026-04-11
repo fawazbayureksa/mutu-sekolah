@@ -282,7 +282,8 @@ class PublicInstrumentV2Controller extends Controller
 
         foreach ($sectionCodes as $code) {
             if (isset($answers[$code])) {
-                $data = $answers[$code];
+                // Answers are submitted as JSON strings from the form — decode before inspecting
+                $data = is_string($answers[$code]) ? json_decode($answers[$code], true) : $answers[$code];
                 $rowCount = 0;
 
                 if (is_array($data)) {
@@ -328,27 +329,50 @@ class PublicInstrumentV2Controller extends Controller
         $filledSections = 0;
 
         foreach ($sectionCodes as $code) {
-            if (! isset($answers[$code]) || empty($answers[$code])) {
+            if (! isset($answers[$code])) {
                 continue;
             }
 
-            // B.sapras is filled only if it has at least one row in any section
+            // Answers are submitted as JSON strings from the form — decode before inspecting
+            $data = is_string($answers[$code]) ? json_decode($answers[$code], true) : $answers[$code];
+
+            if (empty($data) || ! is_array($data)) {
+                continue;
+            }
+
             if ($code === 'B.sapras') {
-                $hasSaprasRows = false;
-                foreach ($answers[$code]['sections'] ?? [] as $section) {
-                    if (! empty($section['rows'])) {
-                        $hasSaprasRows = true;
+                // B.sapras is filled only if at least one section has a row with actual data
+                foreach ($data['sections'] ?? [] as $section) {
+                    if ($this->hasFilledRows($section['rows'] ?? [])) {
+                        $filledSections++;
                         break;
                     }
                 }
-                if ($hasSaprasRows) {
+            } else {
+                // Other sections are filled only if at least one row has actual non-empty data
+                // (tables always pre-render empty rows, so we can't rely on row count alone)
+                if ($this->hasFilledRows($data['rows'] ?? [])) {
                     $filledSections++;
                 }
-            } else {
-                $filledSections++;
             }
         }
 
         return $totalSections > 0 ? ($filledSections / $totalSections) * 100 : 0;
+    }
+
+    private function hasFilledRows(array $rows): bool
+    {
+        foreach ($rows as $row) {
+            if (! is_array($row)) {
+                continue;
+            }
+            foreach ($row as $value) {
+                if ($value !== null && $value !== '' && $value !== false) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

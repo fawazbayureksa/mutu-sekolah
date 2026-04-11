@@ -10,14 +10,14 @@
                 <p class="text-muted small mb-0">{{ $school->school_name }}</p>
             </div>
             <div class="d-flex gap-2">
-                @if ($submission->isEditable())
-                    <a href="{{ route('school.submissions.edit-full', $submission) }}" class="btn btn-primary btn-sm">
-                        <i class="bi bi-pencil-square me-1"></i>Perbarui Data Instrumen
-                    </a>
-                    <a href="{{ route('school.submissions.edit', $submission) }}" class="btn btn-warning btn-sm">
-                        <i class="bi bi-pencil me-1"></i>Edit Responden
-                    </a>
-                @endif
+                {{-- @if ($submission->isEditable()) --}}
+                <a href="{{ route('school.submissions.edit-full', $submission) }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-pencil-square me-1"></i>Perbarui Data Pengajuan
+                </a>
+                {{-- <a href="{{ route('school.submissions.edit', $submission) }}" class="btn btn-warning btn-sm">
+                    <i class="bi bi-pencil me-1"></i>Edit Responden
+                </a> --}}
+                {{-- @endif --}}
                 @if ($submission->status === 'rejected')
                     <form action="{{ route('school.submissions.resubmit', $submission) }}" method="POST">
                         @csrf
