@@ -169,7 +169,7 @@
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             <a href="{{ route('verifier.submissions-v2.export-single', $submission) }}"
-                                                class="btn btn-outline-success btn-sm" title="Download XLSX">
+                                                class="btn btn-outline-success btn-sm" title="Unduh Hasil">
                                                 <i class="bi bi-file-earmark-spreadsheet"></i>
                                             </a>
                                             @if ($submission->status === 'submitted')

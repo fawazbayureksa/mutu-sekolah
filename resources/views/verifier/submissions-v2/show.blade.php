@@ -26,7 +26,7 @@
                 @endif
                 {{-- <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#tokenModal">
                 <a href="{{ route('verifier.submissions-v2.export-single', $submission) }}" class="btn btn-outline-success">
-                    <i class="bi bi-file-earmark-spreadsheet me-1"></i> Download XLSX
+                    <i class="bi bi-file-earmark-spreadsheet me-1"></i> Unduh Hasil
                 </a>
                 {{-- 
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#tokenModal">
