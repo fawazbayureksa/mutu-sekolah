@@ -55,6 +55,28 @@ class SchoolController extends Controller
     {
         $school->load(['province', 'regency', 'instrumentSubmissionsV2']);
 
+        // Backfill profile fields from the latest submission if they are empty on the school record
+        $profileFields = ['school_status', 'school_category', 'school_accreditation', 'program_duration', 'curriculum', 'province_code', 'regency_code', 'address'];
+        $missingProfile = collect($profileFields)->contains(fn($f) => empty($school->$f));
+
+        if ($missingProfile) {
+            $latestSub = $school->instrumentSubmissionsV2()->latest('filled_at')->first();
+            if ($latestSub) {
+                // Only sync fields that exist on instrument_submissions_v2
+                $syncableFromSub = ['address', 'province_code', 'regency_code', 'curriculum'];
+                $updates = [];
+                foreach ($syncableFromSub as $field) {
+                    if (empty($school->$field) && !empty($latestSub->$field)) {
+                        $updates[$field] = $latestSub->$field;
+                    }
+                }
+                if ($updates) {
+                    $school->update($updates);
+                    $school->load(['province', 'regency']);
+                }
+            }
+        }
+
         return view('admin.schools.show', compact('school'));
     }
 

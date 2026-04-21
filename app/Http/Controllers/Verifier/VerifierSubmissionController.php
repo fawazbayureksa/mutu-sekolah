@@ -14,9 +14,9 @@ class VerifierSubmissionController extends Controller
         $status = $request->get('status', 'pending');
 
         $submissions = Submission::with(['school', 'instrument'])
-            ->when($status === 'pending', fn ($q) => $q->pendingVerification())
-            ->when($status === 'verified', fn ($q) => $q->where('status', Submission::STATUS_VERIFIED))
-            ->when($status === 'rejected', fn ($q) => $q->where('status', Submission::STATUS_REJECTED))
+            ->when($status === 'pending', fn($q) => $q->pendingVerification())
+            ->when($status === 'verified', fn($q) => $q->where('status', Submission::STATUS_VERIFIED))
+            ->when($status === 'rejected', fn($q) => $q->where('status', Submission::STATUS_REJECTED))
             ->latest('filled_at')
             ->paginate(15);
 
@@ -61,7 +61,7 @@ class VerifierSubmissionController extends Controller
         ]);
 
         return redirect()->route('verifier.submissions.index')
-            ->with('success', 'Submission ditolak');
+            ->with('success', 'Pengajuan Ditolak');
     }
 
     public function generateUpdateToken(Submission $submission)

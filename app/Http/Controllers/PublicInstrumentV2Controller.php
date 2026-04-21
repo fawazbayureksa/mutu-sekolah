@@ -23,7 +23,12 @@ class PublicInstrumentV2Controller extends Controller
         $expertiseData = config('constant.expertise');
         $expertiseByCurriculum = config('constant.expertise_by_curriculum');
 
-        return view('instrument.form-v2', compact('provinces', 'respondentPositions', 'expertiseData', 'expertiseByCurriculum'));
+        $schoolDefaults = null;
+        if (auth()->check() && auth()->user()->role === 'school') {
+            $schoolDefaults = auth()->user()->school;
+        }
+
+        return view('instrument.form-v2', compact('provinces', 'respondentPositions', 'expertiseData', 'expertiseByCurriculum', 'schoolDefaults'));
     }
 
     public function getRegencies($provinceCode)
@@ -121,57 +126,109 @@ class PublicInstrumentV2Controller extends Controller
         try {
             DB::beginTransaction();
 
-            // Create school only if it doesn't exist — never overwrite existing school
-            // data from a public form to prevent data poisoning attacks.
-            $schoolAttributes = array_filter([
-                'npsn'        => $request->npsn ?? null,
-                'school_name' => $request->school_name,
-            ]);
+            // When a school user is authenticated, always use their linked school
+            // to prevent school_id mismatches between submissions and the dashboard.
+            // (A lookup by NPSN could return a different/unlinked School record.)
+            if (auth()->check() && auth()->user()->role === 'school') {
+                $school = auth()->user()->school;
 
-            $school = School::where(function ($q) use ($request) {
-                if ($request->npsn) {
-                    $q->where('npsn', $request->npsn);
-                } else {
-                    $q->where('school_name', $request->school_name)
-                        ->where('province_code', $request->province_code)
-                        ->where('regency_code', $request->regency_code);
+                if (! $school) {
+                    // Link the first unlinked school with this NPSN (same logic as getSchool())
+                    $school = School::where('npsn', auth()->user()->npsn)
+                        ->whereNull('user_id')
+                        ->first();
+
+                    if ($school) {
+                        $school->update(['user_id' => auth()->user()->id]);
+                        $school = $school->fresh();
+                    } else {
+                        $school = School::create([
+                            'user_id'                 => auth()->user()->id,
+                            'school_name'             => $request->school_name,
+                            'npsn'                    => $request->npsn ?? auth()->user()->npsn,
+                            'address'                 => $request->address,
+                            'province_code'           => $request->province_code,
+                            'regency_code'            => $request->regency_code,
+                            'school_status'           => $request->school_status,
+                            'school_category'         => $request->school_category,
+                            'program_duration'        => $request->program_duration,
+                            'school_accreditation'    => $request->school_accreditation,
+                            'curriculum'              => $request->curriculum,
+                            'approval_status'         => $request->approval_status,
+                            'expertise'               => $request->expertise,
+                            'expertise_program'       => $request->expertise_program,
+                            'expertise_concentration' => $request->expertise_concentration,
+                        ]);
+                    }
                 }
-            })->first();
 
-            if (!$school) {
-                $school = School::create([
-                    'school_name'            => $request->school_name,
-                    'npsn'                   => $request->npsn ?? null,
-                    'address'                => $request->address,
-                    'province_code'          => $request->province_code,
-                    'regency_code'           => $request->regency_code,
-                    'school_status'          => $request->school_status,
-                    'school_category'        => $request->school_category,
-                    'program_duration'       => $request->program_duration,
-                    'school_accreditation'   => $request->school_accreditation,
-                    'curriculum'             => $request->curriculum,
-                    'approval_status'        => $request->approval_status,
-                    'expertise'              => $request->expertise,
-                    'expertise_program'      => $request->expertise_program,
+                // Always sync profile fields from the instrument form into the school record
+                $school->update([
+                    'school_name'             => $request->school_name,
+                    'address'                 => $request->address,
+                    'province_code'           => $request->province_code,
+                    'regency_code'            => $request->regency_code,
+                    'school_status'           => $request->school_status,
+                    'school_category'         => $request->school_category,
+                    'program_duration'        => $request->program_duration,
+                    'school_accreditation'    => $request->school_accreditation,
+                    'curriculum'              => $request->curriculum,
+                    'approval_status'         => $request->approval_status,
+                    'expertise'               => $request->expertise,
+                    'expertise_program'       => $request->expertise_program,
                     'expertise_concentration' => $request->expertise_concentration,
                 ]);
+            } else {
+                // Public (unauthenticated) submission — original lookup by NPSN / name+location
+                $school = School::where(function ($q) use ($request) {
+                    if ($request->npsn) {
+                        $q->where('npsn', $request->npsn);
+                    } else {
+                        $q->where('school_name', $request->school_name)
+                            ->where('province_code', $request->province_code)
+                            ->where('regency_code', $request->regency_code);
+                    }
+                })->first();
+
+                if (!$school) {
+                    $school = School::create([
+                        'school_name'             => $request->school_name,
+                        'npsn'                    => $request->npsn ?? null,
+                        'address'                 => $request->address,
+                        'province_code'           => $request->province_code,
+                        'regency_code'            => $request->regency_code,
+                        'school_status'           => $request->school_status,
+                        'school_category'         => $request->school_category,
+                        'program_duration'        => $request->program_duration,
+                        'school_accreditation'    => $request->school_accreditation,
+                        'curriculum'              => $request->curriculum,
+                        'approval_status'         => $request->approval_status,
+                        'expertise'               => $request->expertise,
+                        'expertise_program'       => $request->expertise_program,
+                        'expertise_concentration' => $request->expertise_concentration,
+                    ]);
+                }
             }
 
             $submission = InstrumentSubmissionV2::create([
-                'school_id'        => $school->id,
-                'school_name'      => $request->school_name,
-                'npsn'             => $request->npsn ?? null,
-                'address'          => $request->address,
-                'province_code'    => $request->province_code,
-                'regency_code'     => $request->regency_code,
-                'respondent_name'  => $request->respondent_name,
-                'respondent_position' => $request->respondent_position,
-                'form_version'     => '2.0',
-                'answers'          => $request->answers,
-                'status'           => InstrumentSubmissionV2::STATUS_SUBMITTED,
-                'filled_at'        => now(),
-                'ip_address'       => $request->ip(),
-                'user_agent'       => $request->userAgent(),
+                'school_id'               => $school->id,
+                'school_name'             => $request->school_name,
+                'npsn'                    => $request->npsn ?? null,
+                'address'                 => $request->address,
+                'province_code'           => $request->province_code,
+                'regency_code'            => $request->regency_code,
+                'expertise'               => $request->expertise,
+                'expertise_program'       => $request->expertise_program,
+                'expertise_concentration' => $request->expertise_concentration,
+                'curriculum'              => $request->curriculum,
+                'respondent_name'         => $request->respondent_name,
+                'respondent_position'     => $request->respondent_position,
+                'form_version'            => '2.0',
+                'answers'                 => $request->answers,
+                'status'                  => InstrumentSubmissionV2::STATUS_SUBMITTED,
+                'filled_at'               => now(),
+                'ip_address'              => $request->ip(),
+                'user_agent'              => $request->userAgent(),
             ]);
 
             $this->storeSectionDetails($submission, $request->answers);
@@ -186,6 +243,11 @@ class PublicInstrumentV2Controller extends Controller
                 'submission_id' => $submission->id,
                 'school_name'   => $submission->school_name,
             ]);
+
+            if (auth()->check() && auth()->user()->role === 'school') {
+                return redirect()->route('school.submissions.index')
+                    ->with('success', 'Pengajuan berhasil disimpan.');
+            }
 
             return redirect()->route('landing')
                 ->with('success', 'Data berhasil disimpan. Terima kasih atas partisipasi Anda.');

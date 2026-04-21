@@ -178,14 +178,33 @@ class SubmissionV2UpdateController extends Controller
 
             // Only update if there is data to update
             if (! empty($data)) {
+                // If the submission was rejected, revert to submitted on update
+                if ($submission->status === 'rejected') {
+                    $data['status'] = 'submitted';
+                }
+
                 $submission->update($data);
-                
+
                 // Also update the school record with relevant fields
                 if ($submission->school) {
                     $schoolData = [];
-                    foreach (['school_name', 'npsn', 'address', 'province_code', 'regency_code',
-                              'school_status', 'school_category', 'program_duration', 'school_accreditation',
-                              'curriculum', 'expertise', 'expertise_program', 'expertise_concentration'] as $field) {
+                    foreach (
+                        [
+                            'school_name',
+                            'npsn',
+                            'address',
+                            'province_code',
+                            'regency_code',
+                            'school_status',
+                            'school_category',
+                            'program_duration',
+                            'school_accreditation',
+                            'curriculum',
+                            'expertise',
+                            'expertise_program',
+                            'expertise_concentration'
+                        ] as $field
+                    ) {
                         if (isset($data[$field])) {
                             $schoolData[$field] = $data[$field];
                         }

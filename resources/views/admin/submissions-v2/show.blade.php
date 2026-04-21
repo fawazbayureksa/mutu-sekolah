@@ -28,9 +28,9 @@
                         <i class="bi bi-patch-check me-1"></i> Validasi
                     </button>
                 @endif
-                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#tokenModal">
+                {{-- <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#tokenModal">
                     <i class="bi bi-link-45deg me-1"></i> Generate Link Update
-                </button>
+                </button> --}}
                 <a href="{{ route('admin.submissions-v2.index') }}" class="btn btn-secondary">
                     <i class="bi bi-arrow-left me-1"></i> Kembali
                 </a>
