@@ -210,7 +210,7 @@
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="approval_status"
                                                 id="appr{{ Str::slug($status) }}" value="{{ $status }}"
-                                                {{ old('approval_status', $submission->school->approval_status ?? '') == $status ? 'checked' : '' }}>
+                                                {{ old('approval_status', $submission->approval_status ?? '') == $status ? 'checked' : '' }}>
                                             <label class="form-check-label"
                                                 for="appr{{ Str::slug($status) }}">{{ $status }}</label>
                                         </div>
@@ -694,6 +694,12 @@
             if (rowNumCell) {
                 rowNumCell.textContent = rowIndex + 1;
             }
+
+            // Hide any "other" inputs that depend on select values (e.g. scheme_type_other)
+            newRow.querySelectorAll('.scheme-type-other, .main-factor-other').forEach(function(el) {
+                el.style.display = 'none';
+                el.value = '';
+            });
 
             tbody.appendChild(newRow);
         }

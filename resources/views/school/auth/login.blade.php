@@ -55,13 +55,17 @@
                     <div class="form-floating">
                         <input type="text" class="form-control @error('npsn') is-invalid @enderror" id="npsn"
                             name="npsn" placeholder="Nomor NPSN" value="{{ old('npsn') }}" required autofocus
-                            maxlength="20">
+                            maxlength="8" inputmode="numeric" autocomplete="off">
                         <label for="npsn">
                             <i class="bi bi-building me-2"></i>NPSN
                         </label>
                         @error('npsn')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                    </div>
+                    <div class="d-flex justify-content-end mb-2">
+                        <small class="text-muted"><span id="npsn-count">{{ strlen(old('npsn', '')) }}</span> / 8
+                            digit</small>
                     </div>
 
                     <div class="form-floating mt-2" id="password-field"
@@ -74,9 +78,6 @@
                         @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <div class="form-text text-muted mt-1 small">
-                            Jika pertama kali masuk, biarkan kosong — akun akan dibuat otomatis.
-                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100 mt-3" id="submitBtn">
@@ -86,9 +87,15 @@
                 </form>
 
                 <div class="text-center mt-4">
-                    <small class="text-muted">
+                    {{-- <small class="text-muted">
                         Administrator? <a href="{{ route('login') }}">Masuk di sini</a>
-                    </small>
+                    </small> --}}
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            Belum punya akun?
+                            <a href="{{ route('school.register') }}">Daftar sekarang</a>
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -100,8 +107,11 @@
         const passwordField = document.getElementById('password-field');
         const btnText = document.getElementById('btnText');
 
-        // Show password field when NPSN has a value
+        // NPSN: digits only + live counter
+        document.getElementById('npsn-count').textContent = npsnInput.value.length;
         npsnInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 8);
+            document.getElementById('npsn-count').textContent = this.value.length;
             if (this.value.trim().length > 0) {
                 passwordField.style.display = '';
                 btnText.textContent = 'Masuk';

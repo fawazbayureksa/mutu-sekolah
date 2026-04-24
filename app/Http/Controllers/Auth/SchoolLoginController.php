@@ -55,40 +55,74 @@ class SchoolLoginController extends Controller
             ]);
         }
 
-        // --- New NPSN: auto-register, link or create school, force password change ---
-        DB::transaction(function () use ($npsn) {
-            $school = School::where('npsn', $npsn)->first();
+        // --- NPSN not found: direct to register ---
+        throw ValidationException::withMessages([
+            'npsn' => 'NPSN tidak ditemukan. Silakan daftar akun terlebih dahulu.',
+        ]);
+    }
+
+    public function showRegisterForm()
+    {
+        return view('school.auth.register');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'npsn'        => ['required', 'regex:/^\d{8}$/', 'unique:users,npsn'],
+            'school_name' => ['required', 'string', 'max:255'],
+            'password'    => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'npsn.unique' => 'NPSN ini sudah terdaftar. Silakan masuk menggunakan password Anda.',
+            'npsn.regex'  => 'NPSN harus terdiri dari 8 digit angka.',
+        ]);
+
+        $user = DB::transaction(function () use ($request) {
+            $npsn       = $request->input('npsn');
+            $schoolName = $request->input('school_name');
 
             $user = User::create([
-                'name'                 => $school ? $school->school_name : 'Sekolah ' . $npsn,
+                'name'                 => $schoolName,
                 'npsn'                 => $npsn,
-                'password'             => Hash::make(Str::random(32)),
+                'password'             => Hash::make($request->input('password')),
                 'role'                 => 'school',
                 'is_active'            => true,
-                'must_change_password' => true,
-                'last_login_at'        => now(),
+                'must_change_password' => false,
+                'last_login_at'        => null,
             ]);
+
+            // Link to an existing school record or create a new one
+            $school = School::where('npsn', $npsn)->first();
 
             if ($school) {
                 if (! $school->user_id) {
                     $school->update(['user_id' => $user->id]);
+                } else {
+                    // School already linked to a different user (edge case: admin-seeded data)
+                    // — create a dedicated record for this new user.
+                    School::create([
+                        'user_id'     => $user->id,
+                        'school_name' => $schoolName,
+                        'npsn'        => $npsn,
+                        'address'     => '',
+                    ]);
                 }
             } else {
-                // No pre-existing school record — create a placeholder so the dashboard works
                 School::create([
                     'user_id'     => $user->id,
-                    'school_name' => 'Sekolah ' . $npsn,
+                    'school_name' => $schoolName,
                     'npsn'        => $npsn,
                     'address'     => '',
                 ]);
             }
 
-            Auth::login($user);
+            return $user;
         });
 
-        $request->session()->regenerate();
+        Auth::login($user);
 
-        return redirect()->route('school.password.change');
+        return redirect()->route('school.dashboard')
+            ->with('success', 'Selamat datang! Akun Anda berhasil didaftarkan.');
     }
 
     public function logout(Request $request)

@@ -28,6 +28,9 @@
                         <i class="bi bi-patch-check me-1"></i> Validasi
                     </button>
                 @endif
+                <a href="{{ route('admin.submissions-v2.export-single', $submission) }}" class="btn btn-outline-success">
+                    <i class="bi bi-file-earmark-spreadsheet me-1"></i> Download XLSX
+                </a>
                 {{-- <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#tokenModal">
                     <i class="bi bi-link-45deg me-1"></i> Generate Link Update
                 </button> --}}
@@ -64,7 +67,7 @@
         @php
             $pct = $submission->completion_percentage ?? 0;
             $pctColor = $pct >= 80 ? 'success' : ($pct >= 50 ? 'warning' : 'danger');
-            $concentrations = $submission->school?->expertise_concentration ?? [];
+            $concentrations = $submission->expertise_concentration ? [$submission->expertise_concentration] : [];
         @endphp
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body py-4 px-4">
@@ -361,8 +364,8 @@
             {{-- School Info --}}
             <div class="accordion-item border-0 mb-2 rounded shadow-sm overflow-hidden">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed fw-semibold bg-white" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseSchool">
+                    <button class="accordion-button collapsed fw-semibold bg-white" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#collapseSchool">
                         <i class="bi bi-building me-2 text-primary"></i>Informasi Sekolah
                     </button>
                 </h2>
@@ -418,31 +421,25 @@
                                         <dt class="col-5 text-muted fw-normal small">Akreditasi</dt>
                                         <dd class="col-7 mb-0">{{ $submission->school->school_accreditation }}</dd>
                                     @endif
-                                    @if ($submission->school?->expertise)
+                                    @if ($submission->expertise)
                                         <dt class="col-5 text-muted fw-normal small">Bidang Keahlian</dt>
                                         <dd class="col-7 mb-0">
-                                            @foreach ((array) $submission->school->expertise as $e)
-                                                <span
-                                                    class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle me-1">{{ $e }}</span>
-                                            @endforeach
+                                            <span
+                                                class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle me-1">{{ $submission->expertise }}</span>
                                         </dd>
                                     @endif
-                                    @if ($submission->school?->expertise_program)
+                                    @if ($submission->expertise_program)
                                         <dt class="col-5 text-muted fw-normal small">Program Keahlian</dt>
                                         <dd class="col-7 mb-0">
-                                            @foreach ((array) $submission->school->expertise_program as $e)
-                                                <span
-                                                    class="badge bg-info bg-opacity-10 text-info border border-info-subtle me-1">{{ $e }}</span>
-                                            @endforeach
+                                            <span
+                                                class="badge bg-info bg-opacity-10 text-info border border-info-subtle me-1">{{ $submission->expertise_program }}</span>
                                         </dd>
                                     @endif
-                                    @if ($submission->school?->expertise_concentration)
+                                    @if ($submission->expertise_concentration)
                                         <dt class="col-5 text-muted fw-normal small">Konsentrasi</dt>
                                         <dd class="col-7 mb-0">
-                                            @foreach ((array) $submission->school->expertise_concentration as $e)
-                                                <span
-                                                    class="badge bg-success bg-opacity-10 text-success border border-success-subtle me-1">{{ $e }}</span>
-                                            @endforeach
+                                            <span
+                                                class="badge bg-success bg-opacity-10 text-success border border-success-subtle me-1">{{ $submission->expertise_concentration }}</span>
                                         </dd>
                                     @endif
                                 </dl>

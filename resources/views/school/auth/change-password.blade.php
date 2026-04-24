@@ -52,20 +52,44 @@
                                     <label class="form-label fw-semibold small">
                                         Password Baru <span class="text-danger">*</span>
                                     </label>
-                                    <input type="password" class="form-control @error('password') is-invalid @enderror"
-                                        name="password" required minlength="8" placeholder="Minimal 8 karakter">
-                                    @error('password')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <div class="input-group">
+                                        <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                            id="cp-password" name="password" required minlength="8"
+                                            placeholder="Minimal 8 karakter">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                            onclick="togglePassword('cp-password','eye-cp')" tabindex="-1">
+                                            <i class="bi bi-eye" id="eye-cp"></i>
+                                        </button>
+                                        @error('password')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="d-flex gap-1 mt-2">
+                                        <div id="cp-seg1" style="height:4px;flex:1;background:#dee2e6;border-radius:2px;">
+                                        </div>
+                                        <div id="cp-seg2" style="height:4px;flex:1;background:#dee2e6;border-radius:2px;">
+                                        </div>
+                                        <div id="cp-seg3" style="height:4px;flex:1;background:#dee2e6;border-radius:2px;">
+                                        </div>
+                                        <div id="cp-seg4" style="height:4px;flex:1;background:#dee2e6;border-radius:2px;">
+                                        </div>
+                                    </div>
+                                    <small id="cp-str-label" class="text-muted"></small>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label fw-semibold small">
                                         Konfirmasi Password <span class="text-danger">*</span>
                                     </label>
-                                    <input type="password"
-                                        class="form-control @error('password_confirmation') is-invalid @enderror"
-                                        name="password_confirmation" required minlength="8"
-                                        placeholder="Ulangi password baru">
+                                    <div class="input-group">
+                                        <input type="password"
+                                            class="form-control @error('password_confirmation') is-invalid @enderror"
+                                            id="cp-confirm" name="password_confirmation" required minlength="8"
+                                            placeholder="Ulangi password baru">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                            onclick="togglePassword('cp-confirm','eye-cp-confirm')" tabindex="-1">
+                                            <i class="bi bi-eye" id="eye-cp-confirm"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -250,6 +274,72 @@
 
 @push('scripts')
     <script>
+        // Password show/hide toggle
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye';
+            }
+        }
+
+        // Password strength meter
+        document.getElementById('cp-password').addEventListener('input', function() {
+            const val = this.value;
+            const segs = [
+                document.getElementById('cp-seg1'),
+                document.getElementById('cp-seg2'),
+                document.getElementById('cp-seg3'),
+                document.getElementById('cp-seg4'),
+            ];
+            const label = document.getElementById('cp-str-label');
+            segs.forEach(s => s.style.background = '#dee2e6');
+            if (!val) {
+                label.textContent = '';
+                label.className = 'text-muted';
+                return;
+            }
+            if (val.length < 8) {
+                segs[0].style.background = '#dc3545';
+                label.textContent = 'Terlalu pendek';
+                label.className = 'small text-danger';
+                return;
+            }
+            let score = 1;
+            if (val.length >= 12) score++;
+            if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+            if (/[0-9]/.test(val) && /[^A-Za-z0-9]/.test(val)) score++;
+            const cfg = [{
+                    color: '#dc3545',
+                    cls: 'text-danger',
+                    text: 'Lemah'
+                },
+                {
+                    color: '#fd7e14',
+                    cls: 'text-warning',
+                    text: 'Cukup'
+                },
+                {
+                    color: '#ffc107',
+                    cls: 'text-warning',
+                    text: 'Baik'
+                },
+                {
+                    color: '#198754',
+                    cls: 'text-success',
+                    text: 'Kuat'
+                },
+            ];
+            const level = cfg[score - 1];
+            for (let i = 0; i < score; i++) segs[i].style.background = level.color;
+            label.textContent = level.text;
+            label.className = 'small ' + level.cls;
+        });
+
         const savedRegencyCode = "{{ old('regency_code', $school->regency_code ?? '') }}";
 
         function loadRegencies(provinceCode, selectValue) {

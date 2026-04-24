@@ -76,8 +76,9 @@
                                     value="{{ $rowData['label'] ?? '' }}">
                             </td>
                             <td>
-                                <select class="form-select form-select-sm table-input" data-key="scheme_type"
-                                    data-row="{{ $i }}">
+                                <select class="form-select form-select-sm table-input scheme-type-select"
+                                    data-key="scheme_type" data-row="{{ $i }}"
+                                    onchange="toggleSchemeTypeInput(this)">
                                     <option value="">Pilih</option>
                                     <option value="Okupasi Nasional"
                                         {{ ($rowData['scheme_type'] ?? '') === 'Okupasi Nasional' ? 'selected' : '' }}>
@@ -88,7 +89,16 @@
                                     <option value="{{ config('constant.scheme_types.kkni') }}"
                                         {{ ($rowData['scheme_type'] ?? '') === config('constant.scheme_types.kkni') ? 'selected' : '' }}>
                                         {{ config('constant.scheme_types.kkni') }}</option>
+                                    <option value="Lainnya"
+                                        {{ ($rowData['scheme_type'] ?? '') === 'Lainnya' ? 'selected' : '' }}>Lainnya
+                                    </option>
                                 </select>
+                                <input type="text"
+                                    class="form-control form-control-sm table-input scheme-type-other mt-1"
+                                    data-key="scheme_type_other" data-row="{{ $i }}"
+                                    placeholder="Sebutkan jenis skema lainnya"
+                                    style="display: {{ ($rowData['scheme_type'] ?? '') === 'Lainnya' ? 'block' : 'none' }};"
+                                    value="{{ $rowData['scheme_type_other'] ?? '' }}">
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm table-input"
@@ -140,3 +150,24 @@
         </div>
     </div>
 </div>
+
+<script>
+    function toggleSchemeTypeInput(selectElement) {
+        const row = selectElement.closest('tr');
+        const otherInput = row.querySelector('.scheme-type-other');
+        if (selectElement.value === 'Lainnya') {
+            otherInput.style.display = 'block';
+        } else {
+            otherInput.style.display = 'none';
+            otherInput.value = '';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('#table-a12 .scheme-type-select').forEach(function(select) {
+            if (select.value === 'Lainnya') {
+                toggleSchemeTypeInput(select);
+            }
+        });
+    });
+</script>
