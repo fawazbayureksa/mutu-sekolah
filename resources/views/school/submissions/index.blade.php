@@ -271,6 +271,12 @@
                                                 <span class="d-none d-lg-inline">Edit</span>
                                             </a>
                                             {{-- @endif --}}
+                                            <a href="{{ route('school.submissions.export-single', $submission) }}"
+                                                class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1"
+                                                title="Unduh Hasil">
+                                                <i class="bi bi-file-earmark-spreadsheet"></i>
+                                                <span class="d-none d-lg-inline">XLSX</span>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>

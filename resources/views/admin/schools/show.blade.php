@@ -325,6 +325,10 @@
                                                 class="btn btn-sm btn-outline-secondary">
                                                 <i class="bi bi-eye"></i>
                                             </a>
+                                            <a href="{{ route('admin.submissions-v2.export-single', $sub) }}"
+                                                class="btn btn-sm btn-outline-success ms-1">
+                                                <i class="bi bi-file-earmark-spreadsheet"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -98,6 +98,7 @@ Route::prefix('school')->name('school.')->group(function () {
                 Route::get('/{submission}/edit-full', [SchoolSubmissionController::class, 'editFull'])->name('edit-full');
                 Route::post('/{submission}/update-full', [SchoolSubmissionController::class, 'updateFull'])->name('update-full');
                 Route::post('/{submission}/resubmit', [SchoolSubmissionController::class, 'resubmit'])->name('resubmit');
+                Route::get('/{submission}/export', [SchoolSubmissionController::class, 'exportSingle'])->name('export-single');
             });
         });
     });
