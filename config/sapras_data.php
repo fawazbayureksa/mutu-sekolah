@@ -203,6 +203,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -376,6 +377,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -522,6 +524,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -718,6 +721,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -873,6 +877,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -1061,6 +1066,7 @@ return [
                     ['name' => 'Kolam Pendederan 1, Pendederan 2, Pendederan 3, dan Kolam Pembesaran Ikan/Kolam Produksi', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Kolam Produksi', 'standard_area' => '30 m²/peserta', 'capacity' => '36 siswa'],
                     ['name' => 'Sub Ruang Instruktur dan Ruang Simpan', 'standard_area' => '3 m²/instruktur', 'capacity' => '9 instruktur'],
+                    ['name' => 'Kolam Latih BST', 'standard_area' => 'Panjang: 20–25 m, Lebar: 10–15 m', 'capacity' => '1,2–1,5 m (dangkal) & 3,5–5 m (dalam) - m²']
                 ],
             ],
 
@@ -1195,6 +1201,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -1262,6 +1269,7 @@ return [
                     ['name' => 'Kolam Pemijahan, Penanganan Larva, Pembuatan Pakan Alami, dan Gudang Penyimpanan Pakan Buatan', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Kolam Pendederan 1, Pendederan 2, Pendederan 3, dan Kolam Produksi', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Sub Ruang Instruktur dan Ruang Simpan', 'standard_area' => '3 m²/instruktur', 'capacity' => '9 instruktur'],
+                    ['name' => 'Kolam Latih BST', 'standard_area' => 'Panjang: 20–25 m, Lebar: 10–15 m', 'capacity' => '1,2–1,5 m (dangkal) & 3,5–5 m (dalam) - m²']
                 ],
             ],
 
@@ -1414,6 +1422,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -1481,6 +1490,7 @@ return [
                     ['name' => 'Kolam Pemijahan, Penanganan Larva, Pembuatan Pakan Alami', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Kolam Pendederan (1), Pendederan (2), Kolam/Bak Pembesaran, Akuarium, Fiber, dan Kolam Produksi', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Sub Ruang Instruktur dan Ruang Simpan', 'standard_area' => '3 m²/instruktur', 'capacity' => '9 instruktur'],
+                    ['name' => 'Kolam Latih BST', 'standard_area' => 'Panjang: 20–25 m, Lebar: 10–15 m', 'capacity' => '1,2–1,5 m (dangkal) & 3,5–5 m (dalam) - m²']
                 ],
             ],
 
@@ -1577,6 +1587,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -1644,6 +1655,7 @@ return [
                     ['name' => 'Indoor Culture', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Ruang Pasca Panen', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Sub Ruang Instruktur dan Ruang Simpan', 'standard_area' => '3 m²/instruktur', 'capacity' => '9 instruktur'],
+                    ['name' => 'Kolam Latih BST', 'standard_area' => 'Panjang: 20–25 m, Lebar: 10–15 m', 'capacity' => '1,2–1,5 m (dangkal) & 3,5–5 m (dalam) - m²']
                 ],
             ],
 
@@ -1725,6 +1737,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -1794,6 +1807,8 @@ return [
                     ['name' => 'Bangsal Kecakapan Bahari/Penanganan dan Pengaturan Muatan', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Kapal', 'standard_area' => '1 unit (panjang 24 m)', 'capacity' => '9 siswa'],
                     ['name' => 'Ruang Instruktur dan Penyimpanan', 'standard_area' => '3 m²/instruktur', 'capacity' => '9 instruktur'],
+                    ['name' => 'Kolam Latih BST', 'standard_area' => 'Panjang: 20–25 m, Lebar: 10–15 m', 'capacity' => '1,2–1,5 m (dangkal) & 3,5–5 m (dalam) - m²']
+
                 ],
             ],
 
@@ -1891,6 +1906,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -1956,6 +1972,8 @@ return [
                     ['name' => 'Area Kerja Mesin Bantu', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Ruang Instruktur dan Penyimpanan (RIS)', 'standard_area' => '30 m² (24+6)', 'capacity' => '9 instruktur'],
                     ['name' => 'Smart Classroom', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
+                    ['name' => 'Kolam Latih BST', 'standard_area' => 'Panjang: 20–25 m, Lebar: 10–15 m', 'capacity' => '1,2–1,5 m (dangkal) & 3,5–5 m (dalam) - m²']
+
                 ],
             ],
 
@@ -2043,6 +2061,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -2108,6 +2127,8 @@ return [
                     ['name' => 'Bangsal Kerja Alat Tangkap dan Tali-temali', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Kapal Latih', 'standard_area' => '1 unit (panjang 24 m)', 'capacity' => '-'],
                     ['name' => 'Sub Ruang Instruktur dan Penyimpanan', 'standard_area' => '3 m²/instruktur', 'capacity' => '9 instruktur'],
+                    ['name' => 'Kolam Latih BST', 'standard_area' => 'Panjang: 20–25 m, Lebar: 10–15 m', 'capacity' => '1,2–1,5 m (dangkal) & 3,5–5 m (dalam) - m²']
+
                 ],
             ],
 
@@ -2219,6 +2240,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, dll.)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -2288,6 +2310,8 @@ return [
                     ['name' => 'Area Kerja Mesin Utama Kapal', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Area Kerja Mesin Pendingin/Refrigerasi', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Sub Ruang Instruktur dan Penyimpanan', 'standard_area' => '3 m²/instruktur', 'capacity' => '9 instruktur'],
+                    ['name' => 'Kolam Latih BST', 'standard_area' => 'Panjang: 20–25 m, Lebar: 10–15 m', 'capacity' => '1,2–1,5 m (dangkal) & 3,5–5 m (dalam) - m²']
+
                 ],
             ],
 
@@ -2397,6 +2421,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -2464,6 +2489,7 @@ return [
                     ['name' => 'Ruang Pengolahan Hasil Perikanan', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Ruang Laboratorium Uji Sensoris', 'standard_area' => '3 m²/peserta didik', 'capacity' => '9 siswa'],
                     ['name' => 'Sub Ruang Instruktur dan Ruang Simpan', 'standard_area' => '3 m²/instruktur', 'capacity' => '9 instruktur'],
+                    ['name' => 'Kolam Latih BST', 'standard_area' => 'Panjang: 20–25 m, Lebar: 10–15 m', 'capacity' => '1,2–1,5 m (dangkal) & 3,5–5 m (dalam) - m²']
                 ],
             ],
 
@@ -2592,6 +2618,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
+                    ['name' => 'Interactive Flat Panel(IFP)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
