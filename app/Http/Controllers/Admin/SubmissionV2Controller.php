@@ -17,10 +17,7 @@ class SubmissionV2Controller extends Controller
     {
         $status = $request->get('status', 'all');
 
-        $submissions = InstrumentSubmissionV2::query()
-            ->when($status !== 'all', fn($q) => $q->where('status', $status))
-            ->latest('filled_at')
-            ->paginate(15);
+
 
         $stats = [
             'total' => InstrumentSubmissionV2::count(),
@@ -30,7 +27,18 @@ class SubmissionV2Controller extends Controller
             'rejected' => InstrumentSubmissionV2::where('status', 'rejected')->count(),
         ];
 
+
         $viewPrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
+
+        $submissions = InstrumentSubmissionV2::query()
+            ->when($status !== 'all', fn($q) => $q->where('status', $status))
+            ->latest('filled_at');
+
+        if ($viewPrefix === 'verifier' && auth()->user()->province_code) {
+            $submissions = $submissions->where('province_code', auth()->user()->province_code);
+        }
+
+        $submissions = $submissions->paginate(15);
 
         return view("{$viewPrefix}.submissions-v2.index", compact('submissions', 'status', 'stats'));
     }

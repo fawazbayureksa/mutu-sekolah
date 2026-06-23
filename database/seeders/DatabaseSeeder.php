@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             ScaleTemplateSeeder::class,
             AdvancedInstrumentSeeder::class,
             VerifierUserSeeder::class,
+            VerificatorRegional::class,
         ]);
     }
 }
