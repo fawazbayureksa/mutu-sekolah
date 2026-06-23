@@ -84,7 +84,7 @@
                             @forelse($recentSubmissions as $submission)
                                 <tr>
                                     <td>{{ $submission->school->school_name ?? '-' }}</td>
-                                    <td>{{ $submission->instrument->name ?? '-' }}</td>
+                                    <td>{{ $submission->expertise_concentration ?? '-' }}</td>
                                     <td>{{ $submission->filled_at ? $submission->filled_at->format('d M Y') : '-' }}</td>
                                     <td>
                                         <a href="{{ route('verifier.submissions.show', $submission) }}"
