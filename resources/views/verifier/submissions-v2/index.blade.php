@@ -8,7 +8,7 @@
         <div class="d-flex align-items-center justify-content-between mb-4">
             <div>
                 <h1 class="h3 mb-1 text-gray-800">Data Pengajuan</h1>
-                <p class="text-muted mb-0">Verifikasi data pengajuan instrumen versi 2</p>
+                <p class="text-muted mb-0">Verifikasi data pengajuan instrumen</p>
             </div>
         </div>
 
