@@ -17,6 +17,7 @@ class VerifierUserSeeder extends Seeder
                 'email' => 'verifier@bppmpv.com',
                 'password' => Hash::make('password123'),
                 'role' => 'verifier',
+                'province_id' => NULL,
                 'is_active' => true,
                 'email_verified_at' => now(),
             ]

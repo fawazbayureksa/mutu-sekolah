@@ -13,7 +13,7 @@ return new class extends Migration
     {
         //
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('province_id')->comment('Id for verificator');
+            $table->integer('province_id')->nullable()->comment('Id for verificator');
         });
     }
 

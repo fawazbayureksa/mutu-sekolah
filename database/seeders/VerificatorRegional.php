@@ -21,11 +21,10 @@ class VerificatorRegional extends Seeder
             $province_name = str_replace(' ', '', $province->name);
             $email = 'verifier.' . strtolower($province_name) . '@bppmpv.com';
             $password = ucfirst(strtolower($province_name)) . '2026!';
-            // dump($email, $password);
             User::updateOrCreate(
                 ['email' => $email],
                 [
-                    'name' => 'Verifikasi Dokumen ' . $province->name,
+                    'name' => 'Verifikator Instrumen ' . $province->name,
                     'email' => $email,
                     'password' => Hash::make($password),
                     'role' => 'verifier',
