@@ -17,28 +17,33 @@ class SubmissionV2Controller extends Controller
     {
         $status = $request->get('status', 'all');
 
-
-
-        $stats = [
-            'total' => InstrumentSubmissionV2::count(),
-            'submitted' => InstrumentSubmissionV2::where('status', 'submitted')->count(),
-            'verified' => InstrumentSubmissionV2::where('status', 'verified')->count(),
-            'validated' => InstrumentSubmissionV2::where('status', 'validated')->count(),
-            'rejected' => InstrumentSubmissionV2::where('status', 'rejected')->count(),
-        ];
-
-
         $viewPrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
 
         $submissions = InstrumentSubmissionV2::query()
             ->when($status !== 'all', fn($q) => $q->where('status', $status))
             ->latest('filled_at');
 
-        if ($viewPrefix === 'verifier' && auth()->user()->province_code) {
-            $submissions = $submissions->where('province_code', auth()->user()->province_code);
+        if ($viewPrefix === 'verifier' && auth()->user()->province_id) {
+            $submissions = $submissions->where('province_code', auth()->user()->province_id);
+            $stats = [
+                'total' => InstrumentSubmissionV2::where('province_code', auth()->user()->province_id)->count(),
+                'submitted' => InstrumentSubmissionV2::where('status', 'submitted')->where('province_code', auth()->user()->province_id)->count(),
+                'verified' => InstrumentSubmissionV2::where('status', 'verified')->where('province_code', auth()->user()->province_id)->count(),
+                'validated' => InstrumentSubmissionV2::where('status', 'validated')->where('province_code', auth()->user()->province_id)->count(),
+                'rejected' => InstrumentSubmissionV2::where('status', 'rejected')->where('province_code', auth()->user()->province_id)->count(),
+            ];
+        } else {
+            $stats = [
+                'total' => InstrumentSubmissionV2::count(),
+                'submitted' => InstrumentSubmissionV2::where('status', 'submitted')->count(),
+                'verified' => InstrumentSubmissionV2::where('status', 'verified')->count(),
+                'validated' => InstrumentSubmissionV2::where('status', 'validated')->count(),
+                'rejected' => InstrumentSubmissionV2::where('status', 'rejected')->count(),
+            ];
         }
 
         $submissions = $submissions->paginate(15);
+
 
         return view("{$viewPrefix}.submissions-v2.index", compact('submissions', 'status', 'stats'));
     }
