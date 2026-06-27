@@ -266,19 +266,7 @@ class PublicInstrumentV2Controller extends Controller
 
     private function storeSectionDetails(InstrumentSubmissionV2 $submission, array $answers): void
     {
-        $sectionCodes = [
-            'A.1.1',
-            'A.1.2',
-            'A.2.1',
-            'A.3',
-            'A.4',
-            'B.sapras',
-            'C.1.1',
-            'C.2.1',
-            'C.3.1',
-            'C.3.2',
-            'C.3.3',
-        ];
+        $sectionCodes = config('constant.section_codes');
 
         foreach ($sectionCodes as $code) {
             if (isset($answers[$code])) {
@@ -311,20 +299,7 @@ class PublicInstrumentV2Controller extends Controller
 
     private function calculateCompletionPercentage(array $answers): float
     {
-        $sectionCodes = [
-            'A.1.1',
-            'A.1.2',
-            'A.2.1',
-            'A.3',
-            'A.4',
-            'B.sapras',
-            'C.1.1',
-            'C.2.1',
-            'C.3.1',
-            'C.3.2',
-            'C.3.3',
-        ];
-
+        $sectionCodes = config('constant.section_codes');
         $totalSections = count($sectionCodes);
         $filledSections = 0;
 

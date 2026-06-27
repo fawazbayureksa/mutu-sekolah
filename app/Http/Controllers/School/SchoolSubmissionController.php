@@ -12,6 +12,7 @@ use App\Models\School;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -272,6 +273,9 @@ class SchoolSubmissionController extends Controller
 
             if (isset($data['answers'])) {
                 $this->updateSectionDetails($submission, $data['answers']);
+                $submission->update([
+                    'completion_percentage' => $this->calculateCompletionPercentage($data['answers']),
+                ]);
             }
 
             DB::commit();
@@ -307,7 +311,7 @@ class SchoolSubmissionController extends Controller
 
     private function updateSectionDetails(InstrumentSubmissionV2 $submission, array $answers): void
     {
-        $sectionCodes = ['A.1.1', 'A.1.2', 'A.2.1', 'A.3', 'A.4', 'B.sapras', 'C.1.1', 'C.2.1', 'C.3.1', 'C.3.2', 'C.3.3'];
+        $sectionCodes = config('constant.section_codes');
 
         foreach ($sectionCodes as $code) {
             if (isset($answers[$code])) {
@@ -374,5 +378,54 @@ class SchoolSubmissionController extends Controller
 
         return redirect()->route('school.submissions.show', $submission)
             ->with('success', 'Pengajuan berhasil diperbarui.');
+    }
+
+    private function calculateCompletionPercentage(array $answers): float
+    {
+        $sectionCodes = config('constant.section_codes');
+        $totalSections = count($sectionCodes);
+        $filledSections = 0;
+        foreach ($sectionCodes as $code) {
+
+            if (! isset($answers[$code])) {
+                continue;
+            }
+            // Answers are submitted as JSON strings from the form — decode before inspecting
+            $data = is_string($answers[$code]) ? json_decode($answers[$code], true) : $answers[$code];
+
+            if (empty($data) || ! is_array($data)) {
+                continue;
+            }
+            if ($code === 'B.sapras') {
+                // B.sapras is filled only if at least one section has a row with actual data
+                foreach ($data['sections'] ?? [] as $section) {
+                    if ($this->hasFilledRows($section['rows'] ?? [])) {
+                        $filledSections++;
+                        break;
+                    }
+                }
+            } else {
+                if ($this->hasFilledRows($data['rows'] ?? [])) {
+                    $filledSections++;
+                }
+            }
+        }
+        return $totalSections > 0 ? ($filledSections / $totalSections) * 100 : 0;
+    }
+
+    private function hasFilledRows(array $rows): bool
+    {
+        foreach ($rows as $row) {
+            if (! is_array($row)) {
+                continue;
+            }
+            foreach ($row as $value) {
+                if ($value !== null && $value !== '' && $value !== false) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
