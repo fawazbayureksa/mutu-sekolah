@@ -190,6 +190,7 @@ return [
         'Magang Guru',
         'Seminar/Workshop',
         'TOT/Asesor',
+        'Pelatihan,Magang & Sertifikasi',
         'Studi Lanjut',
     ],
 

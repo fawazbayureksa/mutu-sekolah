@@ -203,7 +203,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -377,7 +377,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -524,7 +524,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -721,7 +721,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -877,7 +877,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -1201,7 +1201,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -1422,7 +1422,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -1587,7 +1587,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -1737,7 +1737,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -1906,7 +1906,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -2061,7 +2061,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -2240,7 +2240,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, dll.)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -2421,7 +2421,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
@@ -2618,7 +2618,7 @@ return [
                     ['name' => 'Smart Controlroom Console', 'standard_qty' => '1 unit'],
                     ['name' => 'Smart Document Camera', 'standard_qty' => '1 unit'],
                     ['name' => 'Platform Pendukung (Student Response System, digital learning content, mobile learning)', 'standard_qty' => '1 paket'],
-                    ['name' => 'Papan Interaktif Digita (PID)', 'standard_qty' => '1 Unit']
+                    ['name' => 'Papan Interaktif Digital (PID)', 'standard_qty' => '1 Unit']
                 ],
             ],
 
