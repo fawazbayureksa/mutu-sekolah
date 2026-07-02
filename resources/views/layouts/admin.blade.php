@@ -30,7 +30,6 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-sidebar" alt="Logo Mutu Sekolah">
             </a>
         </div>
-
         <ul class="sidebar-menu">
             <li class="sidebar-menu-item">
                 <a href="{{ route('dashboard') }}"
@@ -161,6 +160,17 @@
                 </div>
             </div>
         </nav>
+        @session('success')
+            <div class="alert alert-success m-3">
+                {{ session('success') }}
+            </div>
+        @endsession
+
+        @session('error')
+            <div class="alert alert-danger m-3">
+                {{ session('error') }}
+            </div>
+        @endsession
 
         <div class="page-content">
             @yield('content')
