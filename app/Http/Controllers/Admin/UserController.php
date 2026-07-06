@@ -176,6 +176,24 @@ class UserController extends Controller
         return back()->with('success', 'Password changed successfully');
     }
 
+    public function resetPassword(User $user): RedirectResponse
+    {
+        $newPassword = $user->npsn ?? 'Password2026!'; // You can generate a random password or set a default one
+        $user->update([
+            'password' => Hash::make($newPassword),
+        ]);
+
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'user.password_reset',
+            'model_type' => User::class,
+            'model_id' => $user->id,
+            'description' => "Reset password for user: {$user->name}",
+        ]);
+
+        return back()->with('success', "Password reset successfully. New password: {$newPassword}");
+    }
+
     public function activity(User $user, Request $request): View
     {
         $query = $user->activityLogs();

@@ -161,6 +161,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/{user}/activate', [UserController::class, 'activate'])->name('activate');
             Route::post('/{user}/deactivate', [UserController::class, 'deactivate'])->name('deactivate');
             Route::post('/{user}/password', [UserController::class, 'changePassword'])->name('password');
+            Route::post('/{user}/reset-password', [UserController::class, 'resetPassword'])->name('reset-password');
             Route::get('/{user}/activity', [UserController::class, 'activity'])->name('activity');
             Route::post('/bulk', [UserController::class, 'bulkAction'])->name('bulk');
         });
