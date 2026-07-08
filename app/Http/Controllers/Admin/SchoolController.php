@@ -123,6 +123,27 @@ class SchoolController extends Controller
         return view('admin.schools.submissions', compact('school', 'submissions'));
     }
 
+    public function generateLink(Request $request, School $school): RedirectResponse
+    {
+        try {
+            if ($school->share_token && $school->isShareTokenValid()) {
+                return redirect()
+                    ->route('admin.schools.show', $school)
+                    ->with('info', 'Tautan sudah ada: ' . $school->getShareUrl());
+            }
+
+            $school->generateShareToken(10);
+
+            return redirect()
+                ->route('admin.schools.show', $school)
+                ->with('success', 'Tautan berhasil dibuat: ' . $school->getShareUrl());
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('admin.schools.show', $school)
+                ->with('error', 'Terjadi kesalahan saat membuat tautan: ' . $e->getMessage());
+        }
+    }
+
     public function bulkAction(Request $request): RedirectResponse
     {
         $validated = $request->validate([

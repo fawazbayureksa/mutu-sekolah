@@ -102,6 +102,10 @@
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form> --}}
+                                        <a href="{{ route('admin.schools.generate-link', $school) }}"
+                                            class="btn btn-sm btn-outline-success" title="Generate Link">
+                                            <i class="bi bi-link-45deg"></i>
+                                        </a>
                                     </div>
                                 </td>
                             </tr>

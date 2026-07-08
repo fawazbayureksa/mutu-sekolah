@@ -29,12 +29,15 @@ class School extends Model
         'school_accreditation',
         'curriculum',
         'approval_status',
+        'share_token',
+        'share_token_expires_at',
     ];
 
     protected $casts = [
         'expertise' => 'array',
         'expertise_program' => 'array',
         'expertise_concentration' => 'array',
+        'share_token_expires_at' => 'datetime',
     ];
 
     public function province(): BelongsTo
@@ -75,6 +78,31 @@ class School extends Model
     public function latestSubmission()
     {
         return $this->hasOne(Submission::class)->latestOfMany('filled_at');
+    }
+
+    public function generateShareToken(int $expiresInDays = 3): self
+    {
+        $this->share_token = bin2hex(random_bytes(32));
+        $this->share_token_expires_at = now()->addDays($expiresInDays);
+        $this->save();
+
+        return $this;
+    }
+
+    public function isShareTokenValid(): bool
+    {
+        return $this->share_token !== null
+            && $this->share_token_expires_at !== null
+            && $this->share_token_expires_at->isFuture();
+    }
+
+    public function getShareUrl(): ?string
+    {
+        if (!$this->share_token) {
+            return null;
+        }
+
+        return route('schools.shared.show', $this->share_token);
     }
 
     public function scopeByAddress($query, $address)

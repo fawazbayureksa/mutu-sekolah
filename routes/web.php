@@ -16,6 +16,7 @@ use App\Http\Controllers\School\SchoolPasswordController;
 use App\Http\Controllers\School\SchoolSubmissionController;
 use App\Http\Controllers\PublicInstrumentController;
 use App\Http\Controllers\PublicInstrumentV2Controller;
+use App\Http\Controllers\PublicSchoolController;
 use App\Http\Controllers\SubmissionUpdateController;
 use App\Http\Controllers\SubmissionV2UpdateController;
 use App\Http\Controllers\Verifier\VerifierDashboardController;
@@ -62,6 +63,13 @@ Route::get('/submission-v2/update/{token}', [SubmissionV2UpdateController::class
 Route::post('/submission-v2/update/{token}', [SubmissionV2UpdateController::class, 'update'])
     ->name('submissions-v2.update.store')
     ->middleware('throttle:5,1');
+
+// School shared link (no auth required, token-based)
+Route::get('/school/shared/{token}', [PublicSchoolController::class, 'show'])
+    ->name('schools.shared.show');
+
+Route::get('/school/shared/{token}/submissions/{submission}', [PublicSchoolController::class, 'submissionShow'])
+    ->name('schools.shared.submission');
 
 // Authentication routes
 Route::middleware('guest')->group(function () {
@@ -147,6 +155,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{school}/assessments', [\App\Http\Controllers\Admin\SchoolController::class, 'assessments'])->name('assessments');
             Route::get('/{school}/submissions', [\App\Http\Controllers\Admin\SchoolController::class, 'submissions'])->name('submissions');
             Route::post('/bulk', [\App\Http\Controllers\Admin\SchoolController::class, 'bulkAction'])->name('bulk');
+            Route::get('/{school}/generate-link', [\App\Http\Controllers\Admin\SchoolController::class, 'generateLink'])->name('generate-link');
         });
 
         // User Management
