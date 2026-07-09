@@ -280,6 +280,7 @@ Route::middleware('auth')->group(function () {
         // Laporan routes
         Route::prefix('laporan')->name('laporan.')->group(function () {
             Route::get('/', [LaporanController::class, 'index'])->name('index');
+            Route::get('/detail', [LaporanController::class, 'detail'])->name('detail');
         });
     });
 });

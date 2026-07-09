@@ -244,10 +244,11 @@
                             <thead>
                                 <tr>
                                     <th style="width:5%">No</th>
-                                    <th style="width:25%">Bidang Keahlian</th>
-                                    <th style="width:30%">Program Keahlian</th>
-                                    <th style="width:30%">Konsentrasi Keahlian</th>
-                                    <th style="width:10%" class="text-center">Total Sekolah</th>
+                                    <th style="width:22%">Bidang Keahlian</th>
+                                    <th style="width:27%">Program Keahlian</th>
+                                    <th style="width:27%">Konsentrasi Keahlian</th>
+                                    <th style="width:9%" class="text-center">Total Sekolah</th>
+                                    <th style="width:10%" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -296,6 +297,21 @@
                                                 {{-- Total Sekolah --}}
                                                 <td class="text-center text-bold">
                                                     {{ number_format($row->total_sekolah) }}
+                                                </td>
+
+                                                {{-- Detail button --}}
+                                                <td class="text-center">
+                                                    <a href="{{ route('admin.laporan.detail', array_filter([
+                                                        'expertise'               => $row->expertise,
+                                                        'expertise_program'       => $row->expertise_program,
+                                                        'expertise_concentration' => $row->expertise_concentration,
+                                                        'province_code'           => $provinceCode,
+                                                        'regency_code'            => $regencyCode,
+                                                        'status'                  => $status,
+                                                    ])) }}"
+                                                        class="btn btn-sm btn-outline-primary" title="Lihat daftar sekolah">
+                                                        <i class="bi bi-eye me-1"></i>Detail
+                                                    </a>
                                                 </td>
                                             </tr>
                                             @php

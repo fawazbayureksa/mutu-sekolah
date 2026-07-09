@@ -51,9 +51,9 @@ class LaporanController extends Controller
             ->when($status,       fn($q) => $q->where('status', $status));
 
         $stats = [
-            'total_sekolah'    => (clone $statsQuery)->distinct('npsn')->count('npsn'),
-            'total_bidang'     => (clone $statsQuery)->distinct('expertise')->count('expertise'),
-            'total_program'    => (clone $statsQuery)->distinct('expertise_program')->count('expertise_program'),
+            'total_sekolah'     => (clone $statsQuery)->distinct('npsn')->count('npsn'),
+            'total_bidang'      => (clone $statsQuery)->distinct('expertise')->count('expertise'),
+            'total_program'     => (clone $statsQuery)->distinct('expertise_program')->count('expertise_program'),
             'total_konsentrasi' => (clone $statsQuery)->distinct('expertise_concentration')->count('expertise_concentration'),
         ];
 
@@ -68,6 +68,41 @@ class LaporanController extends Controller
             'stats',
             'provinces',
             'regencies',
+            'provinceCode',
+            'regencyCode',
+            'status',
+        ));
+    }
+
+    public function detail(Request $request): View
+    {
+        // Row-level filter params (passed from the Detail button)
+        $expertise              = $request->get('expertise');
+        $expertiseProgram       = $request->get('expertise_program');
+        $expertiseConcentration = $request->get('expertise_concentration');
+
+        // Carry-through global filters from the index page
+        $provinceCode = $request->get('province_code');
+        $regencyCode  = $request->get('regency_code');
+        $status       = $request->get('status');
+
+        $submissions = InstrumentSubmissionV2::query()
+            ->with(['province', 'regency'])
+            ->when($expertise,              fn($q) => $q->where('expertise', $expertise))
+            ->when($expertiseProgram,       fn($q) => $q->where('expertise_program', $expertiseProgram))
+            ->when($expertiseConcentration, fn($q) => $q->where('expertise_concentration', $expertiseConcentration))
+            ->when($provinceCode,           fn($q) => $q->where('province_code', $provinceCode))
+            ->when($regencyCode,            fn($q) => $q->where('regency_code', $regencyCode))
+            ->when($status,                 fn($q) => $q->where('status', $status))
+            ->orderBy('school_name')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.laporan.detail', compact(
+            'submissions',
+            'expertise',
+            'expertiseProgram',
+            'expertiseConcentration',
             'provinceCode',
             'regencyCode',
             'status',
