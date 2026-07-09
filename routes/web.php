@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\AssessmentAnswerController;
 use App\Http\Controllers\Admin\AssessmentController;
 use App\Http\Controllers\Admin\InstrumentController;
+use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\SchoolController;
 use App\Http\Controllers\Admin\SubmissionController;
@@ -275,5 +276,10 @@ Route::middleware('auth')->group(function () {
 
         // Analytics routes
         Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+
+        // Laporan routes
+        Route::prefix('laporan')->name('laporan.')->group(function () {
+            Route::get('/', [LaporanController::class, 'index'])->name('index');
+        });
     });
 });
