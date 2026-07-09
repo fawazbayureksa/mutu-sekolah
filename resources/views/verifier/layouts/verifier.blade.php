@@ -48,6 +48,14 @@
                 </a>
             </li>
 
+            <li class="sidebar-menu-item">
+                <a href="{{ route('verifier.change-password.edit') }}"
+                    class="sidebar-menu-link {{ request()->is('verifier/change-password*') ? 'active' : '' }}">
+                    <i class="bi bi-key"></i>
+                    <span>Ganti Password</span>
+                </a>
+            </li>
+
             <li class="sidebar-menu-item mt-4">
                 <a href="#"
                     onclick="event.preventDefault(); document.getElementById('sidebar-logout-form').submit();"
