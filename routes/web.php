@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AssessmentAnswerController;
 use App\Http\Controllers\Admin\AssessmentController;
 use App\Http\Controllers\Admin\InstrumentController;
 use App\Http\Controllers\Admin\QuestionController;
+use App\Http\Controllers\Admin\SchoolController;
 use App\Http\Controllers\Admin\SubmissionController;
 use App\Http\Controllers\Admin\SubmissionV2Controller;
 use App\Http\Controllers\Admin\UserController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\PublicSchoolController;
 use App\Http\Controllers\SubmissionUpdateController;
 use App\Http\Controllers\SubmissionV2UpdateController;
 use App\Http\Controllers\Verifier\VerifierDashboardController;
+use App\Http\Controllers\Verifier\VerifierPasswordController;
 use App\Http\Controllers\Verifier\VerifierSubmissionController;
 use Illuminate\Support\Facades\Route;
 
@@ -129,15 +131,19 @@ Route::middleware('auth')->group(function () {
         Route::post('/submissions/{submission}/reject', [VerifierSubmissionController::class, 'reject'])->name('submissions.reject');
         Route::post('/submissions/{submission}/generate-token', [VerifierSubmissionController::class, 'generateUpdateToken'])->name('submissions.generate-token');
 
+        // Change password route for verifier
+        Route::get('/change-password', [VerifierPasswordController::class, 'edit'])->name('change-password.edit');
+        Route::post('/change-password', [VerifierPasswordController::class, 'update'])->name('change-password.update');
+
         // Submission V2 routes for verifier
         Route::prefix('submissions-v2')->name('submissions-v2.')->group(function () {
-            Route::get('/', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'index'])->name('index');
-            Route::get('/{submission}/export', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'exportSingle'])->name('export-single');
-            Route::get('/{submission}', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'show'])->name('show');
-            Route::post('/{submission}/verify', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'verify'])->name('verify');
-            Route::post('/{submission}/reject', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'reject'])->name('reject');
-            Route::post('/{submission}/validate', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'validateSubmission'])->name('validate');
-            Route::post('/{submission}/generate-token', [\App\Http\Controllers\Admin\SubmissionV2Controller::class, 'generateUpdateToken'])->name('generate-token');
+            Route::get('/', [SubmissionV2Controller::class, 'index'])->name('index');
+            Route::get('/{submission}/export', [SubmissionV2Controller::class, 'exportSingle'])->name('export-single');
+            Route::get('/{submission}', [SubmissionV2Controller::class, 'show'])->name('show');
+            Route::post('/{submission}/verify', [SubmissionV2Controller::class, 'verify'])->name('verify');
+            Route::post('/{submission}/reject', [SubmissionV2Controller::class, 'reject'])->name('reject');
+            Route::post('/{submission}/validate', [SubmissionV2Controller::class, 'validateSubmission'])->name('validate');
+            Route::post('/{submission}/generate-token', [SubmissionV2Controller::class, 'generateUpdateToken'])->name('generate-token');
         });
     });
 
@@ -145,17 +151,17 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->middleware(['role:admin'])->name('admin.')->group(function () {
         // School Management
         Route::prefix('schools')->name('schools.')->group(function () {
-            Route::get('/', [\App\Http\Controllers\Admin\SchoolController::class, 'index'])->name('index');
-            Route::get('/create', [\App\Http\Controllers\Admin\SchoolController::class, 'create'])->name('create');
-            Route::post('/', [\App\Http\Controllers\Admin\SchoolController::class, 'store'])->name('store');
-            Route::get('/{school}', [\App\Http\Controllers\Admin\SchoolController::class, 'show'])->name('show');
-            Route::get('/{school}/edit', [\App\Http\Controllers\Admin\SchoolController::class, 'edit'])->name('edit');
-            Route::put('/{school}', [\App\Http\Controllers\Admin\SchoolController::class, 'update'])->name('update');
-            Route::delete('/{school}', [\App\Http\Controllers\Admin\SchoolController::class, 'destroy'])->name('destroy');
-            Route::get('/{school}/assessments', [\App\Http\Controllers\Admin\SchoolController::class, 'assessments'])->name('assessments');
-            Route::get('/{school}/submissions', [\App\Http\Controllers\Admin\SchoolController::class, 'submissions'])->name('submissions');
-            Route::post('/bulk', [\App\Http\Controllers\Admin\SchoolController::class, 'bulkAction'])->name('bulk');
-            Route::get('/{school}/generate-link', [\App\Http\Controllers\Admin\SchoolController::class, 'generateLink'])->name('generate-link');
+            Route::get('/', [SchoolController::class, 'index'])->name('index');
+            Route::get('/create', [SchoolController::class, 'create'])->name('create');
+            Route::post('/', [SchoolController::class, 'store'])->name('store');
+            Route::get('/{school}', [SchoolController::class, 'show'])->name('show');
+            Route::get('/{school}/edit', [SchoolController::class, 'edit'])->name('edit');
+            Route::put('/{school}', [SchoolController::class, 'update'])->name('update');
+            Route::delete('/{school}', [SchoolController::class, 'destroy'])->name('destroy');
+            Route::get('/{school}/assessments', [SchoolController::class, 'assessments'])->name('assessments');
+            Route::get('/{school}/submissions', [SchoolController::class, 'submissions'])->name('submissions');
+            Route::post('/bulk', [SchoolController::class, 'bulkAction'])->name('bulk');
+            Route::get('/{school}/generate-link', [SchoolController::class, 'generateLink'])->name('generate-link');
         });
 
         // User Management
