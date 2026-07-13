@@ -114,6 +114,14 @@
                         <span>Pengajuan</span>
                     </a>
                 </li>
+
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.laporan.index') }}"
+                        class="sidebar-menu-link {{ request()->is('admin/laporan*') ? 'active' : '' }}">
+                        <i class="bi bi-bar-chart-line"></i>
+                        <span>Laporan</span>
+                    </a>
+                </li>
             @endif
 
             <li class="sidebar-menu-item mt-4">
