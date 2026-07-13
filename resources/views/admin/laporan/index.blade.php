@@ -178,7 +178,7 @@
                     </div>
 
                     {{-- Regency --}}
-                    <div class="col-md-3">
+                    {{-- <div class="col-md-3">
                         <label class="form-label small fw-semibold mb-1">Kabupaten / Kota</label>
                         <select name="regency_code" id="regency-select" class="form-select form-select-sm">
                             <option value="">Semua Kab/Kota</option>
@@ -189,7 +189,7 @@
                                 </option>
                             @endforeach
                         </select>
-                    </div>
+                    </div> --}}
 
                     {{-- Status --}}
                     <div class="col-md-3">
@@ -301,14 +301,17 @@
 
                                                 {{-- Detail button --}}
                                                 <td class="text-center">
-                                                    <a href="{{ route('admin.laporan.detail', array_filter([
-                                                        'expertise'               => $row->expertise,
-                                                        'expertise_program'       => $row->expertise_program,
-                                                        'expertise_concentration' => $row->expertise_concentration,
-                                                        'province_code'           => $provinceCode,
-                                                        'regency_code'            => $regencyCode,
-                                                        'status'                  => $status,
-                                                    ])) }}"
+                                                    <a href="{{ route(
+                                                        'admin.laporan.detail',
+                                                        array_filter([
+                                                            'expertise' => $row->expertise,
+                                                            'expertise_program' => $row->expertise_program,
+                                                            'expertise_concentration' => $row->expertise_concentration,
+                                                            'province_code' => $provinceCode,
+                                                            'regency_code' => $regencyCode,
+                                                            'status' => $status,
+                                                        ]),
+                                                    ) }}"
                                                         class="btn btn-sm btn-outline-primary" title="Lihat daftar sekolah">
                                                         <i class="bi bi-eye me-1"></i>Detail
                                                     </a>
