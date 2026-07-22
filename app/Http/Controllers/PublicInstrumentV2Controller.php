@@ -99,7 +99,7 @@ class PublicInstrumentV2Controller extends Controller
 
             'respondent_name'       => 'required|string|max:255',
             'respondent_position'   => ['required', 'string', Rule::in(config('constant.respondent_positions'))],
-
+            'respondent_contact'    => 'nullable|string|max:255',
             // Limit array depth/size to prevent payload bombs
             'answers'               => 'required|array|max:20',
             'answers.*.rows'        => 'sometimes|array|max:200',
@@ -223,6 +223,7 @@ class PublicInstrumentV2Controller extends Controller
                 'curriculum'              => $request->curriculum,
                 'respondent_name'         => $request->respondent_name,
                 'respondent_position'     => $request->respondent_position,
+                'respondent_contact'      => $request->respondent_contact,
                 'form_version'            => '2.0',
                 'answers'                 => $request->answers,
                 'status'                  => InstrumentSubmissionV2::STATUS_SUBMITTED,

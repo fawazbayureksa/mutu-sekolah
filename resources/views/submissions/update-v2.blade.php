@@ -295,6 +295,16 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Kontak Responden <span class="text-danger">*</span></label>
+                                <input type="text" name="respondent_contact"
+                                    class="form-control @error('respondent_contact') is-invalid @enderror" required
+                                    value="{{ old('respondent_contact', $submission->respondent_contact) }}"
+                                    placeholder="Masukkan kontak responden">
+                                @error('respondent_contact')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                     </div>
 

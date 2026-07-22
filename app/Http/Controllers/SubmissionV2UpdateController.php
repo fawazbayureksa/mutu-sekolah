@@ -100,6 +100,7 @@ class SubmissionV2UpdateController extends Controller
             'expertise_concentration' => 'nullable|string|max:255',
             'respondent_name' => 'sometimes|required|string|max:255',
             'respondent_position' => 'sometimes|required|string|max:255',
+            'respondent_contact' => 'sometimes|nullable|string|max:255',
             'answers' => 'sometimes|array',
         ], [
             'school_name.required' => 'Nama sekolah wajib diisi jika Anda ingin memperbarui data sekolah.',
@@ -165,7 +166,9 @@ class SubmissionV2UpdateController extends Controller
             if ($request->filled('respondent_position')) {
                 $data['respondent_position'] = $request->respondent_position;
             }
-
+            if ($request->filled('respondent_contact')) {
+                $data['respondent_contact'] = $request->respondent_contact;
+            }
             // Update answers if provided
             if ($request->filled('answers') && is_array($request->answers)) {
                 $newAnswers = [];

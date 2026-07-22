@@ -250,242 +250,257 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Kontak Responden <span class="text-danger">*</span></label>
+                                <input type="text" name="respondent_contact"
+                                    class="form-control @error('respondent_contact') is-invalid @enderror" required
+                                    value="{{ old('respondent_contact') }}" placeholder="Masukkan kontak responden">
+                                @error('respondent_contact')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
-                    </div>
 
-                    {{-- ASPECT A: Standar Peserta Didik --}}
-                    <div class="form-card mt-3">
-                        <div class="section-title">
-                            <i class="bi bi-journal-text"></i>
-                            <strong>A - Peserta Didik (Kompetensi & Kesiapan Kerja)</strong>
-                        </div>
+                        {{-- ASPECT A: Standar Peserta Didik --}}
+                        <div class="form-card mt-3">
+                            <div class="section-title">
+                                <i class="bi bi-journal-text"></i>
+                                <strong>A - Peserta Didik (Kompetensi & Kesiapan Kerja)</strong>
+                            </div>
 
-                        {{-- A.1: Data Kompetensi (UKK & Sertifikasi) --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">A.1</span>
-                                Data Kompetensi (UKK & Sertifikasi)
-                            </h5>
+                            {{-- A.1: Data Kompetensi (UKK & Sertifikasi) --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">A.1</span>
+                                    Data Kompetensi (UKK & Sertifikasi)
+                                </h5>
 
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">A.1.1</span>
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">A.1.1</span>
+                                    </div>
+                                    <small class="text-muted d-block mb-3">Rekapitulasi UKK dan Sertifikasi per
+                                        Tahun</small>
+                                    @include('instrument.partials.v2.table-a11')
                                 </div>
-                                <small class="text-muted d-block mb-3">Rekapitulasi UKK dan Sertifikasi per Tahun</small>
-                                @include('instrument.partials.v2.table-a11')
                             </div>
-                        </div>
 
-                        {{-- A.1.2: Analisis Skema Sertifikasi dan Kesesuaian KKNI --}}
-                        <div class="indicator-group mb-4">
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">A.1.2</span>
+                            {{-- A.1.2: Analisis Skema Sertifikasi dan Kesesuaian KKNI --}}
+                            <div class="indicator-group mb-4">
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">A.1.2</span>
+                                    </div>
+                                    <p class="indicator-text mb-2">Analisis Skema Sertifikasi dan Kesesuaian KKNI</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isi data skema sertifikasi dan kesesuaian
+                                        dengan
+                                        KKNI
+                                    </small>
+
+                                    @include('instrument.partials.v2.table-a12')
                                 </div>
-                                <p class="indicator-text mb-2">Analisis Skema Sertifikasi dan Kesesuaian KKNI</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data skema sertifikasi dan kesesuaian dengan
-                                    KKNI
-                                </small>
-
-                                @include('instrument.partials.v2.table-a12')
                             </div>
-                        </div>
 
-                        {{-- A.2: Penelusuran Alumni (Tracer Study) --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">A.2</span>
-                                Penelusuran Alumni (Tracer Study)
-                            </h5>
+                            {{-- A.2: Penelusuran Alumni (Tracer Study) --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">A.2</span>
+                                    Penelusuran Alumni (Tracer Study)
+                                </h5>
 
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">A.2.1</span>
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">A.2.1</span>
+                                    </div>
+                                    <p class="indicator-text mb-2">Penelusuran Alumni (Tracer Study)</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isikan berdasarkan Program/Konsentrasi
+                                        Keahlian
+                                        di Dapodik/Penelusuran Lulusan
+                                    </small>
+
+                                    @include('instrument.partials.v2.table-a21')
                                 </div>
-                                <p class="indicator-text mb-2">Penelusuran Alumni (Tracer Study)</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isikan berdasarkan Program/Konsentrasi Keahlian
-                                    di Dapodik/Penelusuran Lulusan
-                                </small>
-
-                                @include('instrument.partials.v2.table-a21')
                             </div>
-                        </div>
 
-                        {{-- A.3: Data Putus Sekolah dan Ketidaknaikan Kelas --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">A.3</span>
-                                Data Putus Sekolah dan Ketidaknaikan Kelas
-                            </h5>
+                            {{-- A.3: Data Putus Sekolah dan Ketidaknaikan Kelas --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">A.3</span>
+                                    Data Putus Sekolah dan Ketidaknaikan Kelas
+                                </h5>
 
-                            <div class="indicator-item">
-                                <p class="indicator-text mb-2">Data Putus Sekolah dan Ketidaknaikan Kelas</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi Data Putus Sekolah dan Ketidaknaikan Kelas
-                                </small>
+                                <div class="indicator-item">
+                                    <p class="indicator-text mb-2">Data Putus Sekolah dan Ketidaknaikan Kelas</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isi Data Putus Sekolah dan Ketidaknaikan
+                                        Kelas
+                                    </small>
 
-                                @include('instrument.partials.v2.table-a3')
-                            </div>
-                        </div>
-
-                        {{-- A.4: Data Skor Rata-rata TKA Tahun 2025 --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">A.4</span>
-                                Data Skor Rata-rata TKA Tahun 2025
-                            </h5>
-
-                            <div class="indicator-item">
-                                <p class="indicator-text mb-2">Data Skor Rata-rata TKA Tahun 2025</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isikan nilai rata-rata mata pelajaran yang
-                                    diujikan di sekolah dan sesuai dengan program/konsentrasi keahlian Murid (Kelautan,
-                                    Perikanan, TIK).
-                                </small>
-                                @include('instrument.partials.v2.table-a4')
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- ASPECT B: Data wPrasarana --}}
-                    <div class="form-card mt-3">
-                        <div class="section-title">
-                            <i class="bi bi-journal-text"></i>
-                            <strong>B - Data Sarana Prasarana (Sapras)</strong>
-                        </div>
-
-                        {{-- Hidden input to store all sapras data --}}
-                        <input type="hidden" name="answers[B.sapras]" id="sapras-data-input" value="{}">
-
-                        {{-- Placeholder when no concentration is selected --}}
-                        <div id="sapras-placeholder" class="text-center py-5">
-                            <i class="bi bi-building-gear" style="font-size: 3rem; color: #dee2e6;"></i>
-                            <p class="text-muted mt-3 mb-0">Pilih <strong>Konsentrasi Keahlian</strong> pada bagian Data
-                                Sekolah di atas untuk menampilkan tabel Sarana Prasarana.</p>
-                        </div>
-
-                        {{-- Loading indicator --}}
-                        <div id="sapras-loading" class="text-center py-5" style="display: none;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="text-muted mt-3 mb-0">Memuat data sarana prasarana...</p>
-                        </div>
-
-                        {{-- Dynamic sapras container --}}
-                        <div id="sapras-container" style="display: none;"></div>
-                    </div>
-
-                    {{-- ASPECT C: Data Tata Kelola --}}
-                    <div class="form-card mt-3">
-                        <div class="section-title">
-                            <i class="bi bi-journal-text"></i>
-                            <strong>C - Data Tata Kelola</strong>
-                        </div>
-
-                        {{-- C.1: Kerjasama Industri --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">C.1</span>
-                                Kerjasama Industri
-                            </h5>
-
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">C.1.1</span>
-                                    <span class="badge bg-info ms-2">Dynamic Rows</span>
+                                    @include('instrument.partials.v2.table-a3')
                                 </div>
-                                <p class="indicator-text mb-2">Kerjasama Industri</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data kerjasama dengan industri mitra
-                                </small>
+                            </div>
 
-                                @include('instrument.partials.v2.table-c11')
+                            {{-- A.4: Data Skor Rata-rata TKA Tahun 2025 --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">A.4</span>
+                                    Data Skor Rata-rata TKA Tahun 2025
+                                </h5>
+
+                                <div class="indicator-item">
+                                    <p class="indicator-text mb-2">Data Skor Rata-rata TKA Tahun 2025</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isikan nilai rata-rata mata pelajaran yang
+                                        diujikan di sekolah dan sesuai dengan program/konsentrasi keahlian Murid (Kelautan,
+                                        Perikanan, TIK).
+                                    </small>
+                                    @include('instrument.partials.v2.table-a4')
+                                </div>
                             </div>
                         </div>
 
-                        {{-- C.2: Teaching Factory (TEFA) --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">C.2</span>
-                                Teaching Factory (TEFA) / Unit Produksi Sekolah
-                            </h5>
+                        {{-- ASPECT B: Data wPrasarana --}}
+                        <div class="form-card mt-3">
+                            <div class="section-title">
+                                <i class="bi bi-journal-text"></i>
+                                <strong>B - Data Sarana Prasarana (Sapras)</strong>
+                            </div>
 
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">C.2.1</span>
-                                    <span class="badge bg-info ms-2">Dynamic Rows</span>
+                            {{-- Hidden input to store all sapras data --}}
+                            <input type="hidden" name="answers[B.sapras]" id="sapras-data-input" value="{}">
+
+                            {{-- Placeholder when no concentration is selected --}}
+                            <div id="sapras-placeholder" class="text-center py-5">
+                                <i class="bi bi-building-gear" style="font-size: 3rem; color: #dee2e6;"></i>
+                                <p class="text-muted mt-3 mb-0">Pilih <strong>Konsentrasi Keahlian</strong> pada bagian
+                                    Data
+                                    Sekolah di atas untuk menampilkan tabel Sarana Prasarana.</p>
+                            </div>
+
+                            {{-- Loading indicator --}}
+                            <div id="sapras-loading" class="text-center py-5" style="display: none;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
                                 </div>
-                                <p class="indicator-text mb-2">Teaching Factory (TEFA) / Unit Produksi Sekolah</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data program Teaching Factory atau Unit
-                                    Produksi Sekolah
-                                </small>
+                                <p class="text-muted mt-3 mb-0">Memuat data sarana prasarana...</p>
+                            </div>
 
-                                @include('instrument.partials.v2.table-c21')
+                            {{-- Dynamic sapras container --}}
+                            <div id="sapras-container" style="display: none;"></div>
+                        </div>
+
+                        {{-- ASPECT C: Data Tata Kelola --}}
+                        <div class="form-card mt-3">
+                            <div class="section-title">
+                                <i class="bi bi-journal-text"></i>
+                                <strong>C - Data Tata Kelola</strong>
+                            </div>
+
+                            {{-- C.1: Kerjasama Industri --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">C.1</span>
+                                    Kerjasama Industri
+                                </h5>
+
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">C.1.1</span>
+                                        <span class="badge bg-info ms-2">Dynamic Rows</span>
+                                    </div>
+                                    <p class="indicator-text mb-2">Kerjasama Industri</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isi data kerjasama dengan industri mitra
+                                    </small>
+
+                                    @include('instrument.partials.v2.table-c11')
+                                </div>
+                            </div>
+
+                            {{-- C.2: Teaching Factory (TEFA) --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">C.2</span>
+                                    Teaching Factory (TEFA) / Unit Produksi Sekolah
+                                </h5>
+
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">C.2.1</span>
+                                        <span class="badge bg-info ms-2">Dynamic Rows</span>
+                                    </div>
+                                    <p class="indicator-text mb-2">Teaching Factory (TEFA) / Unit Produksi Sekolah</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isi data program Teaching Factory atau Unit
+                                        Produksi Sekolah
+                                    </small>
+
+                                    @include('instrument.partials.v2.table-c21')
+                                </div>
+                            </div>
+
+                            {{-- C.3: Data Pelatihan dan Sertifikasi Guru --}}
+                            <div class="indicator-group mb-4">
+                                <h5 class="indicator-header mb-3">
+                                    <span class="badge bg-secondary me-2">C.3</span>
+                                    Data Pelatihan dan Sertifikasi Guru/Guru Produktif
+                                </h5>
+
+                                <div class="indicator-item mb-3">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">C.3.1</span>
+                                        <span class="badge bg-info ms-2">Dynamic Rows</span>
+                                    </div>
+                                    <p class="indicator-text mb-2">Data Pelatihan dan Sertifikasi Guru yang Telah Diikuti
+                                    </p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isi data pelatihan dan sertifikasi yang telah
+                                        diikuti oleh guru
+                                    </small>
+
+                                    @include('instrument.partials.v2.table-c31')
+                                </div>
+
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">C.3.2</span>
+                                    </div>
+                                    <p class="indicator-text mb-2">Analisis Kebutuhan Pelatihan Guru ke Depan</p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>(Diisi oleh Guru/Wakasek Kurikulum/Kepsek)
+                                    </small>
+
+                                    @include('instrument.partials.v2.form-c32')
+                                </div>
+
+                                <div class="indicator-item">
+                                    <div class="mb-2">
+                                        <span class="indicator-code">C.3.3</span>
+                                    </div>
+                                    <p class="indicator-text mb-2">Data Ketenagaan dan Beban Mengajar (Rasio Guru-Murid)
+                                    </p>
+                                    <small class="text-muted d-block mb-3">
+                                        <i class="bi bi-info-circle me-1"></i>Isikan untuk setiap Kompetensi Keahlian
+                                        (Konsentrasi) yang aktif
+                                    </small>
+
+                                    @include('instrument.partials.v2.table-c33')
+                                </div>
                             </div>
                         </div>
 
-                        {{-- C.3: Data Pelatihan dan Sertifikasi Guru --}}
-                        <div class="indicator-group mb-4">
-                            <h5 class="indicator-header mb-3">
-                                <span class="badge bg-secondary me-2">C.3</span>
-                                Data Pelatihan dan Sertifikasi Guru/Guru Produktif
-                            </h5>
-
-                            <div class="indicator-item mb-3">
-                                <div class="mb-2">
-                                    <span class="indicator-code">C.3.1</span>
-                                    <span class="badge bg-info ms-2">Dynamic Rows</span>
-                                </div>
-                                <p class="indicator-text mb-2">Data Pelatihan dan Sertifikasi Guru yang Telah Diikuti</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isi data pelatihan dan sertifikasi yang telah
-                                    diikuti oleh guru
-                                </small>
-
-                                @include('instrument.partials.v2.table-c31')
-                            </div>
-
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">C.3.2</span>
-                                </div>
-                                <p class="indicator-text mb-2">Analisis Kebutuhan Pelatihan Guru ke Depan</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>(Diisi oleh Guru/Wakasek Kurikulum/Kepsek)
-                                </small>
-
-                                @include('instrument.partials.v2.form-c32')
-                            </div>
-
-                            <div class="indicator-item">
-                                <div class="mb-2">
-                                    <span class="indicator-code">C.3.3</span>
-                                </div>
-                                <p class="indicator-text mb-2">Data Ketenagaan dan Beban Mengajar (Rasio Guru-Murid)</p>
-                                <small class="text-muted d-block mb-3">
-                                    <i class="bi bi-info-circle me-1"></i>Isikan untuk setiap Kompetensi Keahlian
-                                    (Konsentrasi) yang aktif
-                                </small>
-
-                                @include('instrument.partials.v2.table-c33')
-                            </div>
+                        {{-- Submit Button --}}
+                        <div class="d-grid gap-3 col-lg-6 mx-auto mt-5 mb-5">
+                            <button type="submit" class="btn btn-primary btn-lg shadow rounded-pill py-3 fw-bold"
+                                style="font-size: 1rem;">
+                                <i class="bi bi-send-fill me-2"></i> Kirim Data Instrumen
+                            </button>
+                            <a href="{{ route('landing') }}" class="btn btn-outline-secondary rounded-pill border-0">
+                                <i class="bi bi-arrow-left me-2"></i>Kembali ke Halaman Utama
+                            </a>
                         </div>
-                    </div>
-
-                    {{-- Submit Button --}}
-                    <div class="d-grid gap-3 col-lg-6 mx-auto mt-5 mb-5">
-                        <button type="submit" class="btn btn-primary btn-lg shadow rounded-pill py-3 fw-bold"
-                            style="font-size: 1rem;">
-                            <i class="bi bi-send-fill me-2"></i> Kirim Data Instrumen
-                        </button>
-                        <a href="{{ route('landing') }}" class="btn btn-outline-secondary rounded-pill border-0">
-                            <i class="bi bi-arrow-left me-2"></i>Kembali ke Halaman Utama
-                        </a>
-                    </div>
                 </form>
             </div>
         </div>
