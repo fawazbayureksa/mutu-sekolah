@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         //
-        Schema::table('instrument_submission_v2', function (Blueprint $table) {
+        Schema::table('instrument_submissions_v2', function (Blueprint $table) {
             $table->string('respondent_contact')->comment('Kontak responden')->nullable()->after('respondent_position');
         });
     }
