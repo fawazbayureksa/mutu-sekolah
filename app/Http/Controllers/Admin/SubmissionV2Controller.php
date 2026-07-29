@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\InstrumentSubmissionV2;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -73,6 +74,10 @@ class SubmissionV2Controller extends Controller
             'verified_at' => now(),
             'verification_notes' => $request->notes,
         ];
+
+        if (Auth::user()->role == 'admin') {
+            $updateData['status'] = InstrumentSubmissionV2::STATUS_VALIDATED;
+        }
 
         if ($request->has('section_notes')) {
             $existingNotes = $submission->section_notes ?? [];

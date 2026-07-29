@@ -17,14 +17,14 @@
             </div>
             <div class="d-flex gap-2">
                 @if ($submission->status === 'submitted')
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#verifyModal">
+                    <button type="button" class="btn btn-success" onclick="toggleReviewForm()">
                         <i class="bi bi-check-lg me-1"></i> Verifikasi
                     </button>
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
                         <i class="bi bi-x-lg me-1"></i> Tolak
                     </button>
                 @elseif($submission->status === 'verified')
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#validateModal">
+                    <button type="button" class="btn btn-primary" onclick="toggleReviewForm()">
                         <i class="bi bi-patch-check me-1"></i> Validasi
                     </button>
                 @endif
@@ -132,7 +132,7 @@
         {{-- ② Review Jawaban --}}
         <form action="{{ route('admin.submissions-v2.section-notes', $submission) }}" method="POST">
             @csrf
-            <div class="card shadow-sm border-0 mb-4">
+            <div class="card shadow-sm border-0 mb-4" id="reviewJawabanCard">
                 <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-2">
                         <span class="rounded-circle d-inline-flex align-items-center justify-content-center"
@@ -142,9 +142,18 @@
                         <span class="fw-semibold">Review Jawaban & Catatan Verifikasi</span>
                     </div>
                     @if (in_array($submission->status, ['submitted', 'verified']))
-                        <button type="submit" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-save me-1"></i> Simpan Catatan Review
-                        </button>
+                        <div class="d-flex gap-2 align-items-center">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="toggleReviewForm()">
+                                <i class="bi bi-pencil-square me-1"></i> <span id="toggleBtnText">Buka Form Validasi</span>
+                            </button>
+                            <div class="submit-feedback-bar d-none">
+                                <button type="submit"
+                                    formaction="{{ route('admin.submissions-v2.section-notes', $submission) }}"
+                                    class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-save me-1"></i> Simpan Catatan Review
+                                </button>
+                            </div>
+                        </div>
                     @endif
                 </div>
                 <div class="card-body">
@@ -263,7 +272,11 @@
                                     'label' => '4. Sertifikasi (BNSP/LSP)',
                                     'type' => 'boolean',
                                 ],
-                                ['key' => 'program_pelatihan', 'label' => '5. Pelatihan Guru', 'type' => 'boolean'],
+                                [
+                                    'key' => 'program_pelatihan',
+                                    'label' => '5. Pelatihan Guru',
+                                    'type' => 'boolean',
+                                ],
                                 [
                                     'key' => 'program_rekrutmen',
                                     'label' => '6. Penyerapan Lulusan',
@@ -271,7 +284,11 @@
                                 ],
                                 ['key' => 'program_tefa', 'label' => '7. Teaching Factory', 'type' => 'boolean'],
                                 ['key' => 'program_kelas', 'label' => '8. Kelas Industri', 'type' => 'boolean'],
-                                ['key' => 'program_csr', 'label' => '9. CSR/Alat/Bahan/Beasiswa', 'type' => 'boolean'],
+                                [
+                                    'key' => 'program_csr',
+                                    'label' => '9. CSR/Alat/Bahan/Beasiswa',
+                                    'type' => 'boolean',
+                                ],
                                 ['key' => 'program_lainnya_text', 'label' => '10. Lainnya'],
                                 ['key' => 'contribution_quantitative', 'label' => 'Kontribusi Kuantitatif'],
                                 ['key' => 'contribution_qualitative', 'label' => 'Kontribusi Kualitatif'],
@@ -309,9 +326,21 @@
                                     'label' => '4. Analisis Sumber Daya',
                                     'type' => 'boolean',
                                 ],
-                                ['key' => 'tefa_pengerjaan', 'label' => '5. Pengerjaan Produk', 'type' => 'boolean'],
-                                ['key' => 'tefa_penyerahan', 'label' => '6. Penyerahan Produk', 'type' => 'boolean'],
-                                ['key' => 'tefa_purna_jual', 'label' => '7. Layanan Purna Jual', 'type' => 'boolean'],
+                                [
+                                    'key' => 'tefa_pengerjaan',
+                                    'label' => '5. Pengerjaan Produk',
+                                    'type' => 'boolean',
+                                ],
+                                [
+                                    'key' => 'tefa_penyerahan',
+                                    'label' => '6. Penyerahan Produk',
+                                    'type' => 'boolean',
+                                ],
+                                [
+                                    'key' => 'tefa_purna_jual',
+                                    'label' => '7. Layanan Purna Jual',
+                                    'type' => 'boolean',
+                                ],
                                 ['key' => 'certification', 'label' => 'Sertifikasi Kompetensi'],
                                 ['key' => 'curriculum_sync', 'label' => 'Sinkronisasi Kurikulum'],
                                 ['key' => 'branding_haki', 'label' => 'Branding/HAKI'],
@@ -388,11 +417,40 @@
                     </div>
                 </div>
                 @if (in_array($submission->status, ['submitted', 'verified']))
-                    <div class="card-footer bg-white border-top py-3 d-flex justify-content-between align-items-center">
-                        <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>Klik Simpan untuk menyimpan seluruh catatan per bagian.</span>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save me-1"></i> Simpan Catatan Review
-                        </button>
+                    <div class="card-footer bg-white border-top py-3 submit-feedback-bar d-none">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-dark"><i
+                                    class="bi bi-chat-left-text me-1"></i>Catatan Verifikasi / Validasi Keseluruhan
+                                (Opsional)</label>
+                            <textarea name="notes" class="form-control form-control-sm" rows="2"
+                                placeholder="Masukkan catatan umum untuk seluruh pengajuan ini..."></textarea>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>Pilih aksi untuk
+                                menyimpan catatan per bagian atau menyelesaikan status.</span>
+                            <div class="d-flex gap-2">
+                                <button type="submit"
+                                    formaction="{{ route('admin.submissions-v2.section-notes', $submission) }}"
+                                    class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-save me-1"></i> Simpan Catatan Review
+                                </button>
+                                @if ($submission->status === 'submitted')
+                                    <button type="submit"
+                                        formaction="{{ route('admin.submissions-v2.verify', $submission) }}"
+                                        class="btn btn-success btn-sm"
+                                        onclick="return confirm('Apakah Anda yakin ingin memverifikasi pengajuan ini?')">
+                                        <i class="bi bi-check-lg me-1"></i> Selesaikan & Verifikasi
+                                    </button>
+                                @elseif ($submission->status === 'verified')
+                                    <button type="submit"
+                                        formaction="{{ route('admin.submissions-v2.validate', $submission) }}"
+                                        class="btn btn-primary btn-sm"
+                                        onclick="return confirm('Apakah Anda yakin ingin memvalidasi pengajuan ini?')">
+                                        <i class="bi bi-patch-check me-1"></i> Selesaikan & Validasi
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 @endif
             </div>
@@ -404,8 +462,8 @@
             {{-- School Info --}}
             <div class="accordion-item border-0 mb-2 rounded shadow-sm overflow-hidden">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed fw-semibold bg-white" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseSchool">
+                    <button class="accordion-button collapsed fw-semibold bg-white" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#collapseSchool">
                         <i class="bi bi-building me-2 text-primary"></i>Informasi Sekolah
                     </button>
                 </h2>
@@ -747,6 +805,47 @@
 
 @push('scripts')
     <script>
+        function toggleReviewForm() {
+            const boxes = document.querySelectorAll('.section-review-input-box');
+            const submitBars = document.querySelectorAll('.submit-feedback-bar');
+            const toggleBtnText = document.getElementById('toggleBtnText');
+
+            if (boxes.length === 0 && submitBars.length === 0) return;
+
+            const opening = boxes.length > 0 ? boxes[0].classList.contains('d-none') : submitBars[0].classList.contains(
+                'd-none');
+
+            boxes.forEach(box => {
+                if (opening) {
+                    box.classList.remove('d-none');
+                } else {
+                    box.classList.add('d-none');
+                }
+            });
+
+            submitBars.forEach(bar => {
+                if (opening) {
+                    bar.classList.remove('d-none');
+                } else {
+                    bar.classList.add('d-none');
+                }
+            });
+
+            if (toggleBtnText) {
+                toggleBtnText.textContent = opening ? 'Tutup Form Validasi' : 'Buka Form Validasi';
+            }
+
+            if (opening) {
+                const target = document.getElementById('reviewJawabanCard');
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+        }
+
         function copyToClipboard(text) {
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(text).then(function() {

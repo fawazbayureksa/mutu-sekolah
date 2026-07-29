@@ -24,7 +24,7 @@
         <div class="d-flex align-items-start gap-2">
             <i class="bi {{ $secStatus === 'rejected' ? 'bi-exclamation-circle-fill text-danger' : 'bi-info-circle-fill text-info' }} fs-6 mt-1 flex-shrink-0"></i>
             <div class="flex-grow-1">
-                <strong>Catatan Catatan Perbaikan ({{ $secCode }}):</strong>
+                <strong>Catatan Perbaikan ({{ $secCode }}):</strong>
                 <p class="mb-0 text-break">{{ $secNotes }}</p>
             </div>
         </div>
@@ -33,7 +33,7 @@
 
 {{-- Inline Review Form for Admin / Verifier --}}
 @if ($isReviewer && isset($submission) && in_array($submission->status, ['submitted', 'verified']))
-    <div class="card border border-warning-subtle bg-light-subtle mb-3">
+    <div class="card border border-warning-subtle bg-light-subtle mb-3 section-review-input-box d-none">
         <div class="card-body p-2">
             <div class="d-flex justify-content-between align-items-center mb-1">
                 <small class="fw-semibold text-dark"><i class="bi bi-pencil-square me-1"></i>Catatan Review Bagian {{ $secCode }}</small>
