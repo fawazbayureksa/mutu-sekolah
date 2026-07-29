@@ -130,233 +130,273 @@
         </div>
 
         {{-- ② Review Jawaban --}}
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="card-header bg-white border-bottom py-3 d-flex align-items-center gap-2">
-                <span class="rounded-circle d-inline-flex align-items-center justify-content-center"
-                    style="width:32px;height:32px;background:#e8ecff;">
-                    <i class="bi bi-file-text text-primary" style="font-size:.9rem;"></i>
-                </span>
-                <span class="fw-semibold">Review Jawaban</span>
+        <form action="{{ route('admin.submissions-v2.section-notes', $submission) }}" method="POST">
+            @csrf
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="rounded-circle d-inline-flex align-items-center justify-content-center"
+                            style="width:32px;height:32px;background:#e8ecff;">
+                            <i class="bi bi-file-text text-primary" style="font-size:.9rem;"></i>
+                        </span>
+                        <span class="fw-semibold">Review Jawaban & Catatan Verifikasi</span>
+                    </div>
+                    @if (in_array($submission->status, ['submitted', 'verified']))
+                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-save me-1"></i> Simpan Catatan Review
+                        </button>
+                    @endif
+                </div>
+                <div class="card-body">
+                    @php
+                        $answers = $submission->answers ?? [];
+                    @endphp
+
+                    {{-- ASPECT A --}}
+                    <div class="mb-5">
+                        <h5 class="text-primary border-bottom pb-2 mb-3">
+                            <i class="bi bi-journal-text me-2"></i>A - Peserta Didik
+                        </h5>
+                        @include('admin.submissions-v2.partials.section-table', [
+                            'code' => 'A.1.1',
+                            'title' => 'Data Kelulusan Uji Kompetensi dan Sertifikasi',
+                            'data' => $answers['A.1.1'] ?? null,
+                            'submission' => $submission,
+                            'canReview' => true,
+                            'columns' => [
+                                ['key' => 'year', 'label' => 'Tahun Ajaran'],
+                                ['key' => 'label', 'label' => 'Jenis Ujian/Sertifikasi'],
+                                ['key' => 'total_participants', 'label' => 'Jumlah Peserta'],
+                                ['key' => 'total_passed', 'label' => 'Jumlah Lulus'],
+                                ['key' => 'pass_rate', 'label' => 'Tingkat Kelulusan (%)'],
+                                ['key' => 'organizer', 'label' => 'Lembaga Penyelenggara'],
+                                ['key' => 'description', 'label' => 'Keterangan'],
+                            ],
+                            'dynamicRows' => true,
+                        ])
+                        @include('admin.submissions-v2.partials.section-table', [
+                            'code' => 'A.1.2',
+                            'title' => 'Analisis Skema Sertifikasi dan Kesesuaian KKNI',
+                            'data' => $answers['A.1.2'] ?? null,
+                            'submission' => $submission,
+                            'canReview' => true,
+                            'columns' => [
+                                ['key' => 'label', 'label' => 'Skema Sertifikasi'],
+                                ['key' => 'scheme_type', 'label' => 'Jenis Kemasan'],
+                                ['key' => 'kkni_level', 'label' => 'Jenjang KKNI'],
+                                ['key' => 'competency_units', 'label' => 'Jumlah Unit Kompetensi'],
+                                ['key' => 'compliance', 'label' => 'Kesesuaian'],
+                                ['key' => 'remarks', 'label' => 'Keterangan'],
+                            ],
+                            'dynamicRows' => true,
+                        ])
+                        @include('admin.submissions-v2.partials.section-tracer', [
+                            'code' => 'A.2.1',
+                            'title' => 'Penelusuran Alumni (Tracer Study)',
+                            'data' => $answers['A.2.1'] ?? null,
+                            'submission' => $submission,
+                            'canReview' => true,
+                        ])
+                        @include('admin.submissions-v2.partials.section-table', [
+                            'code' => 'A.3',
+                            'title' => 'Data Putus Sekolah dan Ketidaknaikan Kelas',
+                            'data' => $answers['A.3'] ?? null,
+                            'submission' => $submission,
+                            'canReview' => true,
+                            'columns' => [
+                                ['key' => 'year', 'label' => 'Tahun Ajaran'],
+                                ['key' => 'initial_students', 'label' => 'Jumlah Murid Awal'],
+                                ['key' => 'final_students', 'label' => 'Jumlah Murid Akhir'],
+                                ['key' => 'dropouts', 'label' => 'Jumlah Putus Sekolah'],
+                                ['key' => 'failed_students', 'label' => 'Jumlah Tidak Naik Kelas'],
+                                ['key' => 'dropout_percentage', 'label' => '% Putus Sekolah'],
+                                ['key' => 'main_factor', 'label' => 'Faktor Utama Penyebab'],
+                                ['key' => 'main_factor_other', 'label' => 'Faktor Lainnya (Keterangan)'],
+                            ],
+                            'dynamicRows' => true,
+                        ])
+                        @include('admin.submissions-v2.partials.section-a4', [
+                            'data' => $answers['A.4'] ?? null,
+                            'submission' => $submission,
+                            'canReview' => true,
+                        ])
+                    </div>
+
+                    {{-- ASPECT B --}}
+                    <div class="mb-5">
+                        <h5 class="text-primary border-bottom pb-2 mb-3">
+                            <i class="bi bi-journal-text me-2"></i>B - Data Sarana Prasarana
+                        </h5>
+                        @include('admin.submissions-v2.partials.section-sapras', [
+                            'code' => 'B.sapras',
+                            'title' => 'Inventarisasi Sarana Prasarana per Konsentrasi Keahlian',
+                            'data' => $answers['B.sapras'] ?? null,
+                            'submission' => $submission,
+                            'canReview' => true,
+                        ])
+                    </div>
+
+                    {{-- ASPECT C --}}
+                    <div class="mb-5">
+                        <h5 class="text-primary border-bottom pb-2 mb-3">
+                            <i class="bi bi-journal-text me-2"></i>C - Data Tata Kelola
+                        </h5>
+                        @include('admin.submissions-v2.partials.section-table', [
+                            'code' => 'C.1.1',
+                            'title' => 'Kerjasama Industri',
+                            'data' => $answers['C.1.1'] ?? null,
+                            'submission' => $submission,
+                            'canReview' => true,
+                            'columns' => [
+                                ['key' => 'partner_name', 'label' => 'Nama Industri Mitra'],
+                                ['key' => 'mou_status', 'label' => 'Status MoU/MoA'],
+                                ['key' => 'duration', 'label' => 'Durasi (Tahun)'],
+                                [
+                                    'key' => 'program_kurikulum',
+                                    'label' => '1. Penyelarasan Kurikulum',
+                                    'type' => 'boolean',
+                                ],
+                                ['key' => 'program_guru', 'label' => '2. Guru Tamu', 'type' => 'boolean'],
+                                ['key' => 'program_magang', 'label' => '3. Magang/PKL Siswa', 'type' => 'boolean'],
+                                [
+                                    'key' => 'program_sertifikasi',
+                                    'label' => '4. Sertifikasi (BNSP/LSP)',
+                                    'type' => 'boolean',
+                                ],
+                                ['key' => 'program_pelatihan', 'label' => '5. Pelatihan Guru', 'type' => 'boolean'],
+                                [
+                                    'key' => 'program_rekrutmen',
+                                    'label' => '6. Penyerapan Lulusan',
+                                    'type' => 'boolean',
+                                ],
+                                ['key' => 'program_tefa', 'label' => '7. Teaching Factory', 'type' => 'boolean'],
+                                ['key' => 'program_kelas', 'label' => '8. Kelas Industri', 'type' => 'boolean'],
+                                ['key' => 'program_csr', 'label' => '9. CSR/Alat/Bahan/Beasiswa', 'type' => 'boolean'],
+                                ['key' => 'program_lainnya_text', 'label' => '10. Lainnya'],
+                                ['key' => 'contribution_quantitative', 'label' => 'Kontribusi Kuantitatif'],
+                                ['key' => 'contribution_qualitative', 'label' => 'Kontribusi Kualitatif'],
+                            ],
+                            'dynamicRows' => true,
+                        ])
+                        @include('admin.submissions-v2.partials.section-table', [
+                            'code' => 'C.2.1',
+                            'title' => 'Teaching Factory (TEFA) / Unit Produksi Sekolah',
+                            'data' => $answers['C.2.1'] ?? null,
+                            'submission' => $submission,
+                            'canReview' => true,
+                            'columns' => [
+                                ['key' => 'kategori_tefa', 'label' => 'Kategori TEFA'],
+                                ['key' => 'product_name', 'label' => 'Nama Produk (Barang/Jasa)'],
+                                ['key' => 'product_description', 'label' => 'Deskripsi Produk'],
+                                ['key' => 'industry_partner', 'label' => 'Mitra Industri'],
+                                [
+                                    'key' => 'tefa_identifikasi',
+                                    'label' => '1. Identifikasi Produk',
+                                    'type' => 'boolean',
+                                ],
+                                [
+                                    'key' => 'tefa_analisis_komp',
+                                    'label' => '2. Analisis Kompetensi',
+                                    'type' => 'boolean',
+                                ],
+                                [
+                                    'key' => 'tefa_perencanaan',
+                                    'label' => '3. Perencanaan Produksi',
+                                    'type' => 'boolean',
+                                ],
+                                [
+                                    'key' => 'tefa_analisis_sda',
+                                    'label' => '4. Analisis Sumber Daya',
+                                    'type' => 'boolean',
+                                ],
+                                ['key' => 'tefa_pengerjaan', 'label' => '5. Pengerjaan Produk', 'type' => 'boolean'],
+                                ['key' => 'tefa_penyerahan', 'label' => '6. Penyerahan Produk', 'type' => 'boolean'],
+                                ['key' => 'tefa_purna_jual', 'label' => '7. Layanan Purna Jual', 'type' => 'boolean'],
+                                ['key' => 'certification', 'label' => 'Sertifikasi Kompetensi'],
+                                ['key' => 'curriculum_sync', 'label' => 'Sinkronisasi Kurikulum'],
+                                ['key' => 'branding_haki', 'label' => 'Branding/HAKI'],
+                                ['key' => 'quality_evaluation', 'label' => 'Evaluasi Mutu Produk'],
+                                ['key' => 'revenue_activity', 'label' => 'Omzet (Rp/Bulan/Tahun)'],
+                                ['key' => 'industry_contribution', 'label' => 'Keterlibatan Alumni/Industri'],
+                                ['key' => 'constraints', 'label' => 'Kendala'],
+                            ],
+                            'dynamicRows' => true,
+                        ])
+                        @include('admin.submissions-v2.partials.section-table', [
+                            'code' => 'C.3.1',
+                            'title' => 'Data Pelatihan dan Sertifikasi Guru',
+                            'data' => $answers['C.3.1'] ?? null,
+                            'submission' => $submission,
+                            'canReview' => true,
+                            'columns' => [
+                                ['key' => 'teacher_name', 'label' => 'Nama Guru'],
+                                ['key' => 'subject', 'label' => 'Mata Pelajaran'],
+                                ['key' => 'competency_type', 'label' => 'Jenis Pelatihan/Sertifikasi'],
+                                ['key' => 'training_title', 'label' => 'Judul Pelatihan'],
+                                ['key' => 'year', 'label' => 'Tahun'],
+                                ['key' => 'provider', 'label' => 'Penyedia'],
+                                ['key' => 'duration', 'label' => 'Durasi'],
+                                ['key' => 'evidence', 'label' => 'Bukti'],
+                                ['key' => 'remarks', 'label' => 'Keterangan'],
+                            ],
+                            'dynamicRows' => true,
+                        ])
+                        @include('admin.submissions-v2.partials.section-table', [
+                            'code' => 'C.3.2',
+                            'title' => 'Analisis Kebutuhan Pelatihan Guru ke Depan',
+                            'data' => $answers['C.3.2'] ?? null,
+                            'submission' => $submission,
+                            'canReview' => true,
+                            'columns' => [
+                                ['key' => 'current_condition', 'label' => 'Kondisi Saat Ini'],
+                                ['key' => 'gap', 'label' => 'Kesenjangan'],
+                            ],
+                            'staticRows' => [
+                                'Persentase guru produktif bersertifikat kompetensi (BNSP/Industri)',
+                                'Rata-rata jam pelatihan per guru per tahun',
+                                'Keterlibatan dalam magang industri',
+                                'Frekuensi update teknologi/kompetensi',
+                                'Ketersediaan guru dengan sertifikat asesor BNSP',
+                            ],
+                        ])
+                        @include('admin.submissions-v2.partials.section-table', [
+                            'code' => 'C.3.3',
+                            'title' => 'Data Ketenagaan dan Beban Mengajar (Rasio Guru-Murid)',
+                            'data' => $answers['C.3.3'] ?? null,
+                            'submission' => $submission,
+                            'canReview' => true,
+                            'columns' => [
+                                ['key' => 'concentration', 'label' => 'Konsentrasi Keahlian'],
+                                ['key' => 'total_teacher_count', 'label' => 'Jumlah Guru (PNA)'],
+                                ['key' => 'student_count', 'label' => 'Jumlah Total Murid'],
+                                ['key' => 'ideal_ratio', 'label' => 'Rasio Ideal (Guru PNA : Murid)'],
+                                ['key' => 'ratio_gm', 'label' => 'Rasio Guru:Murid (G:M)'],
+                                ['key' => 'concentration_count', 'label' => 'Jml Konsentrasi per Bidang'],
+                                ['key' => 'productive_teacher_count', 'label' => 'Jml Guru Produktif'],
+                                [
+                                    'key' => 'ideal_productive_ratio',
+                                    'label' => 'Rasio Ideal (Guru Produktif : Konsentrasi)',
+                                ],
+                                [
+                                    'key' => 'ratio_productive_concentration',
+                                    'label' => 'Rasio Guru Produktif : Konsentrasi',
+                                ],
+                                ['key' => 'remarks', 'label' => 'Keterangan'],
+                            ],
+                            'dynamicRows' => true,
+                        ])
+                    </div>
+                </div>
+                @if (in_array($submission->status, ['submitted', 'verified']))
+                    <div class="card-footer bg-white border-top py-3 d-flex justify-content-between align-items-center">
+                        <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>Klik Simpan untuk menyimpan seluruh catatan per bagian.</span>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i> Simpan Catatan Review
+                        </button>
+                    </div>
+                @endif
             </div>
-            <div class="card-body">
-                @php
-                    $answers = $submission->answers ?? [];
-                @endphp
-
-                {{-- ASPECT A --}}
-                <div class="mb-5">
-                    <h5 class="text-primary border-bottom pb-2 mb-3">
-                        <i class="bi bi-journal-text me-2"></i>A - Peserta Didik
-                    </h5>
-                    @include('admin.submissions-v2.partials.section-table', [
-                        'code' => 'A.1.1',
-                        'title' => 'Data Kelulusan Uji Kompetensi dan Sertifikasi',
-                        'data' => $answers['A.1.1'] ?? null,
-                        'columns' => [
-                            ['key' => 'year', 'label' => 'Tahun Ajaran'],
-                            ['key' => 'label', 'label' => 'Jenis Ujian/Sertifikasi'],
-                            ['key' => 'total_participants', 'label' => 'Jumlah Peserta'],
-                            ['key' => 'total_passed', 'label' => 'Jumlah Lulus'],
-                            ['key' => 'pass_rate', 'label' => 'Tingkat Kelulusan (%)'],
-                            ['key' => 'organizer', 'label' => 'Lembaga Penyelenggara'],
-                            ['key' => 'description', 'label' => 'Keterangan'],
-                        ],
-                        'dynamicRows' => true,
-                    ])
-                    @include('admin.submissions-v2.partials.section-table', [
-                        'code' => 'A.1.2',
-                        'title' => 'Analisis Skema Sertifikasi dan Kesesuaian KKNI',
-                        'data' => $answers['A.1.2'] ?? null,
-                        'columns' => [
-                            ['key' => 'label', 'label' => 'Skema Sertifikasi'],
-                            ['key' => 'scheme_type', 'label' => 'Jenis Kemasan'],
-                            ['key' => 'kkni_level', 'label' => 'Jenjang KKNI'],
-                            ['key' => 'competency_units', 'label' => 'Jumlah Unit Kompetensi'],
-                            ['key' => 'compliance', 'label' => 'Kesesuaian'],
-                            ['key' => 'remarks', 'label' => 'Keterangan'],
-                        ],
-                        'dynamicRows' => true,
-                    ])
-                    @include('admin.submissions-v2.partials.section-tracer', [
-                        'code' => 'A.2.1',
-                        'title' => 'Penelusuran Alumni (Tracer Study)',
-                        'data' => $answers['A.2.1'] ?? null,
-                    ])
-                    @include('admin.submissions-v2.partials.section-table', [
-                        'code' => 'A.3',
-                        'title' => 'Data Putus Sekolah dan Ketidaknaikan Kelas',
-                        'data' => $answers['A.3'] ?? null,
-                        'columns' => [
-                            ['key' => 'year', 'label' => 'Tahun Ajaran'],
-                            ['key' => 'initial_students', 'label' => 'Jumlah Murid Awal'],
-                            ['key' => 'final_students', 'label' => 'Jumlah Murid Akhir'],
-                            ['key' => 'dropouts', 'label' => 'Jumlah Putus Sekolah'],
-                            ['key' => 'failed_students', 'label' => 'Jumlah Tidak Naik Kelas'],
-                            ['key' => 'dropout_percentage', 'label' => '% Putus Sekolah'],
-                            ['key' => 'main_factor', 'label' => 'Faktor Utama Penyebab'],
-                            ['key' => 'main_factor_other', 'label' => 'Faktor Lainnya (Keterangan)'],
-                        ],
-                        'dynamicRows' => true,
-                    ])
-                    @include('admin.submissions-v2.partials.section-a4', [
-                        'data' => $answers['A.4'] ?? null,
-                    ])
-                </div>
-
-                {{-- ASPECT B --}}
-                <div class="mb-5">
-                    <h5 class="text-primary border-bottom pb-2 mb-3">
-                        <i class="bi bi-journal-text me-2"></i>B - Data Sarana Prasarana
-                    </h5>
-                    @include('admin.submissions-v2.partials.section-sapras', [
-                        'code' => 'B.sapras',
-                        'title' => 'Inventarisasi Sarana Prasarana per Konsentrasi Keahlian',
-                        'data' => $answers['B.sapras'] ?? null,
-                    ])
-                </div>
-
-                {{-- ASPECT C --}}
-                <div class="mb-5">
-                    <h5 class="text-primary border-bottom pb-2 mb-3">
-                        <i class="bi bi-journal-text me-2"></i>C - Data Tata Kelola
-                    </h5>
-                    @include('admin.submissions-v2.partials.section-table', [
-                        'code' => 'C.1.1',
-                        'title' => 'Kerjasama Industri',
-                        'data' => $answers['C.1.1'] ?? null,
-                        'columns' => [
-                            ['key' => 'partner_name', 'label' => 'Nama Industri Mitra'],
-                            ['key' => 'mou_status', 'label' => 'Status MoU/MoA'],
-                            ['key' => 'duration', 'label' => 'Durasi (Tahun)'],
-                            [
-                                'key' => 'program_kurikulum',
-                                'label' => '1. Penyelarasan Kurikulum',
-                                'type' => 'boolean',
-                            ],
-                            ['key' => 'program_guru', 'label' => '2. Guru Tamu', 'type' => 'boolean'],
-                            ['key' => 'program_magang', 'label' => '3. Magang/PKL Siswa', 'type' => 'boolean'],
-                            [
-                                'key' => 'program_sertifikasi',
-                                'label' => '4. Sertifikasi (BNSP/LSP)',
-                                'type' => 'boolean',
-                            ],
-                            ['key' => 'program_pelatihan', 'label' => '5. Pelatihan Guru', 'type' => 'boolean'],
-                            [
-                                'key' => 'program_rekrutmen',
-                                'label' => '6. Penyerapan Lulusan',
-                                'type' => 'boolean',
-                            ],
-                            ['key' => 'program_tefa', 'label' => '7. Teaching Factory', 'type' => 'boolean'],
-                            ['key' => 'program_kelas', 'label' => '8. Kelas Industri', 'type' => 'boolean'],
-                            ['key' => 'program_csr', 'label' => '9. CSR/Alat/Bahan/Beasiswa', 'type' => 'boolean'],
-                            ['key' => 'program_lainnya_text', 'label' => '10. Lainnya'],
-                            ['key' => 'contribution_quantitative', 'label' => 'Kontribusi Kuantitatif'],
-                            ['key' => 'contribution_qualitative', 'label' => 'Kontribusi Kualitatif'],
-                        ],
-                        'dynamicRows' => true,
-                    ])
-                    @include('admin.submissions-v2.partials.section-table', [
-                        'code' => 'C.2.1',
-                        'title' => 'Teaching Factory (TEFA) / Unit Produksi Sekolah',
-                        'data' => $answers['C.2.1'] ?? null,
-                        'columns' => [
-                            ['key' => 'kategori_tefa', 'label' => 'Kategori TEFA'],
-                            ['key' => 'product_name', 'label' => 'Nama Produk (Barang/Jasa)'],
-                            ['key' => 'product_description', 'label' => 'Deskripsi Produk'],
-                            ['key' => 'industry_partner', 'label' => 'Mitra Industri'],
-                            [
-                                'key' => 'tefa_identifikasi',
-                                'label' => '1. Identifikasi Produk',
-                                'type' => 'boolean',
-                            ],
-                            [
-                                'key' => 'tefa_analisis_komp',
-                                'label' => '2. Analisis Kompetensi',
-                                'type' => 'boolean',
-                            ],
-                            [
-                                'key' => 'tefa_perencanaan',
-                                'label' => '3. Perencanaan Produksi',
-                                'type' => 'boolean',
-                            ],
-                            [
-                                'key' => 'tefa_analisis_sda',
-                                'label' => '4. Analisis Sumber Daya',
-                                'type' => 'boolean',
-                            ],
-                            ['key' => 'tefa_pengerjaan', 'label' => '5. Pengerjaan Produk', 'type' => 'boolean'],
-                            ['key' => 'tefa_penyerahan', 'label' => '6. Penyerahan Produk', 'type' => 'boolean'],
-                            ['key' => 'tefa_purna_jual', 'label' => '7. Layanan Purna Jual', 'type' => 'boolean'],
-                            ['key' => 'certification', 'label' => 'Sertifikasi Kompetensi'],
-                            ['key' => 'curriculum_sync', 'label' => 'Sinkronisasi Kurikulum'],
-                            ['key' => 'branding_haki', 'label' => 'Branding/HAKI'],
-                            ['key' => 'quality_evaluation', 'label' => 'Evaluasi Mutu Produk'],
-                            ['key' => 'revenue_activity', 'label' => 'Omzet (Rp/Bulan/Tahun)'],
-                            ['key' => 'industry_contribution', 'label' => 'Keterlibatan Alumni/Industri'],
-                            ['key' => 'constraints', 'label' => 'Kendala'],
-                        ],
-                        'dynamicRows' => true,
-                    ])
-                    @include('admin.submissions-v2.partials.section-table', [
-                        'code' => 'C.3.1',
-                        'title' => 'Data Pelatihan dan Sertifikasi Guru',
-                        'data' => $answers['C.3.1'] ?? null,
-                        'columns' => [
-                            ['key' => 'teacher_name', 'label' => 'Nama Guru'],
-                            ['key' => 'subject', 'label' => 'Mata Pelajaran'],
-                            ['key' => 'competency_type', 'label' => 'Jenis Pelatihan/Sertifikasi'],
-                            ['key' => 'training_title', 'label' => 'Judul Pelatihan'],
-                            ['key' => 'year', 'label' => 'Tahun'],
-                            ['key' => 'provider', 'label' => 'Penyedia'],
-                            ['key' => 'duration', 'label' => 'Durasi'],
-                            ['key' => 'evidence', 'label' => 'Bukti'],
-                            ['key' => 'remarks', 'label' => 'Keterangan'],
-                        ],
-                        'dynamicRows' => true,
-                    ])
-                    @include('admin.submissions-v2.partials.section-table', [
-                        'code' => 'C.3.2',
-                        'title' => 'Analisis Kebutuhan Pelatihan Guru ke Depan',
-                        'data' => $answers['C.3.2'] ?? null,
-                        'columns' => [
-                            ['key' => 'current_condition', 'label' => 'Kondisi Saat Ini'],
-                            ['key' => 'gap', 'label' => 'Kesenjangan'],
-                        ],
-                        'staticRows' => [
-                            'Persentase guru produktif bersertifikat kompetensi (BNSP/Industri)',
-                            'Rata-rata jam pelatihan per guru per tahun',
-                            'Keterlibatan dalam magang industri',
-                            'Frekuensi update teknologi/kompetensi',
-                            'Ketersediaan guru dengan sertifikat asesor BNSP',
-                        ],
-                    ])
-                    @include('admin.submissions-v2.partials.section-table', [
-                        'code' => 'C.3.3',
-                        'title' => 'Data Ketenagaan dan Beban Mengajar (Rasio Guru-Murid)',
-                        'data' => $answers['C.3.3'] ?? null,
-                        'columns' => [
-                            ['key' => 'concentration', 'label' => 'Konsentrasi Keahlian'],
-                            ['key' => 'total_teacher_count', 'label' => 'Jumlah Guru (PNA)'],
-                            ['key' => 'student_count', 'label' => 'Jumlah Total Murid'],
-                            ['key' => 'ideal_ratio', 'label' => 'Rasio Ideal (Guru PNA : Murid)'],
-                            ['key' => 'ratio_gm', 'label' => 'Rasio Guru:Murid (G:M)'],
-                            ['key' => 'concentration_count', 'label' => 'Jml Konsentrasi per Bidang'],
-                            ['key' => 'productive_teacher_count', 'label' => 'Jml Guru Produktif'],
-                            [
-                                'key' => 'ideal_productive_ratio',
-                                'label' => 'Rasio Ideal (Guru Produktif : Konsentrasi)',
-                            ],
-                            [
-                                'key' => 'ratio_productive_concentration',
-                                'label' => 'Rasio Guru Produktif : Konsentrasi',
-                            ],
-                            ['key' => 'remarks', 'label' => 'Keterangan'],
-                        ],
-                        'dynamicRows' => true,
-                    ])
-                </div>
-            </div>
-        </div>
+        </form>
 
         {{-- ③ Detail accordion: School Info, Respondent, Status, Metadata --}}
         <div class="accordion accordion-flush shadow-sm border-0 rounded mb-4" id="detailAccordion">

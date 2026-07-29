@@ -41,6 +41,7 @@ class InstrumentSubmissionV2 extends Model
         'respondent_position',
         'form_version',
         'answers',
+        'section_notes',
         'status',
         'verified_by',
         'verified_at',
@@ -61,6 +62,7 @@ class InstrumentSubmissionV2 extends Model
 
     protected $casts = [
         'answers' => 'array',
+        'section_notes' => 'array',
         'filled_at' => 'date',
         'verified_at' => 'datetime',
         'validated_at' => 'datetime',
@@ -70,6 +72,38 @@ class InstrumentSubmissionV2 extends Model
         'max_possible_score' => 'decimal:2',
         'completion_percentage' => 'decimal:2',
     ];
+
+    /**
+     * Get status for a specific section (e.g. 'approved' or 'rejected')
+     */
+    public function getSectionStatus(string $sectionCode): ?string
+    {
+        $notes = $this->section_notes ?? [];
+        return $notes[$sectionCode]['status'] ?? null;
+    }
+
+    /**
+     * Get notes for a specific section
+     */
+    public function getSectionNotes(string $sectionCode): ?string
+    {
+        $notes = $this->section_notes ?? [];
+        return $notes[$sectionCode]['notes'] ?? null;
+    }
+
+    /**
+     * Set review status and notes for a specific section
+     */
+    public function setSectionReview(string $sectionCode, ?string $status, ?string $notesText): void
+    {
+        $allNotes = $this->section_notes ?? [];
+        $allNotes[$sectionCode] = [
+            'status' => $status,
+            'notes' => $notesText,
+            'updated_at' => now()->toDateTimeString(),
+        ];
+        $this->section_notes = $allNotes;
+    }
 
     /**
      * Get the school for this submission

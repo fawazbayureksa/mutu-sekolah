@@ -10,7 +10,12 @@
     - $headerFields: Optional array of header field definitions
 --}}
 <div class="section-block mb-4">
-    <h6 class="fw-bold mb-3">{{ $code }} - {{ $title }}</h6>
+    @include('admin.submissions-v2.partials.section-review-header', [
+        'code' => $code,
+        'title' => $title,
+        'submission' => $submission ?? null,
+        'canReview' => $canReview ?? false
+    ])
 
     @php
         $tableData = is_string($data) ? json_decode($data, true) : $data;

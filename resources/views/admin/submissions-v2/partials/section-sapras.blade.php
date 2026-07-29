@@ -15,11 +15,13 @@
     $sections = $data['sections'] ?? [];
 @endphp
 
-<div class="mb-4">
-    <h6 class="fw-bold text-secondary mb-1">
-        <span class="badge bg-secondary me-2">{{ $code }}</span>
-        {{ $title }}
-    </h6>
+<div class="section-block mb-4">
+    @include('admin.submissions-v2.partials.section-review-header', [
+        'code' => $code ?? 'B.sapras',
+        'title' => $title ?? 'Inventarisasi Sarana Prasarana per Konsentrasi Keahlian',
+        'submission' => $submission ?? null,
+        'canReview' => $canReview ?? false
+    ])
 
     @if (empty($sections))
         <div class="text-muted fst-italic small ps-2">Tidak ada data sarana prasarana yang diisi.</div>

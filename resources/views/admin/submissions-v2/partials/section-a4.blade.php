@@ -5,7 +5,12 @@
     We use $rowIndex to track position in $rows, incrementing only for subject entries.
 --}}
 <div class="section-block mb-4">
-    <h6 class="fw-bold mb-3">A.4 - Data Skor Rata-rata TKA Tahun 2025</h6>
+    @include('admin.submissions-v2.partials.section-review-header', [
+        'code' => 'A.4',
+        'title' => 'Data Skor Rata-rata TKA Tahun 2025',
+        'submission' => $submission ?? null,
+        'canReview' => $canReview ?? false
+    ])
 
     @php
         $tableData = is_string($data) ? json_decode($data, true) : $data;

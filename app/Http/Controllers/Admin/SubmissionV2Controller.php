@@ -60,18 +60,26 @@ class SubmissionV2Controller extends Controller
     {
         $request->validate([
             'notes' => 'nullable|string|max:1000',
+            'section_notes' => 'nullable|array',
         ]);
 
         if ($submission->status !== InstrumentSubmissionV2::STATUS_SUBMITTED) {
             return back()->with('error', 'Submission tidak dapat diverifikasi dengan status saat ini');
         }
 
-        $submission->update([
+        $updateData = [
             'status' => InstrumentSubmissionV2::STATUS_VERIFIED,
             'verified_by' => auth()->id(),
             'verified_at' => now(),
             'verification_notes' => $request->notes,
-        ]);
+        ];
+
+        if ($request->has('section_notes')) {
+            $existingNotes = $submission->section_notes ?? [];
+            $updateData['section_notes'] = array_merge($existingNotes, $request->input('section_notes', []));
+        }
+
+        $submission->update($updateData);
 
         $routePrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
 
@@ -83,14 +91,22 @@ class SubmissionV2Controller extends Controller
     {
         $request->validate([
             'notes' => 'required|string|max:1000',
+            'section_notes' => 'nullable|array',
         ]);
 
-        $submission->update([
+        $updateData = [
             'status' => InstrumentSubmissionV2::STATUS_REJECTED,
             'verified_by' => auth()->id(),
             'verified_at' => now(),
             'verification_notes' => $request->notes,
-        ]);
+        ];
+
+        if ($request->has('section_notes')) {
+            $existingNotes = $submission->section_notes ?? [];
+            $updateData['section_notes'] = array_merge($existingNotes, $request->input('section_notes', []));
+        }
+
+        $submission->update($updateData);
 
         $routePrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
 
@@ -102,23 +118,47 @@ class SubmissionV2Controller extends Controller
     {
         $request->validate([
             'notes' => 'nullable|string|max:1000',
+            'section_notes' => 'nullable|array',
         ]);
 
         if ($submission->status !== InstrumentSubmissionV2::STATUS_VERIFIED) {
             return back()->with('error', 'Submission harus diverifikasi terlebih dahulu');
         }
 
-        $submission->update([
+        $updateData = [
             'status' => InstrumentSubmissionV2::STATUS_VALIDATED,
             'validated_by' => auth()->id(),
             'validated_at' => now(),
             'validation_notes' => $request->notes,
-        ]);
+        ];
+
+        if ($request->has('section_notes')) {
+            $existingNotes = $submission->section_notes ?? [];
+            $updateData['section_notes'] = array_merge($existingNotes, $request->input('section_notes', []));
+        }
+
+        $submission->update($updateData);
 
         $routePrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
 
         return redirect()->route("{$routePrefix}.submissions-v2.index")
             ->with('success', 'Submission berhasil divalidasi');
+    }
+
+    public function saveSectionNotes(Request $request, InstrumentSubmissionV2 $submission): RedirectResponse
+    {
+        $request->validate([
+            'section_notes' => 'required|array',
+        ]);
+
+        $existingNotes = $submission->section_notes ?? [];
+        $newNotes = array_merge($existingNotes, $request->input('section_notes', []));
+
+        $submission->update([
+            'section_notes' => $newNotes,
+        ]);
+
+        return back()->with('success', 'Catatan per bagian berhasil disimpan.');
     }
 
     public function generateUpdateToken(InstrumentSubmissionV2 $submission): RedirectResponse

@@ -144,6 +144,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/{submission}/verify', [SubmissionV2Controller::class, 'verify'])->name('verify');
             Route::post('/{submission}/reject', [SubmissionV2Controller::class, 'reject'])->name('reject');
             Route::post('/{submission}/validate', [SubmissionV2Controller::class, 'validateSubmission'])->name('validate');
+            Route::post('/{submission}/section-notes', [SubmissionV2Controller::class, 'saveSectionNotes'])->name('section-notes');
             Route::post('/{submission}/generate-token', [SubmissionV2Controller::class, 'generateUpdateToken'])->name('generate-token');
         });
     });
@@ -260,6 +261,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/{submission}/verify', [SubmissionV2Controller::class, 'verify'])->name('verify');
             Route::post('/{submission}/reject', [SubmissionV2Controller::class, 'reject'])->name('reject');
             Route::post('/{submission}/validate', [SubmissionV2Controller::class, 'validateSubmission'])->name('validate');
+            Route::post('/{submission}/section-notes', [SubmissionV2Controller::class, 'saveSectionNotes'])->name('section-notes');
             Route::post('/{submission}/generate-token', [SubmissionV2Controller::class, 'generateUpdateToken'])->name('generate-token');
             Route::delete('/{submission}', [SubmissionV2Controller::class, 'destroy'])->name('destroy');
         });
