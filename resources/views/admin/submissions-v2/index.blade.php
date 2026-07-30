@@ -8,7 +8,7 @@
         <div class="d-flex align-items-center justify-content-between mb-4">
             <div>
                 <h1 class="h3 mb-1 text-gray-800">Data Pengajuan</h1>
-                <p class="text-muted mb-0">Pengelolaan data pengajuan instrumen versi 2</p>
+                <p class="text-muted mb-0">Pengelolaan data pengajuan instrumen</p>
             </div>
             {{-- <div>
                 <a href="{{ route('admin.submissions-v2.export') }}" class="btn btn-outline-success">
@@ -211,12 +211,19 @@
                                                     data-bs-target="#rejectModal{{ $submission->id }}" title="Tolak">
                                                     <i class="bi bi-x-lg"></i>
                                                 </button>
+                                            @elseif ($submission->status === 'verified')
+                                                <button type="button" class="btn btn-primary btn-sm"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#validateModal{{ $submission->id }}"
+                                                    title="Validasi">
+                                                    <i class="bi bi-patch-check"></i>
+                                                </button>
                                             @endif
                                         </div>
                                     </td>
                                 </tr>
 
-                                {{-- Verify Modal --}}
+                                {{-- Verify & Reject Modals --}}
                                 @if ($submission->status === 'submitted')
                                     <div class="modal fade" id="verifyModal{{ $submission->id }}" tabindex="-1">
                                         <div class="modal-dialog">
@@ -283,6 +290,42 @@
                                                             data-bs-dismiss="modal">Batal</button>
                                                         <button type="submit" class="btn btn-danger">
                                                             <i class="bi bi-x-lg me-1"></i> Tolak
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @elseif ($submission->status === 'verified')
+                                    {{-- Validate Modal --}}
+                                    <div class="modal fade" id="validateModal{{ $submission->id }}" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form action="{{ route('admin.submissions-v2.validate', $submission) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Validasi Pengajuan</h5>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Anda akan memvalidasi pengajuan dari:</p>
+                                                        <div class="bg-light p-3 rounded mb-3">
+                                                            <strong>{{ $submission->school_name }}</strong><br>
+                                                            <small class="text-muted">{{ $submission->respondent_name }} -
+                                                                {{ $submission->respondent_position }}</small>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Catatan (Opsional)</label>
+                                                            <textarea name="notes" class="form-control" rows="3" placeholder="Tambahkan catatan validasi..."></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-primary">
+                                                            <i class="bi bi-patch-check me-1"></i> Validasi
                                                         </button>
                                                     </div>
                                                 </form>

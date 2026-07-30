@@ -143,6 +143,8 @@
                         'code' => 'A.1.1',
                         'title' => 'Data Kelulusan Uji Kompetensi dan Sertifikasi',
                         'data' => $answers['A.1.1'] ?? null,
+                        'submission' => $submission,
+                        'canReview' => false,
                         'columns' => [
                             ['key' => 'year', 'label' => 'Tahun Ajaran'],
                             ['key' => 'label', 'label' => 'Jenis Ujian/Sertifikasi'],
@@ -158,6 +160,8 @@
                         'code' => 'A.1.2',
                         'title' => 'Analisis Skema Sertifikasi dan Kesesuaian KKNI',
                         'data' => $answers['A.1.2'] ?? null,
+                        'submission' => $submission,
+                        'canReview' => false,
                         'columns' => [
                             ['key' => 'label', 'label' => 'Skema Sertifikasi'],
                             ['key' => 'scheme_type', 'label' => 'Jenis Kemasan'],
@@ -172,11 +176,15 @@
                         'code' => 'A.2.1',
                         'title' => 'Penelusuran Alumni (Tracer Study)',
                         'data' => $answers['A.2.1'] ?? null,
+                        'submission' => $submission,
+                        'canReview' => false,
                     ])
                     @include('admin.submissions-v2.partials.section-table', [
                         'code' => 'A.3',
                         'title' => 'Data Putus Sekolah dan Ketidaknaikan Kelas',
                         'data' => $answers['A.3'] ?? null,
+                        'submission' => $submission,
+                        'canReview' => false,
                         'columns' => [
                             ['key' => 'year', 'label' => 'Tahun Ajaran'],
                             ['key' => 'initial_students', 'label' => 'Jumlah Murid Awal'],
@@ -191,6 +199,8 @@
                     ])
                     @include('admin.submissions-v2.partials.section-a4', [
                         'data' => $answers['A.4'] ?? null,
+                        'submission' => $submission,
+                        'canReview' => false,
                     ])
                 </div>
 
@@ -203,6 +213,8 @@
                         'code' => 'B.sapras',
                         'title' => 'Inventarisasi Sarana Prasarana per Konsentrasi Keahlian',
                         'data' => $answers['B.sapras'] ?? null,
+                        'submission' => $submission,
+                        'canReview' => false,
                     ])
                 </div>
 
@@ -215,6 +227,8 @@
                         'code' => 'C.1.1',
                         'title' => 'Kerjasama Industri',
                         'data' => $answers['C.1.1'] ?? null,
+                        'submission' => $submission,
+                        'canReview' => false,
                         'columns' => [
                             ['key' => 'partner_name', 'label' => 'Nama Industri Mitra'],
                             ['key' => 'mou_status', 'label' => 'Status MoU/MoA'],
@@ -250,6 +264,8 @@
                         'code' => 'C.2.1',
                         'title' => 'Teaching Factory (TEFA) / Unit Produksi Sekolah',
                         'data' => $answers['C.2.1'] ?? null,
+                        'submission' => $submission,
+                        'canReview' => false,
                         'columns' => [
                             ['key' => 'kategori_tefa', 'label' => 'Kategori TEFA'],
                             ['key' => 'product_name', 'label' => 'Nama Produk (Barang/Jasa)'],
@@ -292,6 +308,8 @@
                         'code' => 'C.3.1',
                         'title' => 'Data Pelatihan dan Sertifikasi Guru',
                         'data' => $answers['C.3.1'] ?? null,
+                        'submission' => $submission,
+                        'canReview' => false,
                         'columns' => [
                             ['key' => 'teacher_name', 'label' => 'Nama Guru'],
                             ['key' => 'subject', 'label' => 'Mata Pelajaran'],
@@ -309,6 +327,8 @@
                         'code' => 'C.3.2',
                         'title' => 'Analisis Kebutuhan Pelatihan Guru ke Depan',
                         'data' => $answers['C.3.2'] ?? null,
+                        'submission' => $submission,
+                        'canReview' => false,
                         'columns' => [
                             ['key' => 'current_condition', 'label' => 'Kondisi Saat Ini'],
                             ['key' => 'gap', 'label' => 'Kesenjangan'],
@@ -325,6 +345,8 @@
                         'code' => 'C.3.3',
                         'title' => 'Data Ketenagaan dan Beban Mengajar (Rasio Guru-Murid)',
                         'data' => $answers['C.3.3'] ?? null,
+                        'submission' => $submission,
+                        'canReview' => false,
                         'columns' => [
                             ['key' => 'concentration', 'label' => 'Konsentrasi Keahlian'],
                             ['key' => 'total_teacher_count', 'label' => 'Jumlah Guru (PNA)'],
