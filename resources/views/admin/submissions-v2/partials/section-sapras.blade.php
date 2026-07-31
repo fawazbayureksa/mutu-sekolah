@@ -16,26 +16,30 @@
 @endphp
 
 <div class="section-block mb-4">
-    @include('admin.submissions-v2.partials.section-review-header', [
-        'code' => $code ?? 'B.sapras',
-        'title' => $title ?? 'Inventarisasi Sarana Prasarana per Konsentrasi Keahlian',
-        'submission' => $submission ?? null,
-        'canReview' => $canReview ?? false
-    ])
+    {{-- Top-level section title (no review controls here — review is per sub-section below) --}}
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+        <h6 class="fw-bold text-primary mb-0">
+            <i class="bi bi-journal-text me-1"></i>B.sapras - {{ $title ?? 'Inventarisasi Sarana Prasarana per Konsentrasi Keahlian' }}
+        </h6>
+    </div>
 
     @if (empty($sections))
         <div class="text-muted fst-italic small ps-2">Tidak ada data sarana prasarana yang diisi.</div>
     @else
         @foreach ($sections as $si => $section)
-            <div class="mb-3">
-                <p class="fw-semibold mb-1 small">
-                    <span class="badge bg-light text-dark border me-1">B.{{ $si + 1 }}</span>
-                    {{ $section['title'] ?? 'Bagian ' . ($si + 1) }}
-                </p>
+            @php
+                $subCode = 'B.sapras.' . $si;
+                $rows    = $section['rows'] ?? [];
+            @endphp
 
-                @php
-                    $rows = $section['rows'] ?? [];
-                @endphp
+            <div class="mb-4">
+                {{-- Per sub-section review header (status badge + notes callout + review form) --}}
+                @include('admin.submissions-v2.partials.section-review-header', [
+                    'code'       => $subCode,
+                    'title'      => $section['title'] ?? 'Bagian ' . ($si + 1),
+                    'submission' => $submission ?? null,
+                    'canReview'  => $canReview ?? false,
+                ])
 
                 @if (empty($rows))
                     <div class="text-muted fst-italic small ps-3">– Tidak ada baris data.</div>
@@ -51,18 +55,18 @@
                                         $firstRow = $rows[0];
                                         $fieldKeys = array_keys(array_diff_key($firstRow, ['name' => '']));
                                         $labelMap = [
-                                            'qty_available' => 'Jumlah Tersedia',
-                                            'condition' => 'Kondisi',
+                                            'qty_available'     => 'Jumlah Tersedia',
+                                            'condition'         => 'Kondisi',
                                             'industry_standard' => 'Kesesuaian Standar Industri',
-                                            'document' => 'Dokumen Pendukung',
-                                            'remarks' => 'Keterangan',
-                                            'actual_area' => 'Luas Tersedia (m²)',
-                                            'available' => 'Ada/Tidak',
-                                            'compliance' => 'Kesesuaian',
-                                            'status' => 'Status',
-                                            'age' => 'Usia',
-                                            'source' => 'Sumber',
-                                            'spec' => 'Spesifikasi',
+                                            'document'          => 'Dokumen Pendukung',
+                                            'remarks'           => 'Keterangan',
+                                            'actual_area'       => 'Luas Tersedia (m²)',
+                                            'available'         => 'Ada/Tidak',
+                                            'compliance'        => 'Kesesuaian',
+                                            'status'            => 'Status',
+                                            'age'               => 'Usia',
+                                            'source'            => 'Sumber',
+                                            'spec'              => 'Spesifikasi',
                                         ];
                                     @endphp
                                     @foreach ($fieldKeys as $fk)
