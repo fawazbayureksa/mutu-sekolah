@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\AssessmentAnswerController;
 use App\Http\Controllers\Admin\AssessmentController;
 use App\Http\Controllers\Admin\InstrumentController;
+use App\Http\Controllers\Admin\DatabaseBackupController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\SchoolController;
@@ -283,6 +284,17 @@ Route::middleware('auth')->group(function () {
         Route::prefix('laporan')->name('laporan.')->group(function () {
             Route::get('/', [LaporanController::class, 'index'])->name('index');
             Route::get('/detail', [LaporanController::class, 'detail'])->name('detail');
+        });
+
+        // Database Backup (hidden admin feature)
+        Route::prefix('backup')->name('backup.')->group(function () {
+            Route::get('/', [DatabaseBackupController::class, 'index'])->name('index');
+            Route::post('/trigger', [DatabaseBackupController::class, 'trigger'])
+                ->name('trigger')
+                ->middleware('throttle:2,10');
+            Route::get('/download/{filename}', [DatabaseBackupController::class, 'download'])
+                ->name('download')
+                ->middleware('throttle:5,5');
         });
     });
 });
