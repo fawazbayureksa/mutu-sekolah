@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DatabaseBackupController extends Controller
 {
@@ -118,7 +118,7 @@ class DatabaseBackupController extends Controller
     /**
      * Stream a backup file to the browser as a download.
      */
-    public function download(Request $request, string $filename): StreamedResponse
+    public function download(Request $request, string $filename): BinaryFileResponse
     {
         // Whitelist: only allow safe filenames (alphanumeric, dash, underscore, dot)
         if (! preg_match('/^[\w\-\.]+$/', $filename)) {
@@ -146,29 +146,21 @@ class DatabaseBackupController extends Controller
         ]);
 
         // Explicit MIME map — mime_content_type() often misdetects .sql.gz
-        $ext      = strtolower(pathinfo($targetPath, PATHINFO_EXTENSION));
-        $mimeMap  = [
+        $ext     = strtolower(pathinfo($targetPath, PATHINFO_EXTENSION));
+        $mimeMap = [
             'gz'  => 'application/gzip',
             'zip' => 'application/zip',
             'sql' => 'application/octet-stream',
         ];
-        $mimeType = $mimeMap[$ext] ?? (mime_content_type($targetPath) ?: 'application/octet-stream');
-        $fileSize = filesize($targetPath);
+        $mimeType = $mimeMap[$ext] ?? 'application/octet-stream';
 
-        return response()->streamDownload(function () use ($targetPath) {
-            $stream = fopen($targetPath, 'rb');
-            while (! feof($stream)) {
-                echo fread($stream, 8192);
-                flush();
-            }
-            fclose($stream);
-        }, $filename, [
-            'Content-Type'              => $mimeType,
-            'Content-Length'            => $fileSize,
-            'Content-Disposition'       => 'attachment; filename="' . $filename . '"',
-            'Cache-Control'             => 'no-store, no-cache, must-revalidate, max-age=0',
-            'Pragma'                    => 'no-cache',
-            'X-Content-Type-Options'    => 'nosniff',
+        // BinaryFileResponse streams the file directly to the client, handling
+        // Content-Length and range requests automatically — no buffering issues.
+        return response()->download($targetPath, $filename, [
+            'Content-Type'           => $mimeType,
+            'Cache-Control'          => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma'                 => 'no-cache',
+            'X-Content-Type-Options' => 'nosniff',
         ]);
     }
 
