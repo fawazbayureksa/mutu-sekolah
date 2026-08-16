@@ -7,7 +7,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DatabaseBackupController extends Controller
 {
@@ -118,7 +117,7 @@ class DatabaseBackupController extends Controller
     /**
      * Stream a backup file to the browser as a download.
      */
-    public function download(Request $request, string $filename): BinaryFileResponse
+    public function download(Request $request, string $filename)
     {
         // Whitelist: only allow safe filenames (alphanumeric, dash, underscore, dot)
         if (! preg_match('/^[\w\-\.]+$/', $filename)) {
@@ -153,11 +152,30 @@ class DatabaseBackupController extends Controller
             'sql' => 'application/octet-stream',
         ];
         $mimeType = $mimeMap[$ext] ?? 'application/octet-stream';
+        $fileSize = filesize($targetPath);
 
-        // BinaryFileResponse streams the file directly to the client, handling
-        // Content-Length and range requests automatically — no buffering issues.
-        return response()->download($targetPath, $filename, [
+        // Prevent PHP from timing out during large file download
+        set_time_limit(0);
+        ignore_user_abort(false);
+
+        // Clear any existing PHP output buffers so nothing stalls the stream
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
+        return response()->stream(function () use ($targetPath) {
+            $handle = fopen($targetPath, 'rb');
+            while (! feof($handle)) {
+                echo fread($handle, 1024 * 256); // 256 KB chunks
+                flush();
+            }
+            fclose($handle);
+        }, 200, [
+            // Tell nginx NOT to buffer this response — stream directly to client
+            'X-Accel-Buffering'      => 'no',
             'Content-Type'           => $mimeType,
+            'Content-Length'         => $fileSize,
+            'Content-Disposition'    => 'attachment; filename="' . $filename . '"',
             'Cache-Control'          => 'no-store, no-cache, must-revalidate, max-age=0',
             'Pragma'                 => 'no-cache',
             'X-Content-Type-Options' => 'nosniff',
