@@ -34,8 +34,8 @@
             <li class="sidebar-menu-item">
                 <a href="{{ route('dashboard') }}"
                     class="sidebar-menu-link {{ request()->is('dashboard*') ? 'active' : '' }}">
-                    <i class="bi bi-speedometer2"></i>
-                    <span>Dashboard</span>
+                    <i class="bi bi-house"></i>
+                    <span>Home</span>
                 </a>
             </li>
 
@@ -120,6 +120,22 @@
                         class="sidebar-menu-link {{ request()->is('admin/laporan*') ? 'active' : '' }}">
                         <i class="bi bi-bar-chart-line"></i>
                         <span>Laporan</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.dashboard.overview') }}"
+                        class="sidebar-menu-link {{ request()->is('admin/dashboard-mutu/overview*') ? 'active' : '' }}">
+                        <i class="bi bi-speedometer"></i>
+                        <span>Dashboard Mutu</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.dashboard.kelembagaan.index') }}"
+                        class="sidebar-menu-link {{ request()->is('admin/dashboard-mutu/kelembagaan*') ? 'active' : '' }}">
+                        <i class="bi bi-buildings"></i>
+                        <span>Profil & Kelembagaan</span>
                     </a>
                 </li>
             @endif
