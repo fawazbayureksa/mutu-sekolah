@@ -1,0 +1,100 @@
+/* ==========================================================================
+   Dashboard Shared Components & Utilities
+   ========================================================================== */
+
+/* KPI Cards */
+.card-kpi {
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-kpi:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06) !important;
+}
+
+.kpi-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8fafc;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+}
+
+/* Aspect Progress & Cards */
+.aspect-card {
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+}
+
+.aspect-header {
+    padding: 16px 20px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #0f172a;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.aspect-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.aspect-item:last-child {
+    border-bottom: none;
+}
+
+.aspect-progress-container {
+    width: 100px;
+    height: 6px;
+    background-color: #f1f5f9;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.aspect-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background-color: #0e4a66;
+}
+
+/* Priority & Chart Cards */
+.priority-item-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px;
+    height: 100%;
+}
+
+.chart-container-card {
+    border-radius: 16px;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-split-bar {
+    height: 5px;
+    border-radius: 3px;
+    background-color: #f1f5f9;
+    display: flex;
+    overflow: hidden;
+}

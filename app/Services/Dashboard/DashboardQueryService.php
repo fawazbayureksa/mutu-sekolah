@@ -596,6 +596,30 @@ class DashboardQueryService
             $schoolsQuery->where('regency_code', $filters['regency_code']);
         }
 
+        if (!empty($filters['school_status'])) {
+            $schoolsQuery->where('school_status', $filters['school_status']);
+        }
+
+        if (!empty($filters['expertise']) || !empty($filters['year']) || !empty($filters['status'])) {
+            $schoolsQuery->whereHas('instrumentSubmissionsV2', function ($q) use ($filters) {
+                if (!empty($filters['expertise'])) {
+                    $q->where('expertise', $filters['expertise']);
+                }
+                if (!empty($filters['year'])) {
+                    $year = $filters['year'];
+                    if (str_contains($year, '/')) {
+                        $yearParts = explode('/', $year);
+                        $q->whereYear('filled_at', $yearParts[0]);
+                    } else {
+                        $q->whereYear('filled_at', $year);
+                    }
+                }
+                if (!empty($filters['status'])) {
+                    $q->where('status', $filters['status']);
+                }
+            });
+        }
+
         if (!empty($filters['search'])) {
             $search = $filters['search'];
             $schoolsQuery->where(function ($q) use ($search) {
@@ -606,6 +630,202 @@ class DashboardQueryService
 
         $totalSekolah = (clone $schoolsQuery)->count();
         $totalProvinsi = (clone $schoolsQuery)->whereNotNull('province_code')->distinct('province_code')->count('province_code');
+        $denomSchools = $totalSekolah ?: 1;
+
+        // 1. Kategori Sekolah
+        $rawCategories = (clone $schoolsQuery)
+            ->select('school_category', DB::raw('COUNT(*) as total'))
+            ->groupBy('school_category')
+            ->get();
+
+        $pkCount = 0;
+        $nonPkCount = 0;
+        $modelCount = 0;
+        $unknownCategoryCount = 0;
+        $otherCategoryCount = 0;
+
+        foreach ($rawCategories as $cat) {
+            $cName = strtolower(trim($cat->school_category ?? ''));
+            $cTotal = (int) $cat->total;
+
+            if (empty($cName) || $cName === '-' || $cName === 'null') {
+                $unknownCategoryCount += $cTotal;
+            } elseif (str_contains($cName, 'non pk') || str_contains($cName, 'non-pk')) {
+                $nonPkCount += $cTotal;
+            } elseif (str_contains($cName, 'pusat keunggulan') || $cName === 'smk pk' || str_contains($cName, 'pk')) {
+                $pkCount += $cTotal;
+            } elseif (str_contains($cName, 'model')) {
+                $modelCount += $cTotal;
+            } else {
+                $otherCategoryCount += $cTotal;
+            }
+        }
+
+        $categoryDistribution = [
+            [
+                'label'      => 'SMK Pusat Keunggulan (PK)',
+                'count'      => $pkCount,
+                'percentage' => round(($pkCount / $denomSchools) * 100, 1),
+            ],
+            [
+                'label'      => 'SMK Non PK',
+                'count'      => $nonPkCount,
+                'percentage' => round(($nonPkCount / $denomSchools) * 100, 1),
+            ],
+            [
+                'label'      => 'SMK Model',
+                'count'      => $modelCount,
+                'percentage' => round(($modelCount / $denomSchools) * 100, 1),
+            ],
+        ];
+
+        if ($unknownCategoryCount > 0) {
+            $categoryDistribution[] = [
+                'label'      => 'Belum Diketahui',
+                'count'      => $unknownCategoryCount,
+                'percentage' => round(($unknownCategoryCount / $denomSchools) * 100, 1),
+            ];
+        }
+
+        if ($otherCategoryCount > 0) {
+            $categoryDistribution[] = [
+                'label'      => 'Kategori Lainnya',
+                'count'      => $otherCategoryCount,
+                'percentage' => round(($otherCategoryCount / $denomSchools) * 100, 1),
+            ];
+        }
+
+        // 2. Kurikulum yang Digunakan 
+        $rawCurricula = (clone $schoolsQuery)
+            ->select('curriculum', DB::raw('COUNT(*) as total'))
+            ->groupBy('curriculum')
+            ->get();
+
+        $merdekaCount = 0;
+        $k13Count = 0;
+        $unknownCurrCount = 0;
+        $otherCurrCount = 0;
+
+        foreach ($rawCurricula as $curr) {
+            $currName = strtolower(trim($curr->curriculum ?? ''));
+            $currTotal = (int) $curr->total;
+
+            if (empty($currName) || $currName === '-' || $currName === 'null') {
+                $unknownCurrCount += $currTotal;
+            } elseif (str_contains($currName, 'merdeka')) {
+                $merdekaCount += $currTotal;
+            } elseif (str_contains($currName, '2013') || str_contains($currName, 'k13') || str_contains($currName, 'k-13')) {
+                $k13Count += $currTotal;
+            } else {
+                $otherCurrCount += $currTotal;
+            }
+        }
+
+        $curriculumDistribution = [
+            [
+                'label'      => 'Kurikulum Merdeka',
+                'count'      => $merdekaCount,
+                'percentage' => round(($merdekaCount / $denomSchools) * 100, 1),
+            ],
+            [
+                'label'      => 'Kurikulum 2013',
+                'count'      => $k13Count,
+                'percentage' => round(($k13Count / $denomSchools) * 100, 1),
+            ],
+        ];
+
+        if ($unknownCurrCount > 0) {
+            $curriculumDistribution[] = [
+                'label'      => 'Belum Diketahui',
+                'count'      => $unknownCurrCount,
+                'percentage' => round(($unknownCurrCount / $denomSchools) * 100, 1),
+            ];
+        }
+
+        if ($otherCurrCount > 0) {
+            $curriculumDistribution[] = [
+                'label'      => 'Kurikulum Lainnya',
+                'count'      => $otherCurrCount,
+                'percentage' => round(($otherCurrCount / $denomSchools) * 100, 1),
+            ];
+        }
+
+        // 3. Akreditasi Sekolah distribution
+        $rawAccreditations = (clone $schoolsQuery)
+            ->select('school_accreditation', DB::raw('COUNT(*) as total'))
+            ->groupBy('school_accreditation')
+            ->get();
+
+        $aCount = 0;
+        $bCount = 0;
+        $cCount = 0;
+        $unaccCount = 0;
+        $unknownAccCount = 0;
+
+        foreach ($rawAccreditations as $acc) {
+            $accName = strtoupper(trim($acc->school_accreditation ?? ''));
+            $accTotal = (int) $acc->total;
+
+            if (empty($accName) || $accName === '-' || $accName === 'NULL') {
+                $unknownAccCount += $accTotal;
+            } elseif ($accName === 'A') {
+                $aCount += $accTotal;
+            } elseif ($accName === 'B') {
+                $bCount += $accTotal;
+            } elseif ($accName === 'C') {
+                $cCount += $accTotal;
+            } elseif ($accName === 'TT' || str_contains(strtolower($accName), 'belum') || str_contains(strtolower($accName), 'tidak')) {
+                $unaccCount += $accTotal;
+            } else {
+                $unknownAccCount += $accTotal;
+            }
+        }
+
+        $accreditationDistribution = [
+            [
+                'label'      => 'Akreditasi A',
+                'badge'      => 'A',
+                'color'      => '#0e4a66',
+                'bg_color'   => '#cde4ee',
+                'count'      => $aCount,
+                'percentage' => round(($aCount / $denomSchools) * 100, 1),
+            ],
+            [
+                'label'      => 'Akreditasi B',
+                'badge'      => 'B',
+                'color'      => '#2d789a',
+                'bg_color'   => '#e0f2fe',
+                'count'      => $bCount,
+                'percentage' => round(($bCount / $denomSchools) * 100, 1),
+            ],
+            [
+                'label'      => 'Akreditasi C',
+                'badge'      => 'C',
+                'color'      => '#5ea6c2',
+                'bg_color'   => '#f0f9ff',
+                'count'      => $cCount,
+                'percentage' => round(($cCount / $denomSchools) * 100, 1),
+            ],
+            [
+                'label'      => 'Belum Terakreditasi',
+                'badge'      => 'TT',
+                'color'      => '#64748b',
+                'bg_color'   => '#f1f5f9',
+                'count'      => $unaccCount,
+                'percentage' => round(($unaccCount / $denomSchools) * 100, 1),
+            ],
+        ];
+
+        if ($unknownAccCount > 0) {
+            $accreditationDistribution[] = [
+                'label'      => 'Belum Diketahui',
+                'badge'      => '?',
+                'color'      => '#94a3b8',
+                'bg_color'   => '#f8fafc',
+                'count'      => $unknownAccCount,
+                'percentage' => round(($unknownAccCount / $denomSchools) * 100, 1),
+            ];
+        }
 
         if (Schema::hasTable('dashboard_rekapitulasis') && DashboardRekapitulasi::count() > 0) {
             $rekapBase = DashboardRekapitulasi::query();
@@ -622,10 +842,13 @@ class DashboardQueryService
         }
 
         return [
-            'total_sekolah'     => $totalSekolah,
-            'total_provinsi'    => $totalProvinsi,
-            'total_bidang'      => $totalBidang,
-            'total_konsentrasi' => $totalKonsentrasi,
+            'total_sekolah'              => $totalSekolah,
+            'total_provinsi'             => $totalProvinsi,
+            'total_bidang'               => $totalBidang,
+            'total_konsentrasi'          => $totalKonsentrasi,
+            'category_distribution'      => $categoryDistribution,
+            'curriculum_distribution'    => $curriculumDistribution,
+            'accreditation_distribution' => $accreditationDistribution,
         ];
     }
 
@@ -682,5 +905,224 @@ class DashboardQueryService
             ->distinct()
             ->orderBy('expertise', 'asc')
             ->pluck('expertise');
+    }
+
+    /**
+     * Get Complete Aspect A (Mutu Peserta Didik) dataset for a specific submission context
+     */
+    public function getPesertaDidikData(?int $submissionId): ?array
+    {
+        if (!$submissionId) {
+            return null;
+        }
+
+        $submission = InstrumentSubmissionV2::with(['school.province', 'school.regency', 'province', 'regency'])->find($submissionId);
+        if (!$submission) {
+            return null;
+        }
+
+        // 1. Get scalar KPIs from DashboardRekapitulasi
+        $rekap = Schema::hasTable('dashboard_rekapitulasis')
+            ? DashboardRekapitulasi::where('submission_id', $submissionId)->first()
+            : null;
+
+        // 2. Get section snapshots
+        $snapshots = Schema::hasTable('dashboard_section_snapshots')
+            ? DashboardSectionSnapshot::where('submission_id', $submissionId)
+            ->whereIn('section_code', ['A.1.1', 'A.1.2', 'A.2.1', 'A.3', 'A.4'])
+            ->get()
+            ->keyBy('section_code')
+            : collect();
+
+        // If snapshot missing, project on the fly
+        if (($snapshots->isEmpty() || !$rekap) && class_exists(DashboardProjectionService::class)) {
+            app(DashboardProjectionService::class)->projectSubmission($submission, 'manual');
+            $rekap = DashboardRekapitulasi::where('submission_id', $submissionId)->first();
+            $snapshots = DashboardSectionSnapshot::where('submission_id', $submissionId)
+                ->whereIn('section_code', ['A.1.1', 'A.1.2', 'A.2.1', 'A.3', 'A.4'])
+                ->get()
+                ->keyBy('section_code');
+        }
+
+        $a11Snapshot = $snapshots->get('A.1.1');
+        $a12Snapshot = $snapshots->get('A.1.2');
+        $a21Snapshot = $snapshots->get('A.2.1');
+        $a3Snapshot  = $snapshots->get('A.3');
+        $a4Snapshot  = $snapshots->get('A.4');
+
+        $a11Data = $a11Snapshot?->processed_data ?? [];
+        $a12Data = $a12Snapshot?->processed_data ?? [];
+        $a21Data = $a21Snapshot?->processed_data ?? [];
+        $a3Data  = $a3Snapshot?->processed_data ?? [];
+        $a4Data  = $a4Snapshot?->processed_data ?? [];
+
+        return [
+            'submission' => $submission,
+            'school'     => $submission->school ?: School::where('npsn', $submission->npsn)->first(),
+            'rekap'      => $rekap,
+            'kpis'       => [
+                'ukk_rate'               => $rekap?->ukk_rate ?? $a11Snapshot?->metric_rate_1 ?? 0.0,
+                'ukk_participants'       => $rekap?->ukk_participants ?? $a11Snapshot?->metric_int_1 ?? 0,
+                'ukk_passed'             => $rekap?->ukk_passed ?? $a11Snapshot?->metric_int_2 ?? 0,
+                'certification_count'    => $rekap?->certification_count ?? $a12Snapshot?->metric_int_1 ?? 0,
+                'tracer_rate'            => $rekap?->tracer_rate ?? $a21Snapshot?->metric_rate_1 ?? 0.0,
+                'tracer_total_graduates' => $rekap?->tracer_total_graduates ?? $a21Snapshot?->metric_int_1 ?? 0,
+                'tracer_employed'        => $rekap?->tracer_employed ?? $a21Snapshot?->metric_int_2 ?? 0,
+                'tracer_continuing_edu'  => $rekap?->tracer_continuing_edu ?? 0,
+                'tracer_entrepreneur'    => $rekap?->tracer_entrepreneur ?? 0,
+                'dropout_rate'           => $rekap?->dropout_rate ?? $a3Snapshot?->metric_rate_1 ?? 0.0,
+                'dropout_initial'        => $rekap?->dropout_initial ?? $a3Snapshot?->metric_int_1 ?? 0,
+                'dropout_final'          => $rekap?->dropout_final ?? 0,
+                'dropout_count'          => $rekap?->dropout_count ?? $a3Snapshot?->metric_int_2 ?? 0,
+                'tka_score'              => $rekap?->tka_score ?? 0.0,
+                'tka_school_avg'         => $rekap?->tka_school_avg ?? $a4Snapshot?->metric_rate_1 ?? 0.0,
+                'tka_national_avg'       => $rekap?->tka_national_avg ?? $a4Snapshot?->metric_rate_2 ?? 0.0,
+            ],
+            'a11' => $a11Data,
+            'a12' => $a12Data,
+            'a21' => $a21Data,
+            'a3'  => $a3Data,
+            'a4'  => $a4Data,
+        ];
+    }
+
+    /**
+     * Get List of Submissions for Quick Context Selection
+     */
+    public function getSubmissionContextList(): Collection
+    {
+        return InstrumentSubmissionV2::query()
+            ->select(['id', 'school_name', 'npsn', 'expertise', 'expertise_concentration', 'status', 'filled_at'])
+            ->orderByDesc('filled_at')
+            ->orderByDesc('id')
+            ->limit(50)
+            ->get();
+    }
+
+    /**
+     * Get Aggregated Analytics for Mutu Peserta Didik grouped by Kategori Keahlian / Filters
+     */
+    public function getPesertaDidikCategoryAnalytics(array $filters = [], int $perPage = 15): array
+    {
+        $base = DashboardRekapitulasi::query();
+        $this->applyRekapitulasiFilters($base, $filters);
+
+        $totalSubmissions = (clone $base)->count();
+        $totalSchools = (clone $base)->distinct('npsn')->count('npsn');
+        $totalBidang = (clone $base)->whereNotNull('expertise')->where('expertise', '!=', '')->distinct('expertise')->count('expertise');
+        $totalKonsentrasi = (clone $base)->whereNotNull('expertise_concentration')->where('expertise_concentration', '!=', '')->distinct('expertise_concentration')->count('expertise_concentration');
+
+        // Aggregated KPIs
+        $agg = (clone $base)->selectRaw('
+            AVG(ukk_rate) as avg_ukk_rate,
+            SUM(ukk_participants) as total_ukk_participants,
+            SUM(ukk_passed) as total_ukk_passed,
+            SUM(certification_count) as total_certification_schemes,
+            AVG(tracer_rate) as avg_tracer_rate,
+            SUM(tracer_total_graduates) as total_graduates,
+            SUM(tracer_employed) as total_employed,
+            SUM(tracer_continuing_edu) as total_continuing_edu,
+            SUM(tracer_entrepreneur) as total_entrepreneur,
+            AVG(dropout_rate) as avg_dropout_rate,
+            SUM(dropout_initial) as total_dropout_initial,
+            SUM(dropout_final) as total_dropout_final,
+            SUM(dropout_count) as total_dropout_count,
+            AVG(tka_score) as avg_tka_score,
+            AVG(tka_school_avg) as avg_tka_school,
+            AVG(tka_national_avg) as avg_tka_national
+        ')->first();
+
+        $totalGraduates = (int) ($agg->total_graduates ?? 0);
+        $employedRate = $totalGraduates > 0 ? round((($agg->total_employed ?? 0) / $totalGraduates) * 100, 1) : round((float) ($agg->avg_tracer_rate ?? 0), 1);
+        $continuingRate = $totalGraduates > 0 ? round((($agg->total_continuing_edu ?? 0) / $totalGraduates) * 100, 1) : 0.0;
+        $entrepreneurRate = $totalGraduates > 0 ? round((($agg->total_entrepreneur ?? 0) / $totalGraduates) * 100, 1) : 0.0;
+
+        // Breakdown per Bidang Keahlian
+        $expertiseBreakdown = (clone $base)
+            ->select('expertise')
+            ->selectRaw('
+                COUNT(*) as total_submissions,
+                COUNT(DISTINCT npsn) as total_schools,
+                ROUND(AVG(ukk_rate), 1) as avg_ukk_rate,
+                SUM(ukk_participants) as total_ukk_participants,
+                SUM(ukk_passed) as total_ukk_passed,
+                ROUND(AVG(tracer_rate), 1) as avg_tracer_rate,
+                ROUND(AVG(dropout_rate), 1) as avg_dropout_rate,
+                ROUND(AVG(tka_score), 2) as avg_tka_score,
+                ROUND(AVG(tka_school_avg), 2) as avg_tka_school
+            ')
+            ->whereNotNull('expertise')
+            ->where('expertise', '!=', '')
+            ->groupBy('expertise')
+            ->orderByDesc('total_submissions')
+            ->get();
+
+        // Breakdown per Konsentrasi Keahlian
+        $concentrationBreakdown = (clone $base)
+            ->select('expertise', 'expertise_program', 'expertise_concentration')
+            ->selectRaw('
+                COUNT(*) as total_submissions,
+                COUNT(DISTINCT npsn) as total_schools,
+                ROUND(AVG(ukk_rate), 1) as avg_ukk_rate,
+                ROUND(AVG(tracer_rate), 1) as avg_tracer_rate,
+                ROUND(AVG(dropout_rate), 1) as avg_dropout_rate,
+                ROUND(AVG(tka_score), 2) as avg_tka_score
+            ')
+            ->whereNotNull('expertise_concentration')
+            ->where('expertise_concentration', '!=', '')
+            ->groupBy('expertise', 'expertise_program', 'expertise_concentration')
+            ->orderByDesc('total_submissions')
+            ->limit(30)
+            ->get();
+
+        // School Submissions List with Pagination
+        $schoolList = (clone $base)
+            ->with(['province', 'regency'])
+            ->orderBy('expertise', 'asc')
+            ->orderBy('school_name', 'asc')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return [
+            'total_submissions' => $totalSubmissions,
+            'total_schools'     => $totalSchools,
+            'total_bidang'      => $totalBidang,
+            'total_konsentrasi' => $totalKonsentrasi,
+            'kpis'              => [
+                'avg_ukk_rate'               => round((float) ($agg->avg_ukk_rate ?? 0), 1),
+                'total_ukk_participants'     => (int) ($agg->total_ukk_participants ?? 0),
+                'total_ukk_passed'           => (int) ($agg->total_ukk_passed ?? 0),
+                'total_certification_schemes' => (int) ($agg->total_certification_schemes ?? 0),
+                'avg_tracer_rate'            => round((float) ($agg->avg_tracer_rate ?? 0), 1),
+                'employed_rate'              => $employedRate,
+                'continuing_rate'            => $continuingRate,
+                'entrepreneur_rate'          => $entrepreneurRate,
+                'total_graduates'            => $totalGraduates,
+                'avg_dropout_rate'           => round((float) ($agg->avg_dropout_rate ?? 0), 1),
+                'total_dropout_count'        => (int) ($agg->total_dropout_count ?? 0),
+                'total_initial_students'     => (int) ($agg->total_dropout_initial ?? 0),
+                'avg_tka_score'              => round((float) ($agg->avg_tka_score ?? 0), 2),
+                'avg_tka_school'             => round((float) ($agg->avg_tka_school ?? 0), 2),
+                'avg_tka_national'           => round((float) ($agg->avg_tka_national ?? 0), 2),
+            ],
+            'expertise_breakdown'     => $expertiseBreakdown,
+            'concentration_breakdown' => $concentrationBreakdown,
+            'school_list'             => $schoolList,
+        ];
+    }
+
+    /**
+     * Get Concentration Options
+     */
+    public function getConcentrationOptions(?string $expertise = null): Collection
+    {
+        $query = DashboardRekapitulasi::query()
+            ->whereNotNull('expertise_concentration')
+            ->where('expertise_concentration', '!=', '')
+            ->when($expertise, fn($q) => $q->where('expertise', $expertise))
+            ->distinct()
+            ->orderBy('expertise_concentration', 'asc');
+
+        return $query->pluck('expertise_concentration');
     }
 }

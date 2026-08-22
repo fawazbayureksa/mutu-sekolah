@@ -22,11 +22,9 @@ class KelembagaanController extends Controller
     {
         $filters = $this->extractFilters($request);
 
-        $schools = $this->queryService->getSchoolDirectory($filters, 15);
         $stats = $this->queryService->getKelembagaanStats($filters);
 
         return view('admin.dashboard.kelembagaan.index', [
-            'schools'    => $schools,
             'stats'      => $stats,
             'provinces'  => $this->queryService->getProvinceOptions(),
             'regencies'  => $this->queryService->getRegencyOptions($filters['province_code'] ?? null),
@@ -98,7 +96,7 @@ class KelembagaanController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.dashboard.overview')
+            ->route('admin.dashboard.peserta-didik.index', ['submission_id' => $submission->id])
             ->with('success', "Konteks asesmen aktif: {$school->school_name} - {$submission->expertise_concentration}");
     }
 

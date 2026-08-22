@@ -169,17 +169,16 @@
                                                 <i class="bi bi-file-earmark-text"></i>
                                             </a>
 
-                                            {{-- Select context for Phase 2 readiness --}}
-                                            {{-- <form
-                                                action="{{ route('admin.dashboard.kelembagaan.select-context', $school) }}"
+                                            {{-- Select context for deep-dive assessment analytics --}}
+                                            <form action="{{ route('admin.dashboard.kelembagaan.select-context', $school) }}"
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 <input type="hidden" name="submission_id" value="{{ $sub->id }}">
                                                 <button type="submit" class="btn btn-sm btn-primary"
-                                                    title="Pilih Sebagai Konteks Asesmen">
-                                                    <i class="bi bi-arrow-right-circle me-1"></i> Asesmen
+                                                    title="Buka Analisis Mutu Peserta Didik">
+                                                    <i class="bi bi-mortarboard me-1"></i> Analisis Mutu
                                                 </button>
-                                            </form> --}}
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
