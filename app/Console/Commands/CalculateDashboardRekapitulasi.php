@@ -26,6 +26,8 @@ class CalculateDashboardRekapitulasi extends Command
      */
     public function handle(DashboardRekapitulasiService $service): int
     {
+        @ini_set('memory_limit', '512M');
+
         $this->info('Memulai proses kalkulasi & rekapitulasi data dashboard Mutu SMK...');
 
         try {

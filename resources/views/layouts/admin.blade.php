@@ -127,7 +127,7 @@
                     <a href="{{ route('admin.dashboard.overview') }}"
                         class="sidebar-menu-link {{ request()->is('admin/dashboard-mutu/overview*') ? 'active' : '' }}">
                         <i class="bi bi-speedometer"></i>
-                        <span>Dashboard Mutu</span>
+                        <span>Dashboard Overview</span>
                     </a>
                 </li>
 
@@ -135,7 +135,7 @@
                     <a href="{{ route('admin.dashboard.kelembagaan.index') }}"
                         class="sidebar-menu-link {{ request()->is('admin/dashboard-mutu/kelembagaan*') ? 'active' : '' }}">
                         <i class="bi bi-buildings"></i>
-                        <span>Profil & Kelembagaan</span>
+                        <span>Dashboard Sekolah</span>
                     </a>
                 </li>
             @endif

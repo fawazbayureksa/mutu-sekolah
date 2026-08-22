@@ -183,14 +183,14 @@
                 </div>
             </div>
 
-            {{-- Total Submission --}}
+            {{-- Total Pengajuan --}}
             <div class="col-12 col-sm-6 col-xl-6">
                 <div class="card card-kpi shadow-sm border-0 bg-white p-3 h-100">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
-                            <span class="text-muted small fw-medium">Total Submission</span>
+                            <span class="text-muted small fw-medium">Total Pengajuan</span>
                             <h2 class="fw-bold mb-0 mt-1 text-dark">{{ number_format($stats['total_submission']) }}</h2>
-                            <small class="text-muted d-block mt-1">Sekolah yang telah mengirimkan data</small>
+                            <small class="text-muted d-block mt-1">Pengajuan yang telah diterima</small>
                         </div>
                         <div class="kpi-icon-wrapper" style="background-color: #ecfdf5; color: #059669;">
                             <i class="bi bi-journal-text fs-4"></i>
@@ -232,15 +232,15 @@
             </div>
         </div>
 
-        {{-- ROW 2: Distribusi Sekolah per Bidang Keahlian (Donut Chart + Breakdown) --}}
+        {{-- ROW 2: Distribusi Pengajuan per Bidang Keahlian (Donut Chart + Breakdown) --}}
         <div class="row g-4 mb-4">
             <div class="col-12">
                 <div class="card chart-container-card shadow-sm border-0">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="d-flex align-items-center gap-2">
-                            <h6 class="fw-bold mb-0 text-dark">Distribusi Sekolah per Bidang Keahlian</h6>
+                            <h6 class="fw-bold mb-0 text-dark">Distribusi Pengajuan per Bidang Keahlian</h6>
                             <i class="bi bi-info-circle text-muted small"
-                                title="Proporsi sebaran bidang keahlian sekolah"></i>
+                                title="Proporsi sebaran submission berdasarkan bidang keahlian"></i>
                         </div>
                         <span class="badge bg-light text-secondary border px-2 py-1 font-monospace"
                             style="font-size: 0.75rem;">
@@ -252,18 +252,18 @@
                         <x-dashboard.empty-state message="Belum ada data distribusi bidang keahlian." />
                     @else
                         <div class="row align-items-center py-2">
-                            <div class="col-12 col-md-4 text-center position-relative mb-3 mb-md-0">
+                            <div class="col-12 col-md-3 text-center position-relative mb-3 mb-md-0">
                                 <div style="height: 220px; width: 220px; margin: 0 auto; position: relative;">
                                     <canvas id="expertiseDonutChart"></canvas>
                                     <div
                                         class="position-absolute top-50 start-50 translate-middle text-center pointer-events-none">
                                         <h3 class="fw-bold mb-0 text-dark lh-1">
-                                            {{ number_format($stats['total_sekolah']) }}</h3>
-                                        <small class="text-muted" style="font-size: 0.7rem;">Total Sekolah</small>
+                                            {{ number_format($stats['total_submission']) }}</h3>
+                                        <small class="text-muted" style="font-size: 0.7rem;">Total Pengajuan</small>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-8">
+                            <div class="col-12 col-md-9">
                                 <div class="row g-3">
                                     @php
                                         $donutColors = [
@@ -291,9 +291,9 @@
                                                         title="{{ $item->expertise }}">{{ $item->expertise }}</span>
                                                 </div>
                                                 <div class="d-flex align-items-center gap-3 flex-shrink-0 text-end">
-                                                    <strong class="text-dark small">{{ $item->total_schools }} <span
+                                                    <strong class="text-dark small">{{ $item->total_submissions }} <span
                                                             class="fw-normal text-muted"
-                                                            style="font-size: 0.7rem;">Sekolah</span></strong>
+                                                            style="font-size: 0.7rem;">Pengajuan</span></strong>
                                                     <span class="badge bg-white text-dark border shadow-2xs"
                                                         style="width: 50px;">{{ $item->percentage }}%</span>
                                                 </div>
@@ -311,7 +311,7 @@
         {{-- ROW 3: 3 Indikator Capaian Mutu Aspek (A, B, C) --}}
         <div class="row g-4 mb-4">
 
-            {{-- <div class="col-12 col-lg-4">
+            <div class="col-12 col-lg-12">
                 <div class="card aspect-card shadow-sm border-0 h-100 d-flex flex-column">
                     <div class="aspect-header text-primary border-bottom">
                         <i class="bi bi-mortarboard-fill"></i>
@@ -391,16 +391,16 @@
                             </div>
                         </a>
                     </div>
-                    <div class="aspect-footer">
+                    {{-- <div class="aspect-footer">
                         <a href="{{ route('admin.dashboard.kelembagaan.index') }}"
                             class="text-primary text-decoration-none small fw-semibold">
                             Lihat Selengkapnya <i class="bi bi-chevron-right small"></i>
                         </a>
-                    </div>
+                    </div> --}}
                 </div>
-            </div> --}}
+            </div>
 
-            {{-- <div class="col-12 col-lg-4">
+            <div class="col-12 col-lg-12">
                 <div class="card aspect-card shadow-sm border-0 h-100 d-flex flex-column">
                     <div class="aspect-header text-success border-bottom">
                         <i class="bi bi-buildings"></i>
@@ -485,16 +485,16 @@
                             </div>
                         </a>
                     </div>
-                    <div class="aspect-footer">
+                    {{-- <div class="aspect-footer">
                         <a href="{{ route('admin.dashboard.kelembagaan.index') }}"
                             class="text-success text-decoration-none small fw-semibold">
                             Lihat Selengkapnya <i class="bi bi-chevron-right small"></i>
                         </a>
-                    </div>
+                    </div> --}}
                 </div>
-            </div> --}}
+            </div>
 
-            {{-- <div class="col-12 col-lg-4">
+            <div class="col-12 col-lg-12">
                 <div class="card aspect-card shadow-sm border-0 h-100 d-flex flex-column">
                     <div class="aspect-header text-warning border-bottom">
                         <i class="bi bi-people-fill"></i>
@@ -575,14 +575,14 @@
                             </div>
                         </a>
                     </div>
-                    <div class="aspect-footer">
+                    {{-- <div class="aspect-footer">
                         <a href="{{ route('admin.dashboard.kelembagaan.index') }}"
                             class="text-warning text-decoration-none small fw-semibold">
                             Lihat Selengkapnya <i class="bi bi-chevron-right small"></i>
                         </a>
-                    </div>
+                    </div> --}}
                 </div>
-            </div> --}}
+            </div>
         </div>
 
         {{-- ROW 4: Prioritas Perhatian & Data Cakupan --}}
@@ -628,7 +628,7 @@
                                     <i class="bi bi-file-earmark-check-fill"></i>
                                 </div>
                                 <div>
-                                    <span class="text-muted d-block" style="font-size: 0.7rem;">Total Submission</span>
+                                    <span class="text-muted d-block" style="font-size: 0.7rem;">Total Pengajuan</span>
                                     <strong
                                         class="text-dark small d-block">{{ number_format($attentionCoverage['total_submission']) }}</strong>
                                     <small class="text-muted" style="font-size: 0.68rem;">data instrumen masuk</small>
@@ -684,7 +684,7 @@
             const donutCtx = document.getElementById('expertiseDonutChart');
             if (donutCtx) {
                 const donutLabels = {!! json_encode($expertiseDist->pluck('expertise')) !!};
-                const donutData = {!! json_encode($expertiseDist->pluck('total_schools')) !!};
+                const donutData = {!! json_encode($expertiseDist->pluck('total_submissions')) !!};
                 const donutColors = ['#0066cc', '#00bcd4', '#7c3aed', '#ff5722', '#ff9800', '#10b981', '#6366f1',
                     '#ec4899'
                 ];
@@ -712,7 +712,7 @@
                             tooltip: {
                                 callbacks: {
                                     label: function(context) {
-                                        return ` ${context.label}: ${context.raw} Sekolah`;
+                                        return ` ${context.label}: ${context.raw} Pengajuan`;
                                     }
                                 }
                             }

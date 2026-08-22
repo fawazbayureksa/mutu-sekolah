@@ -12,6 +12,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        $schedule->command('dashboard:project')->everySixHours();
         $schedule->command('dashboard:calculate-rekapitulasi')->everySixHours();
     }
 

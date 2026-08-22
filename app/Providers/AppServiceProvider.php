@@ -25,5 +25,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // Use Bootstrap 5 for pagination
         Paginator::useBootstrapFive();
+
+        // Register projection observer
+        \App\Models\InstrumentSubmissionV2::observe(\App\Observers\InstrumentSubmissionV2Observer::class);
     }
 }

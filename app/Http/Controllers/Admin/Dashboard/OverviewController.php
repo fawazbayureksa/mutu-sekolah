@@ -20,9 +20,9 @@ class OverviewController extends Controller
         return view('admin.dashboard.overview', [
             'stats'             => $this->queryService->getOverviewStats($filters),
             'expertiseDist'     => $this->queryService->getExpertiseDistribution($filters),
-            // 'mutuSummary'       => $this->queryService->getMutuPesertaDidikSummary($filters),
-            // 'sarprasSummary'    => $this->queryService->getSaranaPrasaranaSummary($filters),
-            // 'tataKelolaSummary' => $this->queryService->getTataKelolaSummary($filters),
+            'mutuSummary'       => $this->queryService->getMutuPesertaDidikSummary($filters),
+            'sarprasSummary'    => $this->queryService->getSaranaPrasaranaSummary($filters),
+            'tataKelolaSummary' => $this->queryService->getTataKelolaSummary($filters),
             'attentionCoverage' => $this->queryService->getAttentionAndCoverage($filters),
             'rekapitulasi'      => $this->queryService->getRekapitulasiList($filters, 10),
             'provinces'         => $this->queryService->getProvinceOptions(),
