@@ -107,13 +107,21 @@
                     </a>
                 </li>
 
-                {{-- <li class="sidebar-menu-item">
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.dashboard.sarana-prasarana.index') }}"
+                        class="sidebar-menu-link {{ request()->is('admin/dashboard-mutu/sarana-prasarana*') || request()->is('admin/dashboard-mutu/sarpras*') ? 'active' : '' }}">
+                        <i class="bi bi-tools"></i>
+                        <span>Sarana Prasarana</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-menu-item">
                     <a href="{{ route('admin.dashboard.peserta-didik.index') }}"
                         class="sidebar-menu-link {{ request()->is('admin/dashboard-mutu/peserta-didik*') ? 'active' : '' }}">
                         <i class="bi bi-mortarboard-fill"></i>
                         <span>Mutu Peserta Didik</span>
                     </a>
-                </li> --}}
+                </li>
             @endif
         </ul>
 

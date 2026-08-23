@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\SubmissionController;
 use App\Http\Controllers\Admin\SubmissionV2Controller;
 use App\Http\Controllers\Admin\Dashboard\OverviewController;
 use App\Http\Controllers\Admin\Dashboard\KelembagaanController;
+use App\Http\Controllers\Admin\Dashboard\SaranaPrasaranaController;
 use App\Http\Controllers\Admin\Dashboard\PesertaDidikController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
@@ -308,6 +309,10 @@ Route::middleware('auth')->group(function () {
                 Route::get('/', [KelembagaanController::class, 'index'])->name('index');
                 Route::get('/{school}', [KelembagaanController::class, 'show'])->name('show');
                 Route::post('/{school}/select-context', [KelembagaanController::class, 'selectContext'])->name('select-context');
+            });
+
+            Route::prefix('sarana-prasarana')->name('sarana-prasarana.')->group(function () {
+                Route::get('/', [SaranaPrasaranaController::class, 'index'])->name('index');
             });
 
             Route::prefix('peserta-didik')->name('peserta-didik.')->group(function () {

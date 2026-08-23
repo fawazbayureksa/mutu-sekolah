@@ -115,4 +115,65 @@
             </div>
         </div>
     </div>
+
+    {{-- Program Keahlian Dominan Card --}}
+    <div class="col-12 col-xl-12 col-md-12">
+        <div class="card border-0 shadow-sm h-100"
+            style="border-radius: 18px; background: #ffffff; border: 1px solid #e2e8f0 !important;">
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">
+                            Program Keahlian Dominan
+                            @if (!empty($filters['expertise']))
+                                <span class="fw-normal text-muted small" style="font-size: 0.8rem;">({{ $filters['expertise'] }})</span>
+                            @endif
+                        </h6>
+                    </div>
+                    <span class="badge bg-light text-secondary border px-2 py-1 font-monospace" style="font-size: 0.75rem;">
+                        {{ count($stats['program_distribution'] ?? []) }} Program
+                    </span>
+                </div>
+
+                @if (empty($stats['program_distribution']))
+                    <div class="text-center py-4 text-muted">
+                        <small>Belum ada data program keahlian untuk kriteria ini.</small>
+                    </div>
+                @else
+                    <div class="d-flex flex-column gap-2 justify-content-center">
+                        @foreach ($stats['program_distribution'] as $idx => $prog)
+                            @php
+                                $isUnknownProg = str_contains(strtolower($prog['label']), 'belum');
+                                $barBg = $isUnknownProg ? '#94a3b8' : '#0e4a66';
+                            @endphp
+                            <div class="p-2 px-3 rounded-3 d-flex align-items-center justify-content-between border"
+                                style="background-color: #f8fafc;"
+                                title="{{ $prog['count'] }} Pengajuan ({{ $prog['percentage'] }}%)">
+                                <div class="d-flex align-items-center gap-2 text-truncate me-2" style="max-width: 60%;">
+                                    <span class="badge fw-bold"
+                                        style="background-color: #0e4a66; color: #ffffff; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.72rem;">
+                                        {{ $idx + 1 }}
+                                    </span>
+                                    <span class="fw-semibold text-dark small text-truncate" title="{{ $prog['label'] }}">
+                                        {{ $prog['label'] }}
+                                    </span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                    <div class="progress" style="width: 70px; height: 6px; background-color: #e2e8f0; border-radius: 3px;">
+                                        <div class="progress-bar" style="width: {{ $prog['percentage'] }}%; background-color: {{ $barBg }};"></div>
+                                    </div>
+                                    <span class="text-dark fw-bold" style="font-size: 0.8rem; width: 45px; text-align: right;">
+                                        {{ $prog['percentage'] }}%
+                                    </span>
+                                    <small class="text-muted" style="font-size: 0.725rem;">
+                                        ({{ number_format($prog['count']) }})
+                                    </small>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
 </div>
