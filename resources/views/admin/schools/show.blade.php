@@ -54,12 +54,14 @@
                                 @if ($school->approval_status)
                                     @php
                                         $apvBg = match ($school->approval_status) {
-                                            'approved' => '#28a745',
+                                            'Sudah', 'approved' => '#28a745',
                                             'pending' => '#ffc107',
-                                            'rejected' => '#dc3545',
+                                            'Belum', 'rejected' => '#dc3545',
                                             default => '#6c757d',
                                         };
                                         $apvLabel = match ($school->approval_status) {
+                                            'Sudah' => 'Approval: Sudah',
+                                            'Belum' => 'Approval: Belum',
                                             'approved' => 'Disetujui',
                                             'pending' => 'Menunggu',
                                             'rejected' => 'Ditolak',
@@ -181,11 +183,23 @@
                                 @endif
                             </dd>
 
-                            <dt class="col-5 text-muted fw-normal small">Status Persetujuan</dt>
-                            <dd class="col-7 mb-0">
-                                @if ($school->approval_status)
+                            @if ($school->curriculum)
+                                <dt class="col-5 text-muted fw-normal small">Kurikulum</dt>
+                                <dd class="col-7 mb-0">
+                                    <span
+                                        class="badge {{ $school->curriculum === 'K13' ? 'bg-warning text-dark' : 'bg-success' }}">
+                                        {{ $school->curriculum }}
+                                    </span>
+                                </dd>
+                            @endif
+
+                            @if ($school->approval_status)
+                                <dt class="col-5 text-muted fw-normal small">Status Approval</dt>
+                                <dd class="col-7 mb-0">
                                     @php
                                         $apvMap = [
+                                            'Sudah' => ['success', 'Sudah'],
+                                            'Belum' => ['danger', 'Belum'],
                                             'approved' => ['success', 'Disetujui'],
                                             'pending' => ['warning', 'Menunggu'],
                                             'rejected' => ['danger', 'Ditolak'],
@@ -196,14 +210,7 @@
                                         ];
                                     @endphp
                                     <span class="badge bg-{{ $apvCls }}">{{ $apvTxt }}</span>
-                                @else
-                                    <span class="text-muted">-</span>
-                                @endif
-                            </dd>
-
-                            @if ($school->curriculum)
-                                <dt class="col-5 text-muted fw-normal small">Kurikulum</dt>
-                                <dd class="col-7 mb-0">{{ $school->curriculum }}</dd>
+                                </dd>
                             @endif
                         </dl>
                     </div>

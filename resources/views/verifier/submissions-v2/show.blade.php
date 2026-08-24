@@ -475,15 +475,34 @@
                             </div>
                             <div class="col-md-6">
                                 <dl class="row mb-0" style="row-gap:.5rem;">
-                                    @if ($submission->school?->curriculum)
+                                    @if ($submission->school?->curriculum ?? $submission->curriculum)
                                         <dt class="col-5 text-muted fw-normal small">Kurikulum</dt>
                                         <dd class="col-7 mb-0">
                                             <span
-                                                class="badge {{ $submission->school->curriculum === 'K13' ? 'bg-warning text-dark' : 'bg-success' }}">
-                                                {{ $submission->school->curriculum }}
+                                                class="badge {{ ($submission->school?->curriculum ?? $submission->curriculum) === 'K13' ? 'bg-warning text-dark' : 'bg-success' }}">
+                                                {{ $submission->school?->curriculum ?? $submission->curriculum }}
                                             </span>
                                         </dd>
                                     @endif
+                                    <dt class="col-5 text-muted fw-normal small">Status Approval</dt>
+                                    <dd class="col-7 mb-0">
+                                        @if ($submission->approval_status ?? $submission->school?->approval_status)
+                                            @php
+                                                $apprStatus = $submission->approval_status ?? $submission->school?->approval_status;
+                                                $apprBadge = match ($apprStatus) {
+                                                    'Sudah', 'approved' => 'bg-success',
+                                                    'Belum', 'rejected' => 'bg-danger',
+                                                    'pending' => 'bg-warning text-dark',
+                                                    default => 'bg-secondary',
+                                                };
+                                            @endphp
+                                            <span class="badge {{ $apprBadge }}">
+                                                {{ $apprStatus }}
+                                            </span>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </dd>
                                     @if ($submission->school?->school_status)
                                         <dt class="col-5 text-muted fw-normal small">Status Sekolah</dt>
                                         <dd class="col-7 mb-0">{{ $submission->school->school_status }}</dd>
