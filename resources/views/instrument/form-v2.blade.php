@@ -65,9 +65,12 @@
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">NPSN</label>
-                                <input type="text" name="npsn" class="form-control"
+                                <label class="form-label">NPSN <span class="text-danger">*</span></label>
+                                <input type="text" name="npsn" class="form-control @error('npsn') is-invalid @enderror" required
                                     value="{{ old('npsn', $schoolDefaults->npsn ?? '') }}" placeholder="NPSN">
+                                @error('npsn')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Provinsi <span class="text-danger">*</span></label>
@@ -105,17 +108,17 @@
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Status Sekolah</label>
+                                <label class="form-label">Status Sekolah <span class="text-danger">*</span></label>
                                 <div class="mt-2">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="school_status"
-                                            id="statusNegeri" value="Negeri"
+                                            id="statusNegeri" value="Negeri" required
                                             {{ old('school_status', $schoolDefaults->school_status ?? '') == 'Negeri' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="statusNegeri">Negeri</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="school_status"
-                                            id="statusSwasta" value="Swasta"
+                                            id="statusSwasta" value="Swasta" required
                                             {{ old('school_status', $schoolDefaults->school_status ?? '') == 'Swasta' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="statusSwasta">Swasta</label>
                                     </div>
@@ -125,17 +128,17 @@
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Durasi Program</label>
+                                <label class="form-label">Durasi Program <span class="text-danger">*</span></label>
                                 <div class="mt-2">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="program_duration"
-                                            id="duration3" value="3 Tahun"
+                                            id="duration3" value="3 Tahun" required
                                             {{ old('program_duration', $schoolDefaults->program_duration ?? '') == '3 Tahun' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="duration3">3 Tahun</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="program_duration"
-                                            id="duration4" value="4 Tahun"
+                                            id="duration4" value="4 Tahun" required
                                             {{ old('program_duration', $schoolDefaults->program_duration ?? '') == '4 Tahun' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="duration4">4 Tahun</label>
                                     </div>
@@ -145,12 +148,12 @@
                                 @enderror
                             </div>
                             <div class="col-md-12">
-                                <label class="form-label">Kategori Sekolah</label>
+                                <label class="form-label">Kategori Sekolah <span class="text-danger">*</span></label>
                                 <div class="mt-2">
                                     @foreach (config('constant.school_category') as $value => $label)
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="school_category"
-                                                id="cat{{ Str::slug($value) }}" value="{{ $value }}"
+                                                id="cat{{ Str::slug($value) }}" value="{{ $value }}" required
                                                 {{ old('school_category', $schoolDefaults->school_category ?? '') == $value ? 'checked' : '' }}>
                                             <label class="form-check-label"
                                                 for="cat{{ Str::slug($value) }}">{{ $label }}</label>
@@ -162,12 +165,12 @@
                                 @enderror
                             </div>
                             <div class="col-md-12">
-                                <label class="form-label">Kurikulum</label>
+                                <label class="form-label">Kurikulum <span class="text-danger">*</span></label>
                                 <div class="mt-2">
                                     @foreach (config('constant.curriculum') as $cur)
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="curriculum"
-                                                id="cur{{ Str::slug($cur) }}" value="{{ $cur }}"
+                                                id="cur{{ Str::slug($cur) }}" value="{{ $cur }}" required
                                                 {{ old('curriculum', $schoolDefaults->curriculum ?? '') == $cur ? 'checked' : '' }}>
                                             <label class="form-check-label"
                                                 for="cur{{ Str::slug($cur) }}">{{ $cur }}</label>
@@ -179,7 +182,7 @@
                                 @enderror
                             </div>
                             <div class="col-md-12" id="approval-status-wrapper" style="display:none;">
-                                <label class="form-label">Status Approval</label>
+                                <label class="form-label">Status Approval <span class="text-danger">*</span></label>
                                 <div class="mt-2">
                                     @foreach (config('constant.approval_status') as $status)
                                         <div class="form-check form-check-inline">
@@ -196,12 +199,12 @@
                                 @enderror
                             </div>
                             <div class="col-md-12">
-                                <label class="form-label">Akreditasi Sekolah</label>
+                                <label class="form-label">Akreditasi Sekolah <span class="text-danger">*</span></label>
                                 <div class="mt-2">
                                     @foreach (config('constant.school_accreditation') as $acc)
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="school_accreditation"
-                                                id="acc{{ Str::slug($acc) }}" value="{{ $acc }}"
+                                                id="acc{{ Str::slug($acc) }}" value="{{ $acc }}" required
                                                 {{ old('school_accreditation', $schoolDefaults->school_accreditation ?? '') == $acc ? 'checked' : '' }}>
                                             <label class="form-check-label"
                                                 for="acc{{ Str::slug($acc) }}">{{ $acc }}</label>
@@ -515,8 +518,12 @@
             // Restore approval_status visibility on page load (e.g. after validation failure)
             const initialExpertise = document.getElementById('expertiseSelect')?.value;
             const approvalWrapper = document.getElementById('approval-status-wrapper');
-            if (approvalWrapper && initialExpertise === 'Kemaritiman') {
-                approvalWrapper.style.display = '';
+            if (approvalWrapper) {
+                const isKemaritiman = initialExpertise === 'Kemaritiman';
+                approvalWrapper.style.display = isKemaritiman ? '' : 'none';
+                approvalWrapper.querySelectorAll('input[name="approval_status"]').forEach(function(radio) {
+                    radio.required = isKemaritiman;
+                });
             }
 
             // Toggle "Standar Minimal SMK PK" column on school_category change
@@ -897,7 +904,12 @@
 
             // Show approval_status only for Kemaritiman
             if (approvalWrapper) {
-                approvalWrapper.style.display = expertise === 'Kemaritiman' ? '' : 'none';
+                const isKemaritiman = expertise === 'Kemaritiman';
+                approvalWrapper.style.display = isKemaritiman ? '' : 'none';
+                approvalWrapper.querySelectorAll('input[name="approval_status"]').forEach(function(radio) {
+                    radio.required = isKemaritiman;
+                    if (!isKemaritiman) radio.checked = false;
+                });
             }
 
             if (!expertise || !tree[expertise]) {

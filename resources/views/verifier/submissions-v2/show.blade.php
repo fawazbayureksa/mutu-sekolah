@@ -484,9 +484,9 @@
                                             </span>
                                         </dd>
                                     @endif
-                                    @if ($submission->approval_status ?? $submission->school?->approval_status)
-                                        <dt class="col-5 text-muted fw-normal small">Status Approval</dt>
-                                        <dd class="col-7 mb-0">
+                                    <dt class="col-5 text-muted fw-normal small">Status Approval</dt>
+                                    <dd class="col-7 mb-0">
+                                        @if ($submission->approval_status ?? $submission->school?->approval_status)
                                             @php
                                                 $apprStatus = $submission->approval_status ?? $submission->school?->approval_status;
                                                 $apprBadge = match ($apprStatus) {
@@ -499,8 +499,10 @@
                                             <span class="badge {{ $apprBadge }}">
                                                 {{ $apprStatus }}
                                             </span>
-                                        </dd>
-                                    @endif
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </dd>
                                     @if ($submission->school?->school_status)
                                         <dt class="col-5 text-muted fw-normal small">Status Sekolah</dt>
                                         <dd class="col-7 mb-0">{{ $submission->school->school_status }}</dd>

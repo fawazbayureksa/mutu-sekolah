@@ -1,7 +1,7 @@
 <div class="row g-3 mb-3">
     <div class="col-md-4">
-        <label class="form-label">Bidang Keahlian</label>
-        <select name="expertise" id="expertiseSelect" class="form-select @error('expertise') is-invalid @enderror"
+        <label class="form-label">Bidang Keahlian <span class="text-danger">*</span></label>
+        <select name="expertise" id="expertiseSelect" class="form-select @error('expertise') is-invalid @enderror" required
             onchange="loadExpertisePrograms(this.value)">
             <option value="">-- Pilih Bidang Keahlian --</option>
             @foreach (array_keys($expertiseData) as $expertise)
@@ -15,9 +15,9 @@
         @enderror
     </div>
     <div class="col-md-4">
-        <label class="form-label">Program Keahlian</label>
+        <label class="form-label">Program Keahlian <span class="text-danger">*</span></label>
         <select name="expertise_program" id="expertiseProgramSelect"
-            class="form-select @error('expertise_program') is-invalid @enderror" disabled
+            class="form-select @error('expertise_program') is-invalid @enderror" required disabled
             onchange="loadExpertiseConcentrations(this.value)">
             <option value="">-- Pilih Program Keahlian --</option>
         </select>
@@ -26,9 +26,9 @@
         @enderror
     </div>
     <div class="col-md-4">
-        <label class="form-label">Konsentrasi Keahlian</label>
+        <label class="form-label">Konsentrasi Keahlian <span class="text-danger">*</span></label>
         <select name="expertise_concentration" id="expertiseConcentrationSelect"
-            class="form-select @error('expertise_concentration') is-invalid @enderror" disabled
+            class="form-select @error('expertise_concentration') is-invalid @enderror" required disabled
             onchange="loadSaprasData(this.value)">
             <option value="">-- Pilih Konsentrasi Keahlian --</option>
         </select>
