@@ -4,13 +4,15 @@ namespace App\Http\Controllers\Admin\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Services\Dashboard\DashboardQueryService;
+use App\Services\Dashboard\SaranaPrasaranaAnalyticsService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class SaranaPrasaranaController extends Controller
 {
     public function __construct(
-        private readonly DashboardQueryService $queryService
+        private readonly DashboardQueryService $queryService,
+        private readonly SaranaPrasaranaAnalyticsService $sarprasService
     ) {}
 
     /**
@@ -24,10 +26,10 @@ class SaranaPrasaranaController extends Controller
         $catalogKey = $request->query('catalog_key', 'Teknik_Komputer_dan_Jaringan');
 
         // 1. Fetch Universal Sarana Prasarana Analytics
-        $sarprasData = $this->queryService->getSaranaPrasaranaAnalytics($filters);
+        $sarprasData = $this->sarprasService->getSaranaPrasaranaAnalytics($filters);
 
         // 2. Fetch Standard Sarpras Catalog from config/sapras_data.php
-        $catalogData = $this->queryService->getSarprasStandardsCatalog($catalogKey);
+        $catalogData = $this->sarprasService->getSarprasStandardsCatalog($catalogKey);
 
         // 3. Dropdown options for Filter Bar
         $provinces = $this->queryService->getProvinceOptions();

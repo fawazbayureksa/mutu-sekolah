@@ -33,6 +33,7 @@ class PesertaDidikController extends Controller
         return view('admin.dashboard.peserta-didik.index', [
             'analytics'      => $analytics,
             'kpis'           => $analytics['kpis'],
+            'competency'     => $analytics['competency'] ?? [],
             'expertiseBreakdown'     => $analytics['expertiseBreakdown'] ?? $analytics['expertise_breakdown'],
             'concentrationBreakdown' => $analytics['concentrationBreakdown'] ?? $analytics['concentration_breakdown'],
             'schoolList'     => $analytics['school_list'],

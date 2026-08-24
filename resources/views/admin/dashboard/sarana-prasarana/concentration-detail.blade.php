@@ -59,17 +59,24 @@
                                 @foreach ($activeConcentration['items'] as $item)
                                     <div class="aspect-item">
                                         <div class="flex-grow-1">
-                                            <span class="fw-bold text-dark d-block small lh-1 mb-1">{{ $item['name'] }}</span>
-                                            <small class="text-muted" style="font-size: 0.7rem;">
-                                                Tingkat kesesuaian peralatan
+                                            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                                <span class="fw-bold text-dark small lh-1">{{ $item['name'] }}</span>
+                                                @if (!empty($item['min_qty']))
+                                                    <span class="badge bg-light text-secondary border px-2 py-0" style="font-size: 0.65rem;">
+                                                        Min. {{ $item['min_qty'] }} {{ $item['unit'] ?? 'Unit' }}
+                                                    </span>
+                                                @endif
+                                            </div>
+                                            <small class="text-muted text-truncate d-block" style="font-size: 0.72rem; max-width: 500px;" title="{{ $item['spec'] ?? '' }}">
+                                                {{ $item['spec'] ?? 'Standar Industri Terkini' }}
                                             </small>
                                         </div>
                                         <div class="d-flex align-items-center gap-2">
                                             <div class="aspect-progress-container">
-                                                <div class="aspect-progress-fill" style="width: {{ $item['rate'] }}%;"></div>
+                                                <div class="aspect-progress-fill" style="width: {{ $item['rate'] ?? ($activeConcentration['equipment_standard'] ?? 80) }}%;"></div>
                                             </div>
                                             <span class="fw-bold text-dark small" style="width: 45px; text-align: right;">
-                                                {{ $item['rate'] }}%
+                                                {{ $item['rate'] ?? ($activeConcentration['equipment_standard'] ?? 80) }}%
                                             </span>
                                         </div>
                                     </div>

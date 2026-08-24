@@ -1,4 +1,11 @@
 {{-- 1. DATA KOMPETENSI (UKK, Skema, Jenjang KKNI, Kesesuaian SKKNI) --}}
+@php
+    $ukkExec = $competency['ukk_execution'] ?? [];
+    $schemes = $competency['schemes'] ?? [];
+    $kkni = $competency['kkni'] ?? [];
+    $compliance = $competency['compliance'] ?? [];
+@endphp
+
 <div class="card border-0 shadow-sm mb-4" style="border-radius: 18px; background: #ffffff; border: 1px solid #e2e8f0 !important;">
     <div class="card-body p-4">
         {{-- Section Header --}}
@@ -49,10 +56,13 @@
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="text-dark small fw-medium">SMK bersama LSP (P1/P2/P3)</span>
-                                <strong class="text-dark small">45.0% <span class="text-muted fw-normal" style="font-size: 0.7rem;">(46 sek.)</span></strong>
+                                <strong class="text-dark small">
+                                    {{ number_format($ukkExec['lsp_rate'] ?? 0, 1) }}%
+                                    <span class="text-muted fw-normal" style="font-size: 0.7rem;">({{ number_format($ukkExec['lsp_count'] ?? 0) }} sek.)</span>
+                                </strong>
                             </div>
                             <div class="progress" style="height: 6px; background-color: #f1f5f9;">
-                                <div class="progress-bar" style="width: 45%; background-color: #0e4a66;"></div>
+                                <div class="progress-bar" style="width: {{ $ukkExec['lsp_rate'] ?? 0 }}%; background-color: #0e4a66;"></div>
                             </div>
                         </div>
 
@@ -60,10 +70,13 @@
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="text-dark small fw-medium">DUDI / Asosiasi Profesi</span>
-                                <strong class="text-dark small">30.0% <span class="text-muted fw-normal" style="font-size: 0.7rem;">(30 sek.)</span></strong>
+                                <strong class="text-dark small">
+                                    {{ number_format($ukkExec['dudi_rate'] ?? 0, 1) }}%
+                                    <span class="text-muted fw-normal" style="font-size: 0.7rem;">({{ number_format($ukkExec['dudi_count'] ?? 0) }} sek.)</span>
+                                </strong>
                             </div>
                             <div class="progress" style="height: 6px; background-color: #f1f5f9;">
-                                <div class="progress-bar" style="width: 30%; background-color: #2d789a;"></div>
+                                <div class="progress-bar" style="width: {{ $ukkExec['dudi_rate'] ?? 0 }}%; background-color: #2d789a;"></div>
                             </div>
                         </div>
 
@@ -71,16 +84,19 @@
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="text-dark small fw-medium">UKK Mandiri bersama Mitra</span>
-                                <strong class="text-dark small">25.0% <span class="text-muted fw-normal" style="font-size: 0.7rem;">(25 sek.)</span></strong>
+                                <strong class="text-dark small">
+                                    {{ number_format($ukkExec['mandiri_rate'] ?? 0, 1) }}%
+                                    <span class="text-muted fw-normal" style="font-size: 0.7rem;">({{ number_format($ukkExec['mandiri_count'] ?? 0) }} sek.)</span>
+                                </strong>
                             </div>
                             <div class="progress" style="height: 6px; background-color: #f1f5f9;">
-                                <div class="progress-bar" style="width: 25%; background-color: #64748b;"></div>
+                                <div class="progress-bar" style="width: {{ $ukkExec['mandiri_rate'] ?? 0 }}%; background-color: #64748b;"></div>
                             </div>
                         </div>
                     </div>
 
                     <div class="pt-2 mt-2 border-top">
-                        <small class="text-muted" style="font-size: 0.7rem;">Total terdata: <strong>{{ number_format($kpis['total_certification_schemes'] ?: 100) }}</strong> skema pengujian</small>
+                        <small class="text-muted" style="font-size: 0.7rem;">Total terdata: <strong>{{ number_format($kpis['total_certification_schemes'] ?: ($schemes['total_schemes'] ?? 0)) }}</strong> skema pengujian</small>
                     </div>
                 </div>
             </div>
@@ -101,15 +117,19 @@
                                 <div class="mt-2 d-flex flex-column gap-1">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <small class="text-dark" style="font-size: 0.72rem;">Okupasi</small>
-                                        <strong class="text-dark small">55%</strong>
+                                        <strong class="text-dark small">{{ number_format($schemes['okupasi_rate'] ?? 0, 0) }}%</strong>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <small class="text-dark" style="font-size: 0.72rem;">Klaster</small>
-                                        <strong class="text-dark small">30%</strong>
+                                        <strong class="text-dark small">{{ number_format($schemes['klaster_rate'] ?? 0, 0) }}%</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-dark" style="font-size: 0.72rem;">KKNI</small>
+                                        <strong class="text-dark small">{{ number_format($schemes['kkni_rate'] ?? 0, 0) }}%</strong>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <small class="text-dark" style="font-size: 0.72rem;">Unit/Lain</small>
-                                        <strong class="text-dark small">15%</strong>
+                                        <strong class="text-dark small">{{ number_format($schemes['lainnya_rate'] ?? 0, 0) }}%</strong>
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +140,7 @@
                             <div class="p-2 px-3 rounded-3 border h-100" style="background-color: #f8fafc;">
                                 <span class="text-muted d-block small" style="font-size: 0.7rem;">Jenjang KKNI</span>
                                 <div class="mt-2 d-flex flex-column justify-content-center">
-                                    <h5 class="fw-bold text-dark mb-0">100.0%</h5>
+                                    <h5 class="fw-bold text-dark mb-0">{{ number_format($kkni['level_1_2_rate'] ?? 100, 1) }}%</h5>
                                     <strong class="text-dark small mt-1" style="font-size: 0.75rem;">Jenjang 1 - 2</strong>
                                     <small class="text-muted" style="font-size: 0.68rem;">Sesuai level SMK</small>
                                 </div>
@@ -134,15 +154,15 @@
                                 <div class="mt-2 d-flex flex-column gap-1">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <small class="text-dark" style="font-size: 0.72rem;">Sesuai</small>
-                                        <strong class="text-dark small">78%</strong>
+                                        <strong class="text-dark small">{{ number_format($compliance['sesuai_rate'] ?? 0, 0) }}%</strong>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <small class="text-dark" style="font-size: 0.72rem;">Lainnya</small>
-                                        <strong class="text-dark small">19%</strong>
+                                        <strong class="text-dark small">{{ number_format($compliance['sebagian_rate'] ?? 0, 0) }}%</strong>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <small class="text-dark" style="font-size: 0.72rem;">Tidak</small>
-                                        <strong class="text-dark small">3%</strong>
+                                        <strong class="text-dark small">{{ number_format($compliance['tidak_rate'] ?? 0, 0) }}%</strong>
                                     </div>
                                 </div>
                             </div>
@@ -157,3 +177,4 @@
         </div>
     </div>
 </div>
+
