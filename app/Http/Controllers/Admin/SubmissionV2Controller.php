@@ -211,12 +211,64 @@ class SubmissionV2Controller extends Controller
 
     public function export(Request $request)
     {
-        $status         = $request->get('status', 'all');
-        $bidangKeahlian = $request->get('bidang_keahlian', '');
+        $status         = $request->get('status') ?: 'all';
+        $bidangKeahlian = (string) ($request->get('bidang_keahlian') ?? '');
+        $chunkSize      = max(10, min(500, (int) ($request->get('chunk_size') ?: 50)));
 
-        $suffix   = $bidangKeahlian ? '-' . \Illuminate\Support\Str::slug($bidangKeahlian) : '';
-        $fileName = 'semua-pengajuan' . $suffix . '-' . now()->format('Ymd') . '.xlsx';
+        $suffix  = $bidangKeahlian ? '-' . \Illuminate\Support\Str::slug($bidangKeahlian) : '';
+        $dateStr = now()->format('Ymd');
 
-        return Excel::download(new SubmissionV2BulkExport($status, $bidangKeahlian), $fileName);
+        // Count matching records (cheap query — no eager-loads)
+        $total = InstrumentSubmissionV2::query()
+            ->when($status !== 'all', fn($q) => $q->where('status', $status))
+            ->when($bidangKeahlian !== '', fn($q) => $q->where('expertise', $bidangKeahlian))
+            ->count();
+
+        // ── Single file ────────────────────────────────────────────────────
+        if ($total <= $chunkSize) {
+            $fileName = "semua-pengajuan{$suffix}-{$dateStr}.xlsx";
+            return Excel::download(new SubmissionV2BulkExport($status, $bidangKeahlian), $fileName);
+        }
+
+        // ── Multiple files → ZIP ───────────────────────────────────────────
+        $chunks  = (int) ceil($total / $chunkSize);
+        $tempDir = storage_path('app/temp/bulk-export');
+
+        if (! is_dir($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+
+        $zipName = "pengajuan{$suffix}-{$dateStr}.zip";
+        $zipPath = "{$tempDir}/{$zipName}";
+
+        $zip = new \ZipArchive();
+        $zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+
+        $tempFiles = [];
+
+        for ($part = 1; $part <= $chunks; $part++) {
+            $offset   = ($part - 1) * $chunkSize;
+            $xlsxName = "pengajuan{$suffix}-{$dateStr}-bagian-{$part}.xlsx";
+            $xlsxPath = "{$tempDir}/{$xlsxName}";
+
+            Excel::store(
+                new SubmissionV2BulkExport($status, $bidangKeahlian, $chunkSize, $offset),
+                "temp/bulk-export/{$xlsxName}"
+            );
+
+            $zip->addFile($xlsxPath, $xlsxName);
+            $tempFiles[] = $xlsxPath;
+        }
+
+        $zip->close();
+
+        // Clean up individual xlsx files; the zip itself is cleaned after download
+        foreach ($tempFiles as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
+
+        return response()->download($zipPath, $zipName)->deleteFileAfterSend(true);
     }
 }

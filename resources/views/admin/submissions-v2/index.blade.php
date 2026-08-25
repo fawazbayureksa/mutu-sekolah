@@ -10,13 +10,19 @@
                 <h1 class="h3 mb-1 text-gray-800">Data Pengajuan</h1>
                 <p class="text-muted mb-0">Pengelolaan data pengajuan instrumen</p>
             </div>
-            @if ($bidangKeahlian)
-                <div>
-                    <a href="{{ route('admin.submissions-v2.export', array_filter(['status' => $status !== 'all' ? $status : null, 'bidang_keahlian' => $bidangKeahlian ?: null])) }}"
-                        class="btn btn-outline-success">
-                        <i class="bi bi-download me-1"></i> Export Excel
-                    </a>
+            @if($bidangKeahlian)
+            <form method="GET" action="{{ route('admin.submissions-v2.export') }}" class="d-flex align-items-center gap-2">
+                <input type="hidden" name="status"          value="{{ $status !== 'all' ? $status : '' }}">
+                <input type="hidden" name="bidang_keahlian" value="{{ $bidangKeahlian }}">
+                <div class="input-group input-group-sm" style="width: 180px;" title="Jumlah data per file (min 10, max 500)">
+                    <span class="input-group-text text-nowrap">Per file</span>
+                    <input type="number" name="chunk_size" class="form-control text-center"
+                        value="50" min="10" max="500" step="10">
                 </div>
+                <button type="submit" class="btn btn-outline-success btn-sm text-nowrap">
+                    <i class="bi bi-download me-1"></i> Export Excel
+                </button>
+            </form>
             @endif
         </div>
 

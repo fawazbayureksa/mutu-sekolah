@@ -15,14 +15,21 @@ class SubmissionV2BulkExport implements WithMultipleSheets
     public function __construct(
         string $status = 'all',
         string $bidangKeahlian = '',
+        int $limit = 0,   // 0 = no limit (all records)
+        int $offset = 0,
     ) {
-        $this->submissions = InstrumentSubmissionV2::with([
+        $query = InstrumentSubmissionV2::with([
                 'school', 'province', 'regency', 'verifier', 'validator',
             ])
             ->when($status !== 'all', fn($q) => $q->where('status', $status))
             ->when($bidangKeahlian !== '', fn($q) => $q->where('expertise', $bidangKeahlian))
-            ->latest('filled_at')
-            ->get();
+            ->latest('filled_at');
+
+        if ($limit > 0) {
+            $query->skip($offset)->take($limit);
+        }
+
+        $this->submissions = $query->get();
     }
 
     public function sheets(): array
