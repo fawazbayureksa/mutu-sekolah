@@ -10,11 +10,14 @@
                 <h1 class="h3 mb-1 text-gray-800">Data Pengajuan</h1>
                 <p class="text-muted mb-0">Pengelolaan data pengajuan instrumen</p>
             </div>
-            {{-- <div>
-                <a href="{{ route('admin.submissions-v2.export') }}" class="btn btn-outline-success">
-                    <i class="bi bi-download me-1"></i> Export
-                </a>
-            </div> --}}
+            @if ($bidangKeahlian)
+                <div>
+                    <a href="{{ route('admin.submissions-v2.export', array_filter(['status' => $status !== 'all' ? $status : null, 'bidang_keahlian' => $bidangKeahlian ?: null])) }}"
+                        class="btn btn-outline-success">
+                        <i class="bi bi-download me-1"></i> Export Excel
+                    </a>
+                </div>
+            @endif
         </div>
 
         {{-- Statistics Cards --}}
@@ -85,19 +88,46 @@
             </div>
         </div>
 
+        <div class="card shadow mb-4 p-3">
+            <form method="GET" action="{{ route('admin.submissions-v2.index') }}" class="mb-3">
+                <input type="hidden" name="status" value="{{ $status }}">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold mb-1">Filter Bidang Keahlian</label>
+                        <select name="bidang_keahlian" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="">Pilih</option>
+                            @foreach ($bidangKeahlianList as $bk)
+                                <option value="{{ $bk }}" {{ $bidangKeahlian === $bk ? 'selected' : '' }}>
+                                    {{ $bk }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @if ($bidangKeahlian)
+                        <div class="col-auto">
+                            <a href="{{ route('admin.submissions-v2.index', ['status' => $status]) }}"
+                                class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-x-circle me-1"></i>Reset Filter
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </form>
+        </div>
+
         {{-- Filter Tabs --}}
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <ul class="nav nav-tabs card-header-tabs">
                     <li class="nav-item">
                         <a class="nav-link {{ $status === 'all' ? 'active' : '' }}"
-                            href="{{ route('admin.submissions-v2.index', ['status' => 'all']) }}">
+                            href="{{ route('admin.submissions-v2.index', array_filter(['status' => 'all', 'bidang_keahlian' => $bidangKeahlian ?: null])) }}">
                             Semua
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ $status === 'submitted' ? 'active' : '' }}"
-                            href="{{ route('admin.submissions-v2.index', ['status' => 'submitted']) }}">
+                            href="{{ route('admin.submissions-v2.index', array_filter(['status' => 'submitted', 'bidang_keahlian' => $bidangKeahlian ?: null])) }}">
                             <i class="bi bi-hourglass-split me-1"></i> Menunggu
                             @if ($stats['submitted'] > 0)
                                 <span class="badge bg-warning text-dark">{{ $stats['submitted'] }}</span>
@@ -106,19 +136,19 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ $status === 'verified' ? 'active' : '' }}"
-                            href="{{ route('admin.submissions-v2.index', ['status' => 'verified']) }}">
+                            href="{{ route('admin.submissions-v2.index', array_filter(['status' => 'verified', 'bidang_keahlian' => $bidangKeahlian ?: null])) }}">
                             <i class="bi bi-check-circle me-1"></i> Terverifikasi
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ $status === 'validated' ? 'active' : '' }}"
-                            href="{{ route('admin.submissions-v2.index', ['status' => 'validated']) }}">
+                            href="{{ route('admin.submissions-v2.index', array_filter(['status' => 'validated', 'bidang_keahlian' => $bidangKeahlian ?: null])) }}">
                             <i class="bi bi-patch-check me-1"></i> Tervalidasi
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ $status === 'rejected' ? 'active' : '' }}"
-                            href="{{ route('admin.submissions-v2.index', ['status' => 'rejected']) }}">
+                            href="{{ route('admin.submissions-v2.index', array_filter(['status' => 'rejected', 'bidang_keahlian' => $bidangKeahlian ?: null])) }}">
                             <i class="bi bi-x-circle me-1"></i> Ditolak
                             @if ($stats['rejected'] > 0)
                                 <span class="badge bg-danger">{{ $stats['rejected'] }}</span>
@@ -128,6 +158,7 @@
                 </ul>
             </div>
             <div class="card-body">
+
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}

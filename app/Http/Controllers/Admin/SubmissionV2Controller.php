@@ -16,37 +16,48 @@ class SubmissionV2Controller extends Controller
 {
     public function index(Request $request): View
     {
-        $status = $request->get('status', 'all');
+        $status         = $request->get('status', 'all');
+        $bidangKeahlian = $request->get('bidang_keahlian', '');
 
         $viewPrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
 
         $submissions = InstrumentSubmissionV2::query()
             ->when($status !== 'all', fn($q) => $q->where('status', $status))
+            ->when($bidangKeahlian !== '', fn($q) => $q->where('expertise', $bidangKeahlian))
             ->latest('filled_at');
 
         if ($viewPrefix === 'verifier' && auth()->user()->province_id) {
             $submissions = $submissions->where('province_code', auth()->user()->province_id);
             $stats = [
-                'total' => InstrumentSubmissionV2::where('province_code', auth()->user()->province_id)->count(),
+                'total'     => InstrumentSubmissionV2::where('province_code', auth()->user()->province_id)->count(),
                 'submitted' => InstrumentSubmissionV2::where('status', 'submitted')->where('province_code', auth()->user()->province_id)->count(),
-                'verified' => InstrumentSubmissionV2::where('status', 'verified')->where('province_code', auth()->user()->province_id)->count(),
+                'verified'  => InstrumentSubmissionV2::where('status', 'verified')->where('province_code', auth()->user()->province_id)->count(),
                 'validated' => InstrumentSubmissionV2::where('status', 'validated')->where('province_code', auth()->user()->province_id)->count(),
-                'rejected' => InstrumentSubmissionV2::where('status', 'rejected')->where('province_code', auth()->user()->province_id)->count(),
+                'rejected'  => InstrumentSubmissionV2::where('status', 'rejected')->where('province_code', auth()->user()->province_id)->count(),
             ];
         } else {
             $stats = [
-                'total' => InstrumentSubmissionV2::count(),
+                'total'     => InstrumentSubmissionV2::count(),
                 'submitted' => InstrumentSubmissionV2::where('status', 'submitted')->count(),
-                'verified' => InstrumentSubmissionV2::where('status', 'verified')->count(),
+                'verified'  => InstrumentSubmissionV2::where('status', 'verified')->count(),
                 'validated' => InstrumentSubmissionV2::where('status', 'validated')->count(),
-                'rejected' => InstrumentSubmissionV2::where('status', 'rejected')->count(),
+                'rejected'  => InstrumentSubmissionV2::where('status', 'rejected')->count(),
             ];
         }
 
+        // Distinct list of Bidang Keahlian for the filter dropdown
+        $bidangKeahlianList = InstrumentSubmissionV2::query()
+            ->whereNotNull('expertise')
+            ->where('expertise', '!=', '')
+            ->distinct()
+            ->orderBy('expertise')
+            ->pluck('expertise');
+
         $submissions = $submissions->paginate(15);
 
-
-        return view("{$viewPrefix}.submissions-v2.index", compact('submissions', 'status', 'stats'));
+        return view("{$viewPrefix}.submissions-v2.index", compact(
+            'submissions', 'status', 'stats', 'bidangKeahlianList', 'bidangKeahlian'
+        ));
     }
 
     public function show(Request $request, InstrumentSubmissionV2 $submission): View
@@ -200,8 +211,12 @@ class SubmissionV2Controller extends Controller
 
     public function export(Request $request)
     {
-        $fileName = 'semua-pengajuan-' . now()->format('Ymd') . '.xlsx';
+        $status         = $request->get('status', 'all');
+        $bidangKeahlian = $request->get('bidang_keahlian', '');
 
-        return Excel::download(new SubmissionV2BulkExport(), $fileName);
+        $suffix   = $bidangKeahlian ? '-' . \Illuminate\Support\Str::slug($bidangKeahlian) : '';
+        $fileName = 'semua-pengajuan' . $suffix . '-' . now()->format('Ymd') . '.xlsx';
+
+        return Excel::download(new SubmissionV2BulkExport($status, $bidangKeahlian), $fileName);
     }
 }
