@@ -152,7 +152,7 @@ return [
 
     'curriculum'      => ['K13', 'Kurikulum Merdeka'],
 
-    'approval_status' => ['Sudah', 'Belum'],
+    'approval_status' => ['Sudah,Aktif', 'Sudah, Tidak Aktif', 'Belum'],
 
     'school_category' => [
         'SMK PK'  => 'SMK PK',
