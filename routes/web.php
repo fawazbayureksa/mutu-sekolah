@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\Dashboard\OverviewController;
 use App\Http\Controllers\Admin\Dashboard\KelembagaanController;
 use App\Http\Controllers\Admin\Dashboard\SaranaPrasaranaController;
 use App\Http\Controllers\Admin\Dashboard\PesertaDidikController;
+use App\Http\Controllers\Admin\Dashboard\TataKelolaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\SchoolLoginController;
@@ -318,6 +319,10 @@ Route::middleware('auth')->group(function () {
             Route::prefix('peserta-didik')->name('peserta-didik.')->group(function () {
                 Route::get('/', [PesertaDidikController::class, 'index'])->name('index');
                 Route::post('/select-context', [PesertaDidikController::class, 'selectContext'])->name('select-context');
+            });
+
+            Route::prefix('tata-kelola')->name('tata-kelola.')->group(function () {
+                Route::get('/', [TataKelolaController::class, 'index'])->name('index');
             });
         });
     });

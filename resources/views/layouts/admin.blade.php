@@ -122,6 +122,14 @@
                         <span>Mutu Peserta Didik</span>
                     </a>
                 </li>
+
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.dashboard.tata-kelola.index') }}"
+                        class="sidebar-menu-link {{ request()->is('admin/dashboard-mutu/tata-kelola*') ? 'active' : '' }}">
+                        <i class="bi bi-briefcase-fill"></i>
+                        <span>Tata Kelola</span>
+                    </a>
+                </li>
             @endif
         </ul>
 
