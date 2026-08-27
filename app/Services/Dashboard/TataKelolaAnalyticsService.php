@@ -129,7 +129,7 @@ class TataKelolaAnalyticsService
                     $mouTidakAktifCount++;
                 }
 
-                if (isset($row['duration']) && is_numeric($row['duration']) && (float) $row['duration'] > 0) {
+                if (isset($row['duration']) && is_numeric($row['duration']) && (float) $row['duration'] > 0 && strlen($row['duration']) < 4) {
                     $durations[] = (float) $row['duration'];
                 }
 
