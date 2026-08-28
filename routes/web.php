@@ -11,6 +11,11 @@ use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\SchoolController;
 use App\Http\Controllers\Admin\SubmissionController;
 use App\Http\Controllers\Admin\SubmissionV2Controller;
+use App\Http\Controllers\Admin\Dashboard\OverviewController;
+use App\Http\Controllers\Admin\Dashboard\KelembagaanController;
+use App\Http\Controllers\Admin\Dashboard\SaranaPrasaranaController;
+use App\Http\Controllers\Admin\Dashboard\PesertaDidikController;
+use App\Http\Controllers\Admin\Dashboard\TataKelolaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\SchoolLoginController;
@@ -295,6 +300,30 @@ Route::middleware('auth')->group(function () {
             Route::get('/download/{filename}', [DatabaseBackupController::class, 'download'])
                 ->name('download')
                 ->middleware('throttle:5,5');
+        });
+
+        // Dashboard Mutu SMK — Phase 1
+        Route::prefix('dashboard-mutu')->name('dashboard.')->group(function () {
+            Route::get('/overview', [OverviewController::class, 'index'])->name('overview');
+
+            Route::prefix('kelembagaan')->name('kelembagaan.')->group(function () {
+                Route::get('/', [KelembagaanController::class, 'index'])->name('index');
+                Route::get('/{school}', [KelembagaanController::class, 'show'])->name('show');
+                Route::post('/{school}/select-context', [KelembagaanController::class, 'selectContext'])->name('select-context');
+            });
+
+            Route::prefix('sarana-prasarana')->name('sarana-prasarana.')->group(function () {
+                Route::get('/', [SaranaPrasaranaController::class, 'index'])->name('index');
+            });
+
+            Route::prefix('peserta-didik')->name('peserta-didik.')->group(function () {
+                Route::get('/', [PesertaDidikController::class, 'index'])->name('index');
+                Route::post('/select-context', [PesertaDidikController::class, 'selectContext'])->name('select-context');
+            });
+
+            Route::prefix('tata-kelola')->name('tata-kelola.')->group(function () {
+                Route::get('/', [TataKelolaController::class, 'index'])->name('index');
+            });
         });
     });
 });

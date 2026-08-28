@@ -17,8 +17,8 @@
     </div>
 
     <!-- Statistics Cards -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-4">
+    {{-- <div class="row g-4 mb-4"> --}}
+    {{-- <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
@@ -72,8 +72,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        {{-- <div class="col-md-3">
+        </div> --}}
+    {{-- <div class="col-md-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
@@ -90,7 +90,7 @@
                 </div>
             </div>
         </div> --}}
-    </div>
+    {{-- </div> --}}
 
     <!-- Quick Actions -->
     {{-- <div class="card border-0 shadow-sm mb-4">
