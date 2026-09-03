@@ -39,6 +39,7 @@ class InstrumentSubmissionV2 extends Model
         'approval_status',
         'respondent_name',
         'respondent_position',
+        'respondent_contact',
         'form_version',
         'answers',
         'section_notes',

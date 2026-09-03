@@ -19,8 +19,14 @@ class SubmissionV2BulkExport implements WithMultipleSheets
         int $offset = 0,
     ) {
         $query = InstrumentSubmissionV2::with([
-                'school', 'province', 'regency', 'verifier', 'validator',
-            ])
+            'school',
+            'school.province',
+            'school.regency',
+            'province',
+            'regency',
+            'verifier',
+            'validator',
+        ])
             ->when($status !== 'all', fn($q) => $q->where('status', $status))
             ->when($bidangKeahlian !== '', fn($q) => $q->where('expertise', $bidangKeahlian))
             ->latest('filled_at');

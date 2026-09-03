@@ -49,10 +49,13 @@ class BulkDataSheet implements FromArray, WithTitle, WithStyles
 
             // ── School banner ─────────────────────────────────────────────
             $school = $submission->school;
+            $expertiseStr = $submission->expertise
+                ?? (is_array($school?->expertise) ? implode(', ', array_filter($school->expertise)) : $school?->expertise)
+                ?: '–';
             $rows[] = [
                 ($school?->school_name ?? $submission->school_name ?? '–')
                 . '  |  NPSN: ' . ($submission->npsn ?? $school?->npsn ?? '–')
-                . '  |  ' . ($submission->expertise ?? $school?->expertise ?? '–'),
+                . '  |  ' . $expertiseStr,
             ];
             $this->schoolBannerRows[] = count($rows);
 

@@ -11,6 +11,8 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class SubmissionV2SummarySheet implements FromArray, WithTitle, WithStyles, WithColumnWidths
 {
+    private array $sectionHeaderRows = [];
+
     public function __construct(protected InstrumentSubmissionV2 $submission) {}
 
     public function title(): string
@@ -20,6 +22,7 @@ class SubmissionV2SummarySheet implements FromArray, WithTitle, WithStyles, With
 
     public function array(): array
     {
+        $this->sectionHeaderRows = [];
         $s = $this->submission;
 
         $statusLabel = match ($s->status) {
@@ -28,63 +31,88 @@ class SubmissionV2SummarySheet implements FromArray, WithTitle, WithStyles, With
             'verified'  => 'Diverifikasi',
             'validated' => 'Divalidasi',
             'rejected'  => 'Ditolak',
-            default     => ucfirst($s->status),
+            default     => $s->status ? ucfirst($s->status) : '-',
         };
 
         $school = $s->school;
 
-        return [
+        $rows = [
             ['RINGKASAN PENGAJUAN INSTRUMEN PENJAMINAN MUTU SMK', ''],
             [''],
-            ['INFORMASI SEKOLAH', ''],
-            ['Nama Sekolah',          $school?->school_name ?? $s->school_name ?? '-'],
-            ['NPSN',                  $s->npsn ?? $school?->npsn ?? '-'],
-            ['Alamat',                $s->address ?? $school?->address ?? '-'],
-            ['Provinsi',              $s->province?->name ?? '-'],
-            ['Kabupaten/Kota',        $s->regency?->name ?? '-'],
-            ['Bidang Keahlian',       $s->expertise ?? $school?->expertise ?? '-'],
-            ['Kurikulum',             $s->curriculum ?? $school?->curriculum ?? '-'],
-            ['Program Keahlian',      $s->expertise_program ?? $school?->expertise_program ?? '-'],
-            ['Konsentrasi Keahlian',  is_array($s->expertise_concentration)
-                ? implode(', ', $s->expertise_concentration)
-                : ($s->expertise_concentration ?? $school?->expertise_concentration ?? '-')],
-            [''],
-            ['INFORMASI RESPONDEN', ''],
-            ['Nama Responden',        $s->respondent_name ?? '-'],
-            ['Jabatan',               $s->respondent_position ?? '-'],
-            [''],
-            ['STATUS PENGAJUAN', ''],
-            ['Status',                $statusLabel],
-            ['Tanggal Pengisian',     $s->filled_at?->format('d/m/Y') ?? '-'],
-            ['Tanggal Pengajuan',     $s->filled_at?->format('d/m/Y') ?? '-'],
-            ['Diverifikasi Oleh',     $s->verifier?->name ?? '-'],
-            ['Tanggal Verifikasi',    $s->verified_at?->format('d/m/Y H:i') ?? '-'],
-            ['Catatan Verifikasi',    $s->verification_notes ?? '-'],
-            ['Divalidasi Oleh',       $s->validator?->name ?? '-'],
-            ['Tanggal Validasi',      $s->validated_at?->format('d/m/Y H:i') ?? '-'],
-            ['Catatan Validasi',      $s->validation_notes ?? '-'],
-            [''],
-            ['Diekspor pada',         now()->format('d/m/Y H:i')],
         ];
+
+        // ── Informasi Sekolah ──
+        $rows[] = ['INFORMASI SEKOLAH', ''];
+        $this->sectionHeaderRows[] = count($rows);
+        $rows[] = ['Nama Sekolah',          $this->resolveValue($school?->school_name, $s->school_name)];
+        $rows[] = ['NPSN',                  $this->resolveValue($s->npsn, $school?->npsn)];
+        $rows[] = ['Status Sekolah',        $this->resolveValue($school?->school_status)];
+        $rows[] = ['Kategori Sekolah',      $this->resolveValue($school?->school_category)];
+        $rows[] = ['Akreditasi',            $this->resolveValue($school?->school_accreditation)];
+        $rows[] = ['Durasi Program',        $this->resolveValue($school?->program_duration)];
+        $rows[] = ['Alamat',                $this->resolveValue($s->address, $school?->address)];
+        $rows[] = ['Provinsi',              $this->resolveValue($s->province?->name, $school?->province?->name)];
+        $rows[] = ['Kabupaten/Kota',        $this->resolveValue($s->regency?->name, $school?->regency?->name)];
+        $rows[] = ['Bidang Keahlian',       $this->resolveValue($s->expertise, $school?->expertise)];
+        $rows[] = ['Program Keahlian',      $this->resolveValue($s->expertise_program, $school?->expertise_program)];
+        $rows[] = ['Konsentrasi Keahlian',  $this->resolveValue($s->expertise_concentration, $school?->expertise_concentration)];
+        $rows[] = ['Kurikulum',             $this->resolveValue($s->curriculum, $school?->curriculum)];
+        $rows[] = ['Status Kelayakan',      $this->resolveValue($s->approval_status, $school?->approval_status)];
+        $rows[] = [''];
+
+        // ── Informasi Responden ──
+        $rows[] = ['INFORMASI RESPONDEN', ''];
+        $this->sectionHeaderRows[] = count($rows);
+        $rows[] = ['Nama Responden',        $this->resolveValue($s->respondent_name)];
+        $rows[] = ['Jabatan',               $this->resolveValue($s->respondent_position)];
+        $rows[] = ['Kontak Responden',      $this->resolveValue($s->respondent_contact)];
+        $rows[] = [''];
+
+        // ── Status Pengajuan ──
+        $rows[] = ['STATUS PENGAJUAN', ''];
+        $this->sectionHeaderRows[] = count($rows);
+        $rows[] = ['Status',                $statusLabel];
+        $rows[] = ['Kelengkapan (%)',       $s->completion_percentage !== null ? number_format((float) $s->completion_percentage, 0) . '%' : '-'];
+        $rows[] = ['Tanggal Pengisian',     $s->filled_at?->format('d/m/Y') ?? '-'];
+        $rows[] = ['Diverifikasi Oleh',     $this->resolveValue($s->verifier?->name)];
+        $rows[] = ['Tanggal Verifikasi',    $s->verified_at?->format('d/m/Y H:i') ?? '-'];
+        $rows[] = ['Catatan Verifikasi',    $this->resolveValue($s->verification_notes)];
+        $rows[] = ['Divalidasi Oleh',       $this->resolveValue($s->validator?->name)];
+        $rows[] = ['Tanggal Validasi',      $s->validated_at?->format('d/m/Y H:i') ?? '-'];
+        $rows[] = ['Catatan Validasi',      $this->resolveValue($s->validation_notes)];
+        $rows[] = [''];
+        $rows[] = ['Diekspor pada',         now()->format('d/m/Y H:i')];
+
+        return $rows;
     }
 
     public function styles(Worksheet $sheet): array
     {
-        return [
+        $blue  = 'FF3D5A80';
+        $light = 'FFD9E1F2';
+
+        $styles = [
             // Title row
             1 => [
-                'font' => ['bold' => true, 'size' => 14],
+                'font' => ['bold' => true, 'size' => 14, 'color' => ['argb' => 'FFFFFFFF']],
                 'fill' => [
                     'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => ['argb' => 'FF3D5A80'],
+                    'startColor' => ['argb' => $blue],
                 ],
-                'font' => ['bold' => true, 'size' => 14, 'color' => ['argb' => 'FFFFFFFF']],
             ],
-            // Section header rows
-            3  => ['font' => ['bold' => true], 'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFD9E1F2']]],
-            14 => ['font' => ['bold' => true], 'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFD9E1F2']]],
-            18 => ['font' => ['bold' => true], 'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFD9E1F2']]],
         ];
+
+        foreach ($this->sectionHeaderRows as $rowNum) {
+            $styles[$rowNum] = [
+                'font' => ['bold' => true],
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'startColor' => ['argb' => $light],
+                ],
+            ];
+        }
+
+        return $styles;
     }
 
     public function columnWidths(): array
@@ -93,5 +121,21 @@ class SubmissionV2SummarySheet implements FromArray, WithTitle, WithStyles, With
             'A' => 30,
             'B' => 55,
         ];
+    }
+
+    private function resolveValue(mixed ...$values): string
+    {
+        foreach ($values as $val) {
+            if (is_array($val)) {
+                $filtered = array_filter($val, fn($v) => !is_null($v) && $v !== '');
+                if (!empty($filtered)) {
+                    return implode(', ', $filtered);
+                }
+            } elseif (!is_null($val) && $val !== '') {
+                return (string) $val;
+            }
+        }
+
+        return '-';
     }
 }

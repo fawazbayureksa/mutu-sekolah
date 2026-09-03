@@ -9,7 +9,12 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class SubmissionV2Export implements WithMultipleSheets
 {
-    public function __construct(protected InstrumentSubmissionV2 $submission) {}
+    public function __construct(protected InstrumentSubmissionV2 $submission)
+    {
+        $this->submission->loadMissing([
+            'school.province', 'school.regency', 'province', 'regency', 'verifier', 'validator',
+        ]);
+    }
 
     public function sheets(): array
     {

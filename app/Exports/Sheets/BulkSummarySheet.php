@@ -14,10 +14,12 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
  * Sheet 1 – Ringkasan (one row per submission)
  *
  * Columns:
- *   No | Nama Sekolah | NPSN | Provinsi | Kab/Kota | Bidang Keahlian |
- *   Program Keahlian | Kurikulum | Responden | Jabatan | Status |
+ *   No | Nama Sekolah | NPSN | Status Sekolah | Kategori Sekolah | Akreditasi |
+ *   Durasi Program | Alamat | Provinsi | Kab/Kota | Bidang Keahlian |
+ *   Program Keahlian | Konsentrasi Keahlian | Kurikulum | Status Kelayakan |
+ *   Nama Responden | Jabatan Responden | Kontak Responden | Status |
  *   Kelengkapan (%) | Tgl Pengisian | Tgl Verifikasi | Verifikator |
- *   Tgl Validasi | Validator | Catatan Verifikasi | Catatan Validasi
+ *   Catatan Verifikasi | Tgl Validasi | Validator | Catatan Validasi
  */
 class BulkSummarySheet implements FromArray, WithTitle, WithStyles, WithColumnWidths
 {
@@ -46,21 +48,29 @@ class BulkSummarySheet implements FromArray, WithTitle, WithStyles, WithColumnWi
             'No',
             'Nama Sekolah',
             'NPSN',
+            'Status Sekolah',
+            'Kategori Sekolah',
+            'Akreditasi',
+            'Durasi Program',
+            'Alamat',
             'Provinsi',
             'Kabupaten/Kota',
             'Bidang Keahlian',
             'Program Keahlian',
+            'Konsentrasi Keahlian',
             'Kurikulum',
+            'Status Kelayakan',
             'Nama Responden',
             'Jabatan Responden',
+            'Kontak Responden',
             'Status',
             'Kelengkapan (%)',
             'Tanggal Pengisian',
             'Tanggal Verifikasi',
             'Diverifikasi Oleh',
+            'Catatan Verifikasi',
             'Tanggal Validasi',
             'Divalidasi Oleh',
-            'Catatan Verifikasi',
             'Catatan Validasi',
         ];
 
@@ -70,24 +80,32 @@ class BulkSummarySheet implements FromArray, WithTitle, WithStyles, WithColumnWi
 
             $rows[] = [
                 $i + 1,
-                $school?->school_name ?? $s->school_name ?? '-',
-                $s->npsn ?? $school?->npsn ?? '-',
-                $s->province?->name ?? '-',
-                $s->regency?->name ?? '-',
-                $s->expertise ?? $school?->expertise ?? '-',
-                $s->expertise_program ?? $school?->expertise_program ?? '-',
-                $s->curriculum ?? $school?->curriculum ?? '-',
-                $s->respondent_name ?? '-',
-                $s->respondent_position ?? '-',
+                $this->resolveValue($school?->school_name, $s->school_name),
+                $this->resolveValue($s->npsn, $school?->npsn),
+                $this->resolveValue($school?->school_status),
+                $this->resolveValue($school?->school_category),
+                $this->resolveValue($school?->school_accreditation),
+                $this->resolveValue($school?->program_duration),
+                $this->resolveValue($s->address, $school?->address),
+                $this->resolveValue($s->province?->name, $school?->province?->name),
+                $this->resolveValue($s->regency?->name, $school?->regency?->name),
+                $this->resolveValue($s->expertise, $school?->expertise),
+                $this->resolveValue($s->expertise_program, $school?->expertise_program),
+                $this->resolveValue($s->expertise_concentration, $school?->expertise_concentration),
+                $this->resolveValue($s->curriculum, $school?->curriculum),
+                $this->resolveValue($s->approval_status, $school?->approval_status),
+                $this->resolveValue($s->respondent_name),
+                $this->resolveValue($s->respondent_position),
+                $this->resolveValue($s->respondent_contact),
                 $this->statusLabel($s->status),
-                $s->completion_percentage ? number_format($s->completion_percentage, 0) . '%' : '-',
+                $s->completion_percentage !== null ? number_format((float) $s->completion_percentage, 0) . '%' : '-',
                 $s->filled_at?->format('d/m/Y') ?? '-',
-                $s->verified_at?->format('d/m/Y') ?? '-',
-                $s->verifier?->name ?? '-',
-                $s->validated_at?->format('d/m/Y') ?? '-',
-                $s->validator?->name ?? '-',
-                $s->verification_notes ?? '-',
-                $s->validation_notes ?? '-',
+                $s->verified_at?->format('d/m/Y H:i') ?? ($s->verified_at?->format('d/m/Y') ?? '-'),
+                $this->resolveValue($s->verifier?->name),
+                $this->resolveValue($s->verification_notes),
+                $s->validated_at?->format('d/m/Y H:i') ?? ($s->validated_at?->format('d/m/Y') ?? '-'),
+                $this->resolveValue($s->validator?->name),
+                $this->resolveValue($s->validation_notes),
             ];
         }
 
@@ -120,31 +138,55 @@ class BulkSummarySheet implements FromArray, WithTitle, WithStyles, WithColumnWi
     public function columnWidths(): array
     {
         return [
-            'A' =>  6,   // No
-            'B' => 38,   // Nama Sekolah
-            'C' => 14,   // NPSN
-            'D' => 22,   // Provinsi
-            'E' => 24,   // Kab/Kota
-            'F' => 28,   // Bidang Keahlian
-            'G' => 28,   // Program Keahlian
-            'H' => 20,   // Kurikulum
-            'I' => 25,   // Responden
-            'J' => 22,   // Jabatan
-            'K' => 14,   // Status
-            'L' => 14,   // Kelengkapan
-            'M' => 16,   // Tgl Pengisian
-            'N' => 16,   // Tgl Verifikasi
-            'O' => 22,   // Verifikator
-            'P' => 16,   // Tgl Validasi
-            'Q' => 22,   // Validator
-            'R' => 40,   // Catatan Verifikasi
-            'S' => 40,   // Catatan Validasi
+            'A'  => 6,   // No
+            'B'  => 38,  // Nama Sekolah
+            'C'  => 14,  // NPSN
+            'D'  => 16,  // Status Sekolah
+            'E'  => 24,  // Kategori Sekolah
+            'F'  => 14,  // Akreditasi
+            'G'  => 16,  // Durasi Program
+            'H'  => 35,  // Alamat
+            'I'  => 22,  // Provinsi
+            'J'  => 24,  // Kab/Kota
+            'K'  => 28,  // Bidang Keahlian
+            'L'  => 28,  // Program Keahlian
+            'M'  => 28,  // Konsentrasi Keahlian
+            'N'  => 18,  // Kurikulum
+            'O'  => 18,  // Status Kelayakan
+            'P'  => 25,  // Responden
+            'Q'  => 22,  // Jabatan
+            'R'  => 20,  // Kontak Responden
+            'S'  => 14,  // Status
+            'T'  => 16,  // Kelengkapan (%)
+            'U'  => 18,  // Tgl Pengisian
+            'V'  => 18,  // Tgl Verifikasi
+            'W'  => 22,  // Verifikator
+            'X'  => 40,  // Catatan Verifikasi
+            'Y'  => 18,  // Tgl Validasi
+            'Z'  => 22,  // Validator
+            'AA' => 40,  // Catatan Validasi
         ];
     }
 
     // -------------------------------------------------------------------------
 
-    private function statusLabel(string $status): string
+    private function resolveValue(mixed ...$values): string
+    {
+        foreach ($values as $val) {
+            if (is_array($val)) {
+                $filtered = array_filter($val, fn($v) => !is_null($v) && $v !== '');
+                if (!empty($filtered)) {
+                    return implode(', ', $filtered);
+                }
+            } elseif (!is_null($val) && $val !== '') {
+                return (string) $val;
+            }
+        }
+
+        return '-';
+    }
+
+    private function statusLabel(?string $status): string
     {
         return match ($status) {
             'draft'     => 'Draft',
@@ -152,7 +194,7 @@ class BulkSummarySheet implements FromArray, WithTitle, WithStyles, WithColumnWi
             'verified'  => 'Diverifikasi',
             'validated' => 'Divalidasi',
             'rejected'  => 'Ditolak',
-            default     => ucfirst($status),
+            default     => $status ? ucfirst($status) : '-',
         };
     }
 }
