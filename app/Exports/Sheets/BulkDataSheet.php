@@ -10,16 +10,8 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-/**
- * Sheet 2 – Data Instrumen (all submissions, grouped)
- *
- * Reuses the same section/column-header/sub-title helpers as
- * SubmissionV2DataSheet so every submission's instrument data is rendered
- * identically, separated by a school-banner row.
- */
-class BulkDataSheet implements FromArray, WithTitle, WithStyles
-{
-    // Row-number buckets for styling
+class BulkDataSheet implements FromArray, WithTitle, 
+    
     private array $schoolBannerRows = [];
     private array $sectionTitleRows = [];
     private array $columnHeaderRows = [];
@@ -28,14 +20,9 @@ class BulkDataSheet implements FromArray, WithTitle, WithStyles
     public function __construct(protected Collection $submissions) {}
 
     public function title(): string
-    {
-        return 'Data';
-    }
-
-    // =========================================================================
-    // Main
-    // =========================================================================
-
+        {
+            return 'Data';
+        }
     public function array(): array
     {
         $rows = [];
