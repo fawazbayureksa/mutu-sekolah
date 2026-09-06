@@ -10,19 +10,19 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class BulkDataSheet implements FromArray, WithTitle, 
-    
+class BulkDataSheet implements FromArray, WithTitle, WithStyles
+{
     private array $schoolBannerRows = [];
     private array $sectionTitleRows = [];
     private array $columnHeaderRows = [];
     private array $subTitleRows     = [];
 
     public function __construct(protected Collection $submissions) {}
-
     public function title(): string
-        {
-            return 'Data';
-        }
+    {
+        return 'Data';
+    }
+
     public function array(): array
     {
         $rows = [];
@@ -41,16 +41,16 @@ class BulkDataSheet implements FromArray, WithTitle,
                 ?: '–';
             $rows[] = [
                 ($school?->school_name ?? $submission->school_name ?? '–')
-                . '  |  NPSN: ' . ($submission->npsn ?? $school?->npsn ?? '–')
-                . '  |  ' . $expertiseStr,
+                    . '  |  NPSN: ' . ($submission->npsn ?? $school?->npsn ?? '–')
+                    . '  |  ' . $expertiseStr,
             ];
             $this->schoolBannerRows[] = count($rows);
 
             $rows[] = [
                 'Status: ' . $this->statusLabel($submission->status)
-                . '   Kelengkapan: ' . number_format($submission->completion_percentage ?? 0, 0) . '%'
-                . '   Responden: ' . ($submission->respondent_name ?? '-')
-                . ' (' . ($submission->respondent_position ?? '-') . ')',
+                    . '   Kelengkapan: ' . number_format($submission->completion_percentage ?? 0, 0) . '%'
+                    . '   Responden: ' . ($submission->respondent_name ?? '-')
+                    . ' (' . ($submission->respondent_position ?? '-') . ')',
             ];
             $this->subTitleRows[] = count($rows);
 
@@ -79,9 +79,14 @@ class BulkDataSheet implements FromArray, WithTitle,
         // -----------------------------------------------------------------
         $this->sectionTitle($rows, 'A.1.1', 'Data Kelulusan Uji Kompetensi dan Sertifikasi');
         $this->colHeaders($rows, [
-            'No', 'Tahun Ajaran', 'Jenis Ujian/Sertifikasi',
-            'Jumlah Peserta', 'Jumlah Lulus', 'Tingkat Kelulusan (%)',
-            'Lembaga Penyelenggara', 'Keterangan',
+            'No',
+            'Tahun Ajaran',
+            'Jenis Ujian/Sertifikasi',
+            'Jumlah Peserta',
+            'Jumlah Lulus',
+            'Tingkat Kelulusan (%)',
+            'Lembaga Penyelenggara',
+            'Keterangan',
         ]);
         $data = $this->parseSection($answers['A.1.1'] ?? null);
         foreach ($data['rows'] as $i => $r) {
@@ -105,8 +110,13 @@ class BulkDataSheet implements FromArray, WithTitle,
         // -----------------------------------------------------------------
         $this->sectionTitle($rows, 'A.1.2', 'Analisis Skema Sertifikasi dan Kesesuaian KKNI');
         $this->colHeaders($rows, [
-            'No', 'Skema Sertifikasi', 'Jenis Kemasan', 'Jenjang KKNI',
-            'Jumlah Unit Kompetensi', 'Kesesuaian', 'Keterangan',
+            'No',
+            'Skema Sertifikasi',
+            'Jenis Kemasan',
+            'Jenjang KKNI',
+            'Jumlah Unit Kompetensi',
+            'Kesesuaian',
+            'Keterangan',
         ]);
         $data = $this->parseSection($answers['A.1.2'] ?? null);
         foreach ($data['rows'] as $i => $r) {
@@ -158,9 +168,15 @@ class BulkDataSheet implements FromArray, WithTitle,
         // -----------------------------------------------------------------
         $this->sectionTitle($rows, 'A.3', 'Data Putus Sekolah dan Ketidaknaikan Kelas');
         $this->colHeaders($rows, [
-            'No', 'Tahun Ajaran', 'Jumlah Murid Awal', 'Jumlah Murid Akhir',
-            'Jumlah Putus Sekolah', 'Jumlah Tidak Naik Kelas',
-            '% Putus Sekolah', 'Faktor Utama Penyebab', 'Faktor Lainnya (Keterangan)',
+            'No',
+            'Tahun Ajaran',
+            'Jumlah Murid Awal',
+            'Jumlah Murid Akhir',
+            'Jumlah Putus Sekolah',
+            'Jumlah Tidak Naik Kelas',
+            '% Putus Sekolah',
+            'Faktor Utama Penyebab',
+            'Faktor Lainnya (Keterangan)',
         ]);
         $data = $this->parseSection($answers['A.3'] ?? null);
         foreach ($data['rows'] as $i => $r) {
@@ -185,7 +201,11 @@ class BulkDataSheet implements FromArray, WithTitle,
         // -----------------------------------------------------------------
         $this->sectionTitle($rows, 'A.4', 'Data Skor Rata-rata TKA Tahun 2025');
         $this->colHeaders($rows, [
-            'No', 'Mata Pelajaran', 'Rata-rata Nasional 2025', 'Rata-rata Sekolah 2025', 'Selisih (+/-)',
+            'No',
+            'Mata Pelajaran',
+            'Rata-rata Nasional 2025',
+            'Rata-rata Sekolah 2025',
+            'Selisih (+/-)',
         ]);
         $a4Data     = $this->parseSection($answers['A.4'] ?? null);
         $a4Rows     = $a4Data['rows'] ?? [];
@@ -198,7 +218,7 @@ class BulkDataSheet implements FromArray, WithTitle,
             ['type' => 'subject', 'key' => 'ppkn',                   'label' => 'PPKN',                           'national_avg' => 60.91],
             ['type' => 'subject', 'key' => 'antropologi',            'label' => 'Antropologi',                    'national_avg' => 70.43],
             ['type' => 'subject', 'key' => 'projek_kreatif',         'label' => 'Projek Kreatif & Kewirausahaan', 'national_avg' => 56.34],
-            ['type' => 'subject', 'key' => 'bahasa_indonesia_lanjut','label' => 'Bahasa Indonesia Lanjut',        'national_avg' => 68.02],
+            ['type' => 'subject', 'key' => 'bahasa_indonesia_lanjut', 'label' => 'Bahasa Indonesia Lanjut',        'national_avg' => 68.02],
             ['type' => 'subject', 'key' => 'matematika_lanjut',      'label' => 'Matematika Lanjut',              'national_avg' => 39.32],
             ['type' => 'subject', 'key' => 'bahasa_inggris_lanjut',  'label' => 'Bahasa Inggris Lanjut',          'national_avg' => 45.23],
             ['type' => 'subject', 'key' => 'biologi',                'label' => 'Biologi',                        'national_avg' => 54.4],
@@ -290,11 +310,22 @@ class BulkDataSheet implements FromArray, WithTitle,
         // -----------------------------------------------------------------
         $this->sectionTitle($rows, 'C.1.1', 'Kerjasama Industri');
         $this->colHeaders($rows, [
-            'No', 'Nama Industri Mitra', 'Status MoU/MoA', 'Durasi (Tahun)',
-            '1. Penyelarasan Kurikulum', '2. Guru Tamu', '3. Magang/PKL Siswa',
-            '4. Sertifikasi (BNSP/LSP)', '5. Pelatihan Guru', '6. Penyerapan Lulusan',
-            '7. Teaching Factory', '8. Kelas Industri', '9. CSR/Alat/Bahan/Beasiswa',
-            '10. Lainnya', 'Kontribusi Kuantitatif', 'Kontribusi Kualitatif',
+            'No',
+            'Nama Industri Mitra',
+            'Status MoU/MoA',
+            'Durasi (Tahun)',
+            '1. Penyelarasan Kurikulum',
+            '2. Guru Tamu',
+            '3. Magang/PKL Siswa',
+            '4. Sertifikasi (BNSP/LSP)',
+            '5. Pelatihan Guru',
+            '6. Penyerapan Lulusan',
+            '7. Teaching Factory',
+            '8. Kelas Industri',
+            '9. CSR/Alat/Bahan/Beasiswa',
+            '10. Lainnya',
+            'Kontribusi Kuantitatif',
+            'Kontribusi Kualitatif',
         ]);
         $data = $this->parseSection($answers['C.1.1'] ?? null);
         foreach ($data['rows'] as $i => $r) {
@@ -326,12 +357,25 @@ class BulkDataSheet implements FromArray, WithTitle,
         // -----------------------------------------------------------------
         $this->sectionTitle($rows, 'C.2.1', 'Teaching Factory (TEFA) / Unit Produksi Sekolah');
         $this->colHeaders($rows, [
-            'No', 'Kategori TEFA', 'Nama Produk (Barang/Jasa)', 'Deskripsi Produk', 'Mitra Industri',
-            '1. Identifikasi Produk', '2. Analisis Kompetensi', '3. Perencanaan Produksi',
-            '4. Analisis Sumber Daya', '5. Pengerjaan Produk', '6. Penyerahan Produk',
-            '7. Layanan Purna Jual', 'Sertifikasi Kompetensi', 'Sinkronisasi Kurikulum',
-            'Branding/HAKI', 'Evaluasi Mutu Produk', 'Omzet (Rp/Bulan/Tahun)',
-            'Keterlibatan Alumni/Industri', 'Kendala',
+            'No',
+            'Kategori TEFA',
+            'Nama Produk (Barang/Jasa)',
+            'Deskripsi Produk',
+            'Mitra Industri',
+            '1. Identifikasi Produk',
+            '2. Analisis Kompetensi',
+            '3. Perencanaan Produksi',
+            '4. Analisis Sumber Daya',
+            '5. Pengerjaan Produk',
+            '6. Penyerahan Produk',
+            '7. Layanan Purna Jual',
+            'Sertifikasi Kompetensi',
+            'Sinkronisasi Kurikulum',
+            'Branding/HAKI',
+            'Evaluasi Mutu Produk',
+            'Omzet (Rp/Bulan/Tahun)',
+            'Keterlibatan Alumni/Industri',
+            'Kendala',
         ]);
         $data = $this->parseSection($answers['C.2.1'] ?? null);
         foreach ($data['rows'] as $i => $r) {
@@ -366,8 +410,16 @@ class BulkDataSheet implements FromArray, WithTitle,
         // -----------------------------------------------------------------
         $this->sectionTitle($rows, 'C.3.1', 'Data Pelatihan dan Sertifikasi Guru');
         $this->colHeaders($rows, [
-            'No', 'Nama Guru', 'Mata Pelajaran', 'Jenis Pelatihan/Sertifikasi',
-            'Judul Pelatihan', 'Tahun', 'Penyedia', 'Durasi', 'Bukti', 'Keterangan',
+            'No',
+            'Nama Guru',
+            'Mata Pelajaran',
+            'Jenis Pelatihan/Sertifikasi',
+            'Judul Pelatihan',
+            'Tahun',
+            'Penyedia',
+            'Durasi',
+            'Bukti',
+            'Keterangan',
         ]);
         $data = $this->parseSection($answers['C.3.1'] ?? null);
         foreach ($data['rows'] as $i => $r) {
@@ -411,10 +463,16 @@ class BulkDataSheet implements FromArray, WithTitle,
         // -----------------------------------------------------------------
         $this->sectionTitle($rows, 'C.3.3', 'Data Ketenagaan dan Beban Mengajar (Rasio Guru-Murid)');
         $this->colHeaders($rows, [
-            'No', 'Konsentrasi Keahlian', 'Jumlah Guru (PNA)', 'Jumlah Total Murid',
-            'Rasio Ideal (Guru PNA : Murid)', 'Rasio Guru:Murid (G:M)',
-            'Jml Konsentrasi per Bidang', 'Jml Guru Produktif',
-            'Rasio Ideal (Guru Produktif : Konsentrasi)', 'Rasio Guru Produktif : Konsentrasi',
+            'No',
+            'Konsentrasi Keahlian',
+            'Jumlah Guru (PNA)',
+            'Jumlah Total Murid',
+            'Rasio Ideal (Guru PNA : Murid)',
+            'Rasio Guru:Murid (G:M)',
+            'Jml Konsentrasi per Bidang',
+            'Jml Guru Produktif',
+            'Rasio Ideal (Guru Produktif : Konsentrasi)',
+            'Rasio Guru Produktif : Konsentrasi',
             'Keterangan',
         ]);
         $data = $this->parseSection($answers['C.3.3'] ?? null);
