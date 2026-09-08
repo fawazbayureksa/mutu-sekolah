@@ -56,7 +56,11 @@ class SubmissionV2Controller extends Controller
         $submissions = $submissions->paginate(15);
 
         return view("{$viewPrefix}.submissions-v2.index", compact(
-            'submissions', 'status', 'stats', 'bidangKeahlianList', 'bidangKeahlian'
+            'submissions',
+            'status',
+            'stats',
+            'bidangKeahlianList',
+            'bidangKeahlian'
         ));
     }
 
@@ -200,6 +204,7 @@ class SubmissionV2Controller extends Controller
 
     public function exportSingle(InstrumentSubmissionV2 $submission)
     {
+        set_time_limit(120);
         $submission->load(['school', 'province', 'regency', 'verifier', 'validator']);
 
         $npsn     = $submission->npsn ?? $submission->school?->npsn ?? 'unknown';
@@ -211,6 +216,7 @@ class SubmissionV2Controller extends Controller
 
     public function export(Request $request)
     {
+        set_time_limit(120);
         $status         = $request->get('status') ?: 'all';
         $bidangKeahlian = (string) ($request->get('bidang_keahlian') ?? '');
         $chunkSize      = max(10, min(500, (int) ($request->get('chunk_size') ?: 50)));
