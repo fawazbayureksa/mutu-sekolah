@@ -17,6 +17,10 @@ class SubmissionV2BulkExport implements WithMultipleSheets
         string $bidangKeahlian = '',
         int $limit = 0,   // 0 = no limit (all records)
         int $offset = 0,
+        string $programKeahlian = '',
+        string $konsentrasiKeahlian = '',
+        string $dateFrom = '',
+        string $dateTo = '',
     ) {
         $query = InstrumentSubmissionV2::with([
             'school',
@@ -29,6 +33,10 @@ class SubmissionV2BulkExport implements WithMultipleSheets
         ])
             ->when($status !== 'all', fn($q) => $q->where('status', $status))
             ->when($bidangKeahlian !== '', fn($q) => $q->where('expertise', $bidangKeahlian))
+            ->when($programKeahlian !== '', fn($q) => $q->where('expertise_program', $programKeahlian))
+            ->when($konsentrasiKeahlian !== '', fn($q) => $q->where('expertise_concentration', $konsentrasiKeahlian))
+            ->when($dateFrom !== '', fn($q) => $q->whereDate('created_at', '>=', $dateFrom))
+            ->when($dateTo !== '', fn($q) => $q->whereDate('created_at', '<=', $dateTo))
             ->latest('filled_at');
 
         if ($limit > 0) {

@@ -16,14 +16,22 @@ class SubmissionV2Controller extends Controller
 {
     public function index(Request $request): View
     {
-        $status         = $request->get('status', 'all');
-        $bidangKeahlian = $request->get('bidang_keahlian', '');
+        $status                = $request->get('status', 'all');
+        $bidangKeahlian        = $request->get('bidang_keahlian', '');
+        $programKeahlian       = $request->get('program_keahlian', '');
+        $konsentrasiKeahlian   = $request->get('konsentrasi_keahlian', '');
+        $dateFrom              = $request->get('date_from', '');
+        $dateTo                = $request->get('date_to', '');
 
         $viewPrefix = $request->route()->getPrefix() === 'verifier/submissions-v2' ? 'verifier' : 'admin';
 
         $submissions = InstrumentSubmissionV2::query()
             ->when($status !== 'all', fn($q) => $q->where('status', $status))
             ->when($bidangKeahlian !== '', fn($q) => $q->where('expertise', $bidangKeahlian))
+            ->when($programKeahlian !== '', fn($q) => $q->where('expertise_program', $programKeahlian))
+            ->when($konsentrasiKeahlian !== '', fn($q) => $q->where('expertise_concentration', $konsentrasiKeahlian))
+            ->when($dateFrom !== '', fn($q) => $q->whereDate('created_at', '>=', $dateFrom))
+            ->when($dateTo !== '', fn($q) => $q->whereDate('created_at', '<=', $dateTo))
             ->latest('filled_at');
 
         if ($viewPrefix === 'verifier' && auth()->user()->province_id) {
@@ -53,6 +61,29 @@ class SubmissionV2Controller extends Controller
             ->orderBy('expertise')
             ->pluck('expertise');
 
+        // Program Keahlian list — scoped to selected Bidang Keahlian
+        $programKeahlianList = $bidangKeahlian
+            ? InstrumentSubmissionV2::query()
+                ->where('expertise', $bidangKeahlian)
+                ->whereNotNull('expertise_program')
+                ->where('expertise_program', '!=', '')
+                ->distinct()
+                ->orderBy('expertise_program')
+                ->pluck('expertise_program')
+            : collect();
+
+        // Konsentrasi Keahlian list — scoped to selected Program Keahlian
+        $konsentrasiKeahlianList = $programKeahlian
+            ? InstrumentSubmissionV2::query()
+                ->when($bidangKeahlian !== '', fn($q) => $q->where('expertise', $bidangKeahlian))
+                ->where('expertise_program', $programKeahlian)
+                ->whereNotNull('expertise_concentration')
+                ->where('expertise_concentration', '!=', '')
+                ->distinct()
+                ->orderBy('expertise_concentration')
+                ->pluck('expertise_concentration')
+            : collect();
+
         $submissions = $submissions->paginate(15);
 
         return view("{$viewPrefix}.submissions-v2.index", compact(
@@ -60,7 +91,13 @@ class SubmissionV2Controller extends Controller
             'status',
             'stats',
             'bidangKeahlianList',
-            'bidangKeahlian'
+            'bidangKeahlian',
+            'programKeahlianList',
+            'programKeahlian',
+            'konsentrasiKeahlianList',
+            'konsentrasiKeahlian',
+            'dateFrom',
+            'dateTo'
         ));
     }
 
@@ -217,9 +254,13 @@ class SubmissionV2Controller extends Controller
     public function export(Request $request)
     {
         set_time_limit(120);
-        $status         = $request->get('status') ?: 'all';
-        $bidangKeahlian = (string) ($request->get('bidang_keahlian') ?? '');
-        $chunkSize      = max(10, min(500, (int) ($request->get('chunk_size') ?: 50)));
+        $status              = $request->get('status') ?: 'all';
+        $bidangKeahlian      = (string) ($request->get('bidang_keahlian') ?? '');
+        $programKeahlian     = (string) ($request->get('program_keahlian') ?? '');
+        $konsentrasiKeahlian = (string) ($request->get('konsentrasi_keahlian') ?? '');
+        $dateFrom            = (string) ($request->get('date_from') ?? '');
+        $dateTo              = (string) ($request->get('date_to') ?? '');
+        $chunkSize           = max(10, min(500, (int) ($request->get('chunk_size') ?: 50)));
 
         $suffix  = $bidangKeahlian ? '-' . \Illuminate\Support\Str::slug($bidangKeahlian) : '';
         $dateStr = now()->format('Ymd');
@@ -228,12 +269,19 @@ class SubmissionV2Controller extends Controller
         $total = InstrumentSubmissionV2::query()
             ->when($status !== 'all', fn($q) => $q->where('status', $status))
             ->when($bidangKeahlian !== '', fn($q) => $q->where('expertise', $bidangKeahlian))
+            ->when($programKeahlian !== '', fn($q) => $q->where('expertise_program', $programKeahlian))
+            ->when($konsentrasiKeahlian !== '', fn($q) => $q->where('expertise_concentration', $konsentrasiKeahlian))
+            ->when($dateFrom !== '', fn($q) => $q->whereDate('created_at', '>=', $dateFrom))
+            ->when($dateTo !== '', fn($q) => $q->whereDate('created_at', '<=', $dateTo))
             ->count();
 
         // ── Single file ────────────────────────────────────────────────────
         if ($total <= $chunkSize) {
             $fileName = "semua-pengajuan{$suffix}-{$dateStr}.xlsx";
-            return Excel::download(new SubmissionV2BulkExport($status, $bidangKeahlian), $fileName);
+            return Excel::download(
+                new SubmissionV2BulkExport($status, $bidangKeahlian, 0, 0, $programKeahlian, $konsentrasiKeahlian, $dateFrom, $dateTo),
+                $fileName
+            );
         }
 
         // ── Multiple files → ZIP ───────────────────────────────────────────
@@ -258,7 +306,7 @@ class SubmissionV2Controller extends Controller
             $xlsxPath = "{$tempDir}/{$xlsxName}";
 
             Excel::store(
-                new SubmissionV2BulkExport($status, $bidangKeahlian, $chunkSize, $offset),
+                new SubmissionV2BulkExport($status, $bidangKeahlian, $chunkSize, $offset, $programKeahlian, $konsentrasiKeahlian, $dateFrom, $dateTo),
                 "temp/bulk-export/{$xlsxName}"
             );
 

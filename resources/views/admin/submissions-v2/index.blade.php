@@ -10,10 +10,14 @@
                 <h1 class="h3 mb-1 text-gray-800">Data Pengajuan</h1>
                 <p class="text-muted mb-0">Pengelolaan data pengajuan instrumen</p>
             </div>
-            @if($bidangKeahlian)
+            @if($bidangKeahlian || $programKeahlian || $konsentrasiKeahlian || $dateFrom || $dateTo)
             <form method="GET" action="{{ route('admin.submissions-v2.export') }}" class="d-flex align-items-center gap-2">
-                <input type="hidden" name="status"          value="{{ $status !== 'all' ? $status : '' }}">
-                <input type="hidden" name="bidang_keahlian" value="{{ $bidangKeahlian }}">
+                <input type="hidden" name="status"                value="{{ $status !== 'all' ? $status : '' }}">
+                <input type="hidden" name="bidang_keahlian"       value="{{ $bidangKeahlian }}">
+                <input type="hidden" name="program_keahlian"      value="{{ $programKeahlian }}">
+                <input type="hidden" name="konsentrasi_keahlian"  value="{{ $konsentrasiKeahlian }}">
+                <input type="hidden" name="date_from"             value="{{ $dateFrom }}">
+                <input type="hidden" name="date_to"               value="{{ $dateTo }}">
                 <div class="input-group input-group-sm" style="width: 180px;" title="Jumlah data per file (min 10, max 500)">
                     <span class="input-group-text text-nowrap">Per file</span>
                     <input type="number" name="chunk_size" class="form-control text-center"
@@ -95,11 +99,12 @@
         </div>
 
         <div class="card shadow mb-4 p-3">
-            <form method="GET" action="{{ route('admin.submissions-v2.index') }}" class="mb-3">
+            <form method="GET" action="{{ route('admin.submissions-v2.index') }}" id="filterForm">
                 <input type="hidden" name="status" value="{{ $status }}">
                 <div class="row g-2 align-items-end">
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold mb-1">Filter Bidang Keahlian</label>
+                    {{-- Bidang Keahlian --}}
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold mb-1">Bidang Keahlian</label>
                         <select name="bidang_keahlian" class="form-select form-select-sm" onchange="this.form.submit()">
                             <option value="">Pilih</option>
                             @foreach ($bidangKeahlianList as $bk)
@@ -109,8 +114,51 @@
                             @endforeach
                         </select>
                     </div>
-                    @if ($bidangKeahlian)
+
+                    {{-- Program Keahlian (visible only when bidang is selected) --}}
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold mb-1">Program Keahlian</label>
+                        <select name="program_keahlian" class="form-select form-select-sm"
+                            {{ $bidangKeahlian ? '' : 'disabled' }} onchange="this.form.submit()">
+                            <option value="">Pilih</option>
+                            @foreach ($programKeahlianList as $pk)
+                                <option value="{{ $pk }}" {{ $programKeahlian === $pk ? 'selected' : '' }}>
+                                    {{ $pk }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Konsentrasi Keahlian (visible only when program is selected) --}}
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold mb-1">Konsentrasi Keahlian</label>
+                        <select name="konsentrasi_keahlian" class="form-select form-select-sm"
+                            {{ $programKeahlian ? '' : 'disabled' }} onchange="this.form.submit()">
+                            <option value="">Pilih</option>
+                            @foreach ($konsentrasiKeahlianList as $kk)
+                                <option value="{{ $kk }}" {{ $konsentrasiKeahlian === $kk ? 'selected' : '' }}>
+                                    {{ $kk }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Date Range --}}
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold mb-1">Dari Tanggal</label>
+                        <input type="date" name="date_from" class="form-control form-control-sm"
+                            value="{{ $dateFrom }}" onchange="this.form.submit()">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold mb-1">Sampai Tanggal</label>
+                        <input type="date" name="date_to" class="form-control form-control-sm"
+                            value="{{ $dateTo }}" onchange="this.form.submit()">
+                    </div>
+
+                    {{-- Reset Button --}}
+                    @if ($bidangKeahlian || $programKeahlian || $konsentrasiKeahlian || $dateFrom || $dateTo)
                         <div class="col-auto">
+                            <label class="form-label mb-1 d-block">&nbsp;</label>
                             <a href="{{ route('admin.submissions-v2.index', ['status' => $status]) }}"
                                 class="btn btn-sm btn-outline-secondary">
                                 <i class="bi bi-x-circle me-1"></i>Reset Filter
@@ -125,15 +173,24 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <ul class="nav nav-tabs card-header-tabs">
+                    @php
+                        $tabParams = array_filter([
+                            'bidang_keahlian'      => $bidangKeahlian ?: null,
+                            'program_keahlian'     => $programKeahlian ?: null,
+                            'konsentrasi_keahlian' => $konsentrasiKeahlian ?: null,
+                            'date_from'            => $dateFrom ?: null,
+                            'date_to'              => $dateTo ?: null,
+                        ]);
+                    @endphp
                     <li class="nav-item">
                         <a class="nav-link {{ $status === 'all' ? 'active' : '' }}"
-                            href="{{ route('admin.submissions-v2.index', array_filter(['status' => 'all', 'bidang_keahlian' => $bidangKeahlian ?: null])) }}">
+                            href="{{ route('admin.submissions-v2.index', array_merge(['status' => 'all'], $tabParams)) }}">
                             Semua
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ $status === 'submitted' ? 'active' : '' }}"
-                            href="{{ route('admin.submissions-v2.index', array_filter(['status' => 'submitted', 'bidang_keahlian' => $bidangKeahlian ?: null])) }}">
+                            href="{{ route('admin.submissions-v2.index', array_merge(['status' => 'submitted'], $tabParams)) }}">
                             <i class="bi bi-hourglass-split me-1"></i> Menunggu
                             @if ($stats['submitted'] > 0)
                                 <span class="badge bg-warning text-dark">{{ $stats['submitted'] }}</span>
@@ -142,19 +199,19 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ $status === 'verified' ? 'active' : '' }}"
-                            href="{{ route('admin.submissions-v2.index', array_filter(['status' => 'verified', 'bidang_keahlian' => $bidangKeahlian ?: null])) }}">
+                            href="{{ route('admin.submissions-v2.index', array_merge(['status' => 'verified'], $tabParams)) }}">
                             <i class="bi bi-check-circle me-1"></i> Terverifikasi
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ $status === 'validated' ? 'active' : '' }}"
-                            href="{{ route('admin.submissions-v2.index', array_filter(['status' => 'validated', 'bidang_keahlian' => $bidangKeahlian ?: null])) }}">
+                            href="{{ route('admin.submissions-v2.index', array_merge(['status' => 'validated'], $tabParams)) }}">
                             <i class="bi bi-patch-check me-1"></i> Tervalidasi
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ $status === 'rejected' ? 'active' : '' }}"
-                            href="{{ route('admin.submissions-v2.index', array_filter(['status' => 'rejected', 'bidang_keahlian' => $bidangKeahlian ?: null])) }}">
+                            href="{{ route('admin.submissions-v2.index', array_merge(['status' => 'rejected'], $tabParams)) }}">
                             <i class="bi bi-x-circle me-1"></i> Ditolak
                             @if ($stats['rejected'] > 0)
                                 <span class="badge bg-danger">{{ $stats['rejected'] }}</span>
