@@ -105,8 +105,8 @@
                     {{-- Bidang Keahlian --}}
                     <div class="col-md-3">
                         <label class="form-label fw-semibold mb-1">Bidang Keahlian</label>
-                        <select name="bidang_keahlian" class="form-select form-select-sm" onchange="this.form.submit()">
-                            <option value="">Pilih</option>
+                        <select name="bidang_keahlian" class="form-select form-select-sm">
+                            <option value="">-- Semua --</option>
                             @foreach ($bidangKeahlianList as $bk)
                                 <option value="{{ $bk }}" {{ $bidangKeahlian === $bk ? 'selected' : '' }}>
                                     {{ $bk }}
@@ -115,12 +115,11 @@
                         </select>
                     </div>
 
-                    {{-- Program Keahlian (visible only when bidang is selected) --}}
+                    {{-- Program Keahlian --}}
                     <div class="col-md-3">
                         <label class="form-label fw-semibold mb-1">Program Keahlian</label>
-                        <select name="program_keahlian" class="form-select form-select-sm"
-                            {{ $bidangKeahlian ? '' : 'disabled' }} onchange="this.form.submit()">
-                            <option value="">Pilih</option>
+                        <select name="program_keahlian" class="form-select form-select-sm">
+                            <option value="">-- Semua --</option>
                             @foreach ($programKeahlianList as $pk)
                                 <option value="{{ $pk }}" {{ $programKeahlian === $pk ? 'selected' : '' }}>
                                     {{ $pk }}
@@ -129,12 +128,11 @@
                         </select>
                     </div>
 
-                    {{-- Konsentrasi Keahlian (visible only when program is selected) --}}
+                    {{-- Konsentrasi Keahlian --}}
                     <div class="col-md-3">
                         <label class="form-label fw-semibold mb-1">Konsentrasi Keahlian</label>
-                        <select name="konsentrasi_keahlian" class="form-select form-select-sm"
-                            {{ $programKeahlian ? '' : 'disabled' }} onchange="this.form.submit()">
-                            <option value="">Pilih</option>
+                        <select name="konsentrasi_keahlian" class="form-select form-select-sm">
+                            <option value="">-- Semua --</option>
                             @foreach ($konsentrasiKeahlianList as $kk)
                                 <option value="{{ $kk }}" {{ $konsentrasiKeahlian === $kk ? 'selected' : '' }}>
                                     {{ $kk }}
@@ -143,28 +141,32 @@
                         </select>
                     </div>
 
-                    {{-- Date Range --}}
-                    <div class="col-md-2">
+                    {{-- Dari Tanggal --}}
+                    <div class="col-md-2 col-sm-6">
                         <label class="form-label fw-semibold mb-1">Dari Tanggal</label>
                         <input type="date" name="date_from" class="form-control form-control-sm"
-                            value="{{ $dateFrom }}" onchange="this.form.submit()">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label fw-semibold mb-1">Sampai Tanggal</label>
-                        <input type="date" name="date_to" class="form-control form-control-sm"
-                            value="{{ $dateTo }}" onchange="this.form.submit()">
+                            value="{{ $dateFrom }}">
                     </div>
 
-                    {{-- Reset Button --}}
-                    @if ($bidangKeahlian || $programKeahlian || $konsentrasiKeahlian || $dateFrom || $dateTo)
-                        <div class="col-auto">
-                            <label class="form-label mb-1 d-block">&nbsp;</label>
+                    {{-- Sampai Tanggal --}}
+                    <div class="col-md-2 col-sm-6">
+                        <label class="form-label fw-semibold mb-1">Sampai Tanggal</label>
+                        <input type="date" name="date_to" class="form-control form-control-sm"
+                            value="{{ $dateTo }}">
+                    </div>
+
+                    {{-- Action Buttons --}}
+                    <div class="col-12 d-flex gap-2 mt-1">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="bi bi-funnel me-1"></i>Terapkan Filter
+                        </button>
+                        @if ($bidangKeahlian || $programKeahlian || $konsentrasiKeahlian || $dateFrom || $dateTo)
                             <a href="{{ route('admin.submissions-v2.index', ['status' => $status]) }}"
                                 class="btn btn-sm btn-outline-secondary">
                                 <i class="bi bi-x-circle me-1"></i>Reset Filter
                             </a>
-                        </div>
-                    @endif
+                        @endif
+                    </div>
                 </div>
             </form>
         </div>

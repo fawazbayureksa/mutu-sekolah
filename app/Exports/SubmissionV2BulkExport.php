@@ -32,11 +32,11 @@ class SubmissionV2BulkExport implements WithMultipleSheets
             'validator',
         ])
             ->when($status !== 'all', fn($q) => $q->where('status', $status))
-            ->when($bidangKeahlian !== '', fn($q) => $q->where('expertise', $bidangKeahlian))
-            ->when($programKeahlian !== '', fn($q) => $q->where('expertise_program', $programKeahlian))
-            ->when($konsentrasiKeahlian !== '', fn($q) => $q->where('expertise_concentration', $konsentrasiKeahlian))
-            ->when($dateFrom !== '', fn($q) => $q->whereDate('created_at', '>=', $dateFrom))
-            ->when($dateTo !== '', fn($q) => $q->whereDate('created_at', '<=', $dateTo))
+            ->when(filled($bidangKeahlian), fn($q) => $q->where('expertise', $bidangKeahlian))
+            ->when(filled($programKeahlian), fn($q) => $q->where('expertise_program', $programKeahlian))
+            ->when(filled($konsentrasiKeahlian), fn($q) => $q->where('expertise_concentration', $konsentrasiKeahlian))
+            ->when(filled($dateFrom), fn($q) => $q->whereDate('created_at', '>=', $dateFrom))
+            ->when(filled($dateTo), fn($q) => $q->whereDate('created_at', '<=', $dateTo))
             ->latest('filled_at');
 
         if ($limit > 0) {
